@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <!-- ✏️ EDITAR: metas SEO, PWA e identidad del sitio. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Daikon Sushi Delivery. Sushi fresco, rolls intensos y delivery veloz con una estetica cyberpunk japonesa."
+    />
+    <meta name="theme-color" content="#FF003C" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Daikon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Shippori+Mincho:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Daikon Sushi Delivery</title>
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <!-- ✏️ EDITAR: header, marca y accesos rapidos. -->
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Daikon Sushi Delivery inicio">
+        <span class="brand__mono">DAIKON</span>
+        <span class="brand__kanji">SUSHI DELIVERY</span>
+      </a>
+
+      <nav class="topbar__actions" aria-label="Acciones principales">
+        <button class="ghost-button" id="searchToggle" type="button">Buscar</button>
+        <button class="cart-button" id="cartToggle" type="button" aria-label="Abrir carrito">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M3 4h2.2l1.6 8.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L20 7H7.1"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.7"
+            />
+            <circle cx="10" cy="19" r="1.6" fill="currentColor" />
+            <circle cx="17" cy="19" r="1.6" fill="currentColor" />
+          </svg>
+          <span class="sr-only">Carrito</span>
+          <span class="cart-button__count" id="cartCount">0</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ✏️ EDITAR: hero principal del negocio. -->
+      <section class="hero" id="inicio">
+        <div class="hero__overlay"></div>
+        <div class="hero__content">
+          <p class="eyebrow">SABORES QUE TE ENAMORAN</p>
+          <h1>Una experiencia que no se olvida. Se pide. Se espera. Se devora.</h1>
+          <p class="hero__text">
+            Sushi premium con envíos en La Plata, Ensenada y Berisso. Cada pieza, una obra.
+          </p>
+
+          <p class="hero__notice">Todo pedido incluye palillos, salsa de soja, wasabi y jengibre · Envíos en La Plata, Ensenada y Berisso · Coordinación por WhatsApp</p>
+
+          <div class="hero__actions">
+            <a class="primary-button" href="#menu">HACÉ TU PEDIDO AHORA →</a>
+            <button class="secondary-button" id="heroCartButton" type="button">Ver carrito</button>
+          </div>
+
+          <dl class="hero__stats" aria-label="Destacados">
+            <div>
+              <dt>Delivery</dt>
+              <dd>La Plata, Ensenada y Berisso</dd>
+            </div>
+            <div>
+              <dt>Promo</dt>
+              <dd>2x1 en rolls after office</dd>
+            </div>
+            <div>
+              <dt>Open</dt>
+              <dd>18:00 a 00:30</dd>
+            </div>
+          </dl>
+        </div>
+
+        <aside class="hero__panel">
+          <p class="hero__panel-label">Selección de la casa</p>
+          <h2>Pancho Sushi de Salmón</h2>
+          <p>
+            Roll caliente rebozado en panko, cortado al medio. Base de queso crema, cremoso de palta y salmón rosado fresco.
+          </p>
+          <div class="hero__panel-footer">
+            <span>$18.000</span>
+            <button class="primary-button primary-button--small" id="featuredAdd" type="button">
+              Agregar
+            </button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ✏️ EDITAR: filtros y categorias del menu. -->
+      <section class="toolbar" aria-label="Filtrado de menu">
+        <div class="toolbar__search" id="searchBar" hidden>
+          <label class="sr-only" for="menuSearch">Buscar producto</label>
+          <input id="menuSearch" type="search" placeholder="Nigiri, rolls, gyozas..." />
+        </div>
+        <div class="chips" id="categoryChips"></div>
+      </section>
+
+      <!-- ✏️ EDITAR: titulo y contenedor principal del catalogo. -->
+      <section class="menu-section" id="menu">
+        <div class="section-heading">
+          <p class="eyebrow">Menú completo</p>
+          <h2>Elegí tu combo y ajustá cantidades al instante</h2>
+          <p>
+            Navegá por categorías, sumá o restá unidades desde cada card y armá tu pedido con envíos disponibles en La Plata, Ensenada y Berisso.
+          </p>
+        </div>
+
+        <div class="product-grid" id="productGrid" aria-live="polite"></div>
+      </section>
+
+    </main>
+
+    <!-- ✏️ EDITAR: drawer del carrito y formulario del cliente. -->
+    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" hidden>
+      <div class="cart-drawer__header">
+        <div>
+          <p class="eyebrow">Pedido actual</p>
+          <h2>Tu carrito</h2>
+        </div>
+        <button class="icon-button" id="cartClose" type="button" aria-label="Cerrar carrito">×</button>
+      </div>
+
+      <div class="cart-drawer__body">
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-summary">
+          <form class="checkout-form" id="checkoutForm">
+            <label class="checkout-field" for="customerName">
+              <span>Nombre y Apellido</span>
+              <input id="customerName" name="customerName" type="text" placeholder="Ej: Paula Gómez" autocomplete="name" />
+            </label>
+
+            <label class="checkout-field" for="customerAddress">
+              <span>Dirección de entrega</span>
+              <input id="customerAddress" name="customerAddress" type="text" placeholder="Calle, altura, piso/depto" autocomplete="street-address" />
+            </label>
+
+            <fieldset class="payment-methods">
+              <legend>Medio de pago</legend>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="Efectivo" checked />
+                <span>Efectivo</span>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="Transferencia" />
+                <span>Transferencia</span>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="Débito" />
+                <span>Débito</span>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="Crédito" />
+                <span>Crédito</span>
+              </label>
+            </fieldset>
+          </form>
+
+          <div class="cart-summary__row">
+            <span>Subtotal</span>
+            <strong id="subtotalValue">$0</strong>
+          </div>
+          <div class="cart-summary__row">
+            <span>Envio</span>
+            <strong id="deliveryValue">$1.500</strong>
+          </div>
+          <div class="cart-summary__row cart-summary__row--total">
+            <span>Total</span>
+            <strong id="totalValue">$0</strong>
+          </div>
+          <button class="primary-button primary-button--wide" id="checkoutButton" type="button">
+            🟢 ENVIAR PEDIDO POR WHATSAPP
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <!-- ✏️ EDITAR: consultas frecuentes predeterminadas. -->
+    <div class="daikon-chat" id="daikonChat">
+      <button
+        class="daikon-chat__toggle"
+        id="chatToggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="chatPanel"
+        aria-label="Abrir chat de Daikon"
+      >
+        <span class="daikon-chat__icon" aria-hidden="true">🍣</span>
+        <span class="daikon-chat__label">Daikon</span>
+      </button>
+
+      <section class="daikon-chat__panel" id="chatPanel" aria-hidden="true" hidden>
+        <header class="daikon-chat__header">
+          <div>
+            <p class="eyebrow">Consultas rápidas</p>
+            <h2>Daikon responde</h2>
+          </div>
+          <button class="icon-button" id="chatClose" type="button" aria-label="Cerrar chat">×</button>
+        </header>
+
+        <div class="daikon-chat__messages" id="chatMessages" aria-live="polite"></div>
+
+        <div class="daikon-chat__suggestions" id="chatSuggestions" aria-label="Preguntas sugeridas"></div>
+      </section>
+    </div>
+
+    <template id="productCardTemplate">
+      <article class="product-card reveal-card">
+        <div class="product-card__media">
+          <img alt="" loading="lazy" />
+          <span class="product-card__badge"></span>
+        </div>
+        <div class="product-card__body">
+          <div class="product-card__topline">
+            <p class="product-card__category"></p>
+            <span class="product-card__price"></span>
+          </div>
+          <h3></h3>
+          <p class="product-card__description"></p>
+          <div class="product-card__footer">
+            <span class="product-card__meta"></span>
+            <div class="card-stepper" aria-label="Cantidad de producto">
+              <button type="button" data-action="decrease" aria-label="Restar unidad">−</button>
+              <span class="card-stepper__value">0</span>
+              <button type="button" data-action="increase" aria-label="Sumar unidad">+</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <template id="cartItemTemplate">
+      <article class="cart-item">
+        <div class="cart-item__info">
+          <h3></h3>
+          <p class="cart-item__note"></p>
+        </div>
+        <div class="cart-item__actions">
+          <div class="cart-item__amounts">
+            <span class="cart-item__unit-price"></span>
+            <strong class="cart-item__price"></strong>
+          </div>
+          <div class="stepper">
+            <button type="button" data-action="decrease">−</button>
+            <span class="stepper__value"></span>
+            <button type="button" data-action="increase">+</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Hero Daikon Sushi">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050505" />
+      <stop offset="55%" stop-color="#14060a" />
+      <stop offset="100%" stop-color="#1d0911" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff4a70" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#ff003c" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <circle cx="1180" cy="220" r="220" fill="url(#glow)" />
+  <circle cx="1240" cy="520" r="280" fill="url(#glow)" opacity="0.45" />
+  <g opacity="0.8">
+    <ellipse cx="1090" cy="500" rx="260" ry="170" fill="#1c0f12" stroke="#ff003c" stroke-opacity="0.5" stroke-width="4" />
+    <ellipse cx="1090" cy="500" rx="180" ry="112" fill="#f4efe7" opacity="0.95" />
+    <ellipse cx="1090" cy="500" rx="126" ry="74" fill="#ff8da5" opacity="0.9" />
+    <path d="M995 477c45-58 152-76 206-26 16 15 26 34 28 58-40-33-84-45-131-35-41 9-71 28-103 45-4-16-4-30 0-42z" fill="#ff003c" opacity="0.8" />
+    <path d="M916 648c41-28 74-43 111-50 51-11 103-4 151 16 31 13 57 30 90 52" stroke="#ff003c" stroke-opacity="0.45" stroke-width="14" fill="none" stroke-linecap="round" />
+  </g>
+  <g stroke="#ff003c" stroke-opacity="0.24">
+    <path d="M120 90h420" />
+    <path d="M70 160h300" />
+    <path d="M1320 120h180" />
+    <path d="M80 820h260" />
+    <path d="M1260 760h250" />
+  </g>
+</svg>

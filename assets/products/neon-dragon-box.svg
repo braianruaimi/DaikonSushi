@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Neon Dragon Box">
+  <rect width="800" height="800" fill="#10090b" />
+  <circle cx="610" cy="180" r="150" fill="#ff003c" opacity="0.18" />
+  <rect x="112" y="170" width="576" height="430" rx="42" fill="#120f10" stroke="#ff003c" stroke-opacity="0.45" stroke-width="4" />
+  <rect x="160" y="220" width="480" height="330" rx="28" fill="#f1ece4" />
+  <g fill="#101010">
+    <rect x="200" y="258" width="110" height="78" rx="22" />
+    <rect x="346" y="258" width="110" height="78" rx="22" />
+    <rect x="492" y="258" width="110" height="78" rx="22" />
+    <rect x="200" y="374" width="110" height="78" rx="22" />
+    <rect x="346" y="374" width="110" height="78" rx="22" />
+    <rect x="492" y="374" width="110" height="78" rx="22" />
+  </g>
+  <g fill="#ff003c" opacity="0.85">
+    <circle cx="256" cy="298" r="22" />
+    <circle cx="402" cy="298" r="22" />
+    <circle cx="548" cy="298" r="22" />
+    <circle cx="256" cy="414" r="22" />
+    <circle cx="402" cy="414" r="22" />
+    <circle cx="548" cy="414" r="22" />
+  </g>
+  <text x="82" y="712" fill="#f5f0e8" font-size="62" font-family="Shippori Mincho, serif">Neon Dragon Box</text>
+</svg>
