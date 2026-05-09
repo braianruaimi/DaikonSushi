@@ -1,4 +1,4 @@
-const CACHE_NAME = "daikon-sushi-v7";
+const CACHE_NAME = "daikon-sushi-v8";
 const APP_SHELL = [
   "./",
   "index.html",
@@ -17,6 +17,8 @@ const APP_SHELL = [
   "assets/icons/icon-192.png",
   "assets/icons/icon-512.png"
 ];
+
+const APP_SHELL_PATHS = new Set(APP_SHELL.map((entry) => new URL(entry, self.location.origin).pathname));
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -43,7 +45,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  const requestUrl = new URL(event.request.url);
   const isNavigationRequest = event.request.mode === "navigate";
+  const isSameOrigin = requestUrl.origin === self.location.origin;
+  const isAppShellAsset = isSameOrigin && APP_SHELL_PATHS.has(requestUrl.pathname);
 
   if (isNavigationRequest) {
     event.respondWith(
@@ -54,6 +59,19 @@ self.addEventListener("fetch", (event) => {
           return networkResponse;
         })
         .catch(() => caches.match(event.request).then((cachedResponse) => cachedResponse || caches.match("index.html")))
+    );
+    return;
+  }
+
+  if (isAppShellAsset) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
     );
     return;
   }

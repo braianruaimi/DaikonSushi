@@ -288,11 +288,14 @@ const productGrid = document.querySelector("#productGrid");
 const productCardTemplate = document.querySelector("#productCardTemplate");
 const cartItemTemplate = document.querySelector("#cartItemTemplate");
 const cartDrawer = document.querySelector("#cartDrawer");
+const cartDrawerBody = document.querySelector(".cart-drawer__body");
 const backdrop = document.querySelector("#backdrop");
 const cartToggle = document.querySelector("#cartToggle");
 const heroCartButton = document.querySelector("#heroCartButton");
 const cartClose = document.querySelector("#cartClose");
 const cartItems = document.querySelector("#cartItems");
+const cartScrollUp = document.querySelector("#cartScrollUp");
+const cartScrollDown = document.querySelector("#cartScrollDown");
 const cartCount = document.querySelector("#cartCount");
 const subtotalValue = document.querySelector("#subtotalValue");
 const deliveryValue = document.querySelector("#deliveryValue");
@@ -307,37 +310,53 @@ const customerName = document.querySelector("#customerName");
 const customerAddress = document.querySelector("#customerAddress");
 const chatToggle = document.querySelector("#chatToggle");
 const chatClose = document.querySelector("#chatClose");
+const floatingMenu = document.querySelector("#floatingMenu");
+const floatingMenuToggle = document.querySelector("#floatingMenuToggle");
+const floatingMenuPanel = document.querySelector("#floatingMenuPanel");
+const floatingCategoryChips = document.querySelector("#floatingCategoryChips");
 const daikonChat = document.querySelector("#daikonChat");
+const installAppButton = document.querySelector("#installAppButton");
 const chatPanel = document.querySelector("#chatPanel");
 const chatMessages = document.querySelector("#chatMessages");
 const chatSuggestions = document.querySelector("#chatSuggestions");
+const menuSection = document.querySelector("#menu");
 
 let chatCloseTimeoutId;
 let cartCloseTimeoutId;
+let floatingMenuCloseTimeoutId;
+let cartGlowTimeoutId;
+let deferredInstallPrompt = null;
 
 bootstrap();
 
 function bootstrap() {
   closeChat({ immediate: true });
   closeCart({ immediate: true });
+  closeFloatingMenu({ immediate: true });
   renderCategories();
   renderProducts();
   updateCartUI();
   setupChat();
+  setupInstallApp();
   bindEvents();
   registerServiceWorker();
 }
 
 function bindEvents() {
-  cartToggle.addEventListener("click", openCart);
+  cartToggle.addEventListener("click", toggleCart);
   heroCartButton.addEventListener("click", openCart);
   cartClose.addEventListener("click", closeCart);
   backdrop.addEventListener("click", closeCart);
+  cartScrollUp.addEventListener("click", () => scrollCartItems(-180));
+  cartScrollDown.addEventListener("click", () => scrollCartItems(180));
 
   featuredAdd.addEventListener("click", () => {
     addToCart("pancho-salmon");
-    openCart();
   });
+
+  if (installAppButton) {
+    installAppButton.addEventListener("click", handleInstallAppClick);
+  }
 
   searchToggle.addEventListener("click", () => {
     const hidden = searchBar.hasAttribute("hidden");
@@ -362,12 +381,15 @@ function bindEvents() {
 
   checkoutButton.addEventListener("click", openWhatsApp);
 
+  floatingMenuToggle.addEventListener("click", toggleFloatingMenu);
   chatToggle.addEventListener("click", toggleChat);
   chatClose.addEventListener("click", closeChat);
+  document.addEventListener("pointerdown", handleFloatingPointerDown, true);
   document.addEventListener("pointerdown", handleChatPointerDown, true);
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      closeFloatingMenu();
       closeChat();
       closeCart();
     }
@@ -408,6 +430,7 @@ function appendChatMessage(message) {
 function toggleChat() {
   const isOpen = daikonChat.classList.contains("is-open");
   if (!isOpen) {
+    closeFloatingMenu();
     openChat();
     return;
   }
@@ -447,6 +470,58 @@ function closeChat(options = {}) {
   }, CHAT_TRANSITION_MS);
 }
 
+function toggleFloatingMenu() {
+  const isOpen = floatingMenu.classList.contains("is-open");
+  if (!isOpen) {
+    closeChat();
+    openFloatingMenu();
+    return;
+  }
+
+  closeFloatingMenu();
+}
+
+function openFloatingMenu() {
+  window.clearTimeout(floatingMenuCloseTimeoutId);
+  floatingMenuPanel.hidden = false;
+  floatingMenuPanel.setAttribute("aria-hidden", "false");
+  floatingMenuToggle.setAttribute("aria-expanded", "true");
+  floatingMenu.classList.add("is-visible");
+  window.requestAnimationFrame(() => {
+    floatingMenu.classList.add("is-open");
+  });
+}
+
+function closeFloatingMenu(options = {}) {
+  const { immediate = false } = options;
+  window.clearTimeout(floatingMenuCloseTimeoutId);
+  floatingMenuPanel.setAttribute("aria-hidden", "true");
+  floatingMenuToggle.setAttribute("aria-expanded", "false");
+  floatingMenu.classList.remove("is-open");
+
+  if (immediate) {
+    floatingMenu.classList.remove("is-visible");
+    floatingMenuPanel.hidden = true;
+    return;
+  }
+
+  floatingMenuCloseTimeoutId = window.setTimeout(() => {
+    if (!floatingMenu.classList.contains("is-open")) {
+      floatingMenu.classList.remove("is-visible");
+      floatingMenuPanel.hidden = true;
+    }
+  }, CHAT_TRANSITION_MS);
+}
+
+function toggleCart() {
+  if (cartDrawer.classList.contains("is-open")) {
+    closeCart();
+    return;
+  }
+
+  openCart();
+}
+
 function openCart() {
   window.clearTimeout(cartCloseTimeoutId);
   cartDrawer.hidden = false;
@@ -455,6 +530,8 @@ function openCart() {
   cartDrawer.classList.add("is-visible");
   backdrop.classList.add("is-visible");
   document.body.classList.add("cart-open");
+  cartDrawerBody.scrollTop = 0;
+  cartItems.scrollTop = 0;
 
   window.requestAnimationFrame(() => {
     cartDrawer.classList.add("is-open");
@@ -488,6 +565,13 @@ function closeCart(options = {}) {
   }, CART_TRANSITION_MS);
 }
 
+function scrollCartItems(offset) {
+  cartItems.scrollBy({
+    top: offset,
+    behavior: "smooth",
+  });
+}
+
 function handleChatPointerDown(event) {
   if (chatPanel.hidden) {
     return;
@@ -505,6 +589,23 @@ function handleChatPointerDown(event) {
   closeChat();
 }
 
+function handleFloatingPointerDown(event) {
+  if (floatingMenuPanel.hidden) {
+    return;
+  }
+
+  const target = event.target;
+  if (!(target instanceof Node)) {
+    return;
+  }
+
+  if (floatingMenuPanel.contains(target) || floatingMenuToggle.contains(target)) {
+    return;
+  }
+
+  closeFloatingMenu();
+}
+
 function renderCategories() {
   // ✏️ EDITAR: si queres cambiar el orden fijo de categorias, modificá este array base.
   const categories = [
@@ -513,7 +614,13 @@ function renderCategories() {
     ...new Set(products.map((product) => product.category).filter((category) => category !== promoLunch.category)),
   ];
 
-  categoryChips.innerHTML = "";
+  renderCategoryButtons(categoryChips, categories);
+  renderCategoryButtons(floatingCategoryChips, categories, { closeOnClick: true });
+}
+
+function renderCategoryButtons(container, categories, options = {}) {
+  const { closeOnClick = false } = options;
+  container.innerHTML = "";
 
   categories.forEach((category) => {
     const button = document.createElement("button");
@@ -524,8 +631,13 @@ function renderCategories() {
       state.activeCategory = category;
       renderCategories();
       renderProducts(category);
+
+      if (closeOnClick) {
+        closeFloatingMenu();
+        menuSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
-    categoryChips.appendChild(button);
+    container.appendChild(button);
   });
 }
 
@@ -644,19 +756,32 @@ function updateCartUI() {
     cartItems.appendChild(fragment);
   });
 
-  const subtotal = state.cart.reduce((sum, item) => {
-    const product = products.find((entry) => entry.id === item.id);
-    return product && typeof product.price === "number" ? sum + product.price * item.quantity : sum;
-  }, 0);
+  const summary = getCartSummary();
 
-  const total = subtotal ? subtotal + DELIVERY_FEE : 0;
-
-  cartCount.textContent = String(state.cart.reduce((sum, item) => sum + item.quantity, 0));
-  subtotalValue.textContent = formatCurrency(subtotal);
-  deliveryValue.textContent = subtotal ? formatCurrency(DELIVERY_FEE) : formatCurrency(0);
-  totalValue.textContent = formatCurrency(total);
+  cartCount.textContent = String(summary.count);
+  subtotalValue.textContent = formatCartSubtotal(summary);
+  deliveryValue.textContent = formatCartDelivery(summary);
+  totalValue.textContent = formatCartTotal(summary).label;
 
   saveCartToStorage();
+}
+
+function pulseCartButton() {
+  if (!cartToggle) {
+    return;
+  }
+
+  cartToggle.classList.remove("cart-button--glow");
+  void cartToggle.offsetWidth;
+  cartToggle.classList.add("cart-button--glow");
+
+  if (cartGlowTimeoutId) {
+    window.clearTimeout(cartGlowTimeoutId);
+  }
+
+  cartGlowTimeoutId = window.setTimeout(() => {
+    cartToggle.classList.remove("cart-button--glow");
+  }, 700);
 }
 
 function addToCart(productId) {
@@ -670,6 +795,7 @@ function addToCart(productId) {
 
   renderProducts();
   updateCartUI();
+  pulseCartButton();
   showToast("Producto agregado al carrito.");
 }
 
@@ -678,6 +804,8 @@ function removeFromCart(productId) {
 }
 
 function updateCartQuantity(productId, quantity) {
+  const previousQuantity = getQuantity(productId);
+
   if (quantity <= 0) {
     state.cart = state.cart.filter((item) => item.id !== productId);
   } else {
@@ -692,6 +820,10 @@ function updateCartQuantity(productId, quantity) {
 
   renderProducts();
   updateCartUI();
+
+  if (previousQuantity !== quantity) {
+    pulseCartButton();
+  }
 }
 
 function getQuantity(productId) {
@@ -720,7 +852,7 @@ function formatPrice(value) {
 function loadCartFromStorage() {
   try {
     const rawValue = localStorage.getItem(STORAGE_KEY);
-    return rawValue ? JSON.parse(rawValue) : [];
+    return rawValue ? normalizeCart(JSON.parse(rawValue)) : [];
   } catch {
     return [];
   }
@@ -734,6 +866,7 @@ function generateWhatsAppMessage() {
   const customer = customerName.value.trim();
   const address = customerAddress.value.trim();
   const paymentMethod = new FormData(checkoutForm).get("paymentMethod") || "Efectivo";
+  const summary = getCartSummary();
   const lines = state.cart
     .map((item) => {
       const product = products.find((entry) => entry.id === item.id);
@@ -750,8 +883,9 @@ function generateWhatsAppMessage() {
     })
     .filter(Boolean);
 
-  const totalLabel = totalValue.textContent;
-  return `🍣 *NUEVO PEDIDO - DAIKON SUSHI*\n\n👤 *Cliente:* ${customer}\n📍 *Dirección:* ${address}\n\n🛒 *Detalle del pedido:*\n${lines.join("\n")}\n\n💰 *Total: ${totalLabel}*\n💳 *Medio de pago:* ${paymentMethod}\n\n⚠️ El envío no está incluido en el total.`;
+  const totalLabel = formatCartTotal(summary).message;
+  const deliveryLabel = formatCartDelivery(summary);
+  return `🍣 *NUEVO PEDIDO - DAIKON SUSHI*\n\n👤 *Cliente:* ${customer}\n📍 *Dirección:* ${address}\n\n🛒 *Detalle del pedido:*\n${lines.join("\n")}\n\n🚚 *Envío:* ${deliveryLabel}\n💰 *Total:* ${totalLabel}\n💳 *Medio de pago:* ${paymentMethod}`;
 }
 
 function openWhatsApp() {
@@ -783,6 +917,97 @@ function validateRequiredField(field) {
 
 function loadCart() {
   return loadCartFromStorage();
+}
+
+function normalizeCart(rawCart) {
+  if (!Array.isArray(rawCart)) {
+    return [];
+  }
+
+  const quantitiesById = new Map();
+
+  rawCart.forEach((item) => {
+    if (!item || typeof item.id !== "string") {
+      return;
+    }
+
+    const product = products.find((entry) => entry.id === item.id);
+    if (!product) {
+      return;
+    }
+
+    const quantity = Number.parseInt(String(item.quantity), 10);
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+      return;
+    }
+
+    quantitiesById.set(item.id, (quantitiesById.get(item.id) ?? 0) + quantity);
+  });
+
+  return Array.from(quantitiesById, ([id, quantity]) => ({ id, quantity }));
+}
+
+function getCartSummary() {
+  return state.cart.reduce(
+    (summary, item) => {
+      const product = products.find((entry) => entry.id === item.id);
+      if (!product) {
+        return summary;
+      }
+
+      summary.count += item.quantity;
+
+      if (typeof product.price === "number") {
+        summary.subtotal += product.price * item.quantity;
+      } else {
+        summary.hasQuotedItems = true;
+      }
+
+      return summary;
+    },
+    {
+      count: 0,
+      subtotal: 0,
+      hasQuotedItems: false,
+    }
+  );
+}
+
+function formatCartSubtotal(summary) {
+  if (summary.hasQuotedItems && summary.subtotal > 0) {
+    return `${formatCurrency(summary.subtotal)} + items a consultar`;
+  }
+
+  if (summary.hasQuotedItems) {
+    return "Items a consultar";
+  }
+
+  return formatCurrency(summary.subtotal);
+}
+
+function formatCartDelivery(summary) {
+  if (summary.hasQuotedItems) {
+    return "A confirmar";
+  }
+
+  return summary.subtotal ? formatCurrency(DELIVERY_FEE) : formatCurrency(0);
+}
+
+function formatCartTotal(summary) {
+  if (summary.hasQuotedItems) {
+    return {
+      label: "Total a confirmar",
+      message: summary.subtotal > 0
+        ? `${formatCurrency(summary.subtotal)} + envío e items a confirmar`
+        : "A confirmar",
+    };
+  }
+
+  const total = summary.subtotal ? summary.subtotal + DELIVERY_FEE : 0;
+  return {
+    label: formatCurrency(total),
+    message: formatCurrency(total),
+  };
 }
 
 function persistCart() {
@@ -877,4 +1102,61 @@ function buildPromoWhatsAppUrl() {
   // ✏️ EDITAR: mensaje rapido para consultas de la promo almuerzo.
   const message = encodeURIComponent("Hola Daikon, quiero consultar el precio de la Promo Almuerzo.");
   return `https://wa.me/${WA_NUMBER}?text=${message}`;
+}
+
+function setupInstallApp() {
+  updateInstallAppVisibility();
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    updateInstallAppVisibility();
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    updateInstallAppVisibility();
+    showToast("App instalada correctamente.");
+  });
+}
+
+function isStandaloneApp() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function isIosDevice() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+function updateInstallAppVisibility() {
+  if (!installAppButton) {
+    return;
+  }
+
+  const shouldShow = !isStandaloneApp();
+  installAppButton.hidden = !shouldShow;
+}
+
+async function handleInstallAppClick() {
+  if (isIosDevice() && !deferredInstallPrompt) {
+    showToast("En iPhone o iPad usá Compartir y después Agregar a pantalla de inicio.");
+    return;
+  }
+
+  if (!deferredInstallPrompt) {
+    showToast("La instalación no está disponible todavía en este navegador.");
+    return;
+  }
+
+  deferredInstallPrompt.prompt();
+  const choice = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  updateInstallAppVisibility();
+
+  if (choice.outcome === "accepted") {
+    showToast("Instalación iniciada.");
+    return;
+  }
+
+  showToast("Instalación cancelada.");
 }

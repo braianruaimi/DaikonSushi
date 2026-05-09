@@ -22,7 +22,7 @@
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20260509-scroll-fix-15" />
     <title>Daikon Sushi Delivery</title>
   </head>
   <body>
@@ -139,40 +139,42 @@
       </div>
 
       <div class="cart-drawer__body">
-        <div class="cart-items" id="cartItems"></div>
-
         <div class="cart-summary">
+          <div class="cart-summary__mobile-heading" aria-hidden="true">
+            <p class="eyebrow">Pedido actual</p>
+            <h3>Tu carrito</h3>
+          </div>
+
           <form class="checkout-form" id="checkoutForm">
             <label class="checkout-field" for="customerName">
               <span>Nombre y Apellido</span>
-              <input id="customerName" name="customerName" type="text" placeholder="Ej: Paula Gómez" autocomplete="name" />
+              <input id="customerName" name="customerName" type="text" placeholder="Nombre y Apellido" autocomplete="name" />
             </label>
 
             <label class="checkout-field" for="customerAddress">
               <span>Dirección de entrega</span>
-              <input id="customerAddress" name="customerAddress" type="text" placeholder="Calle, altura, piso/depto" autocomplete="street-address" />
+              <input id="customerAddress" name="customerAddress" type="text" placeholder="Dirección de entrega" autocomplete="street-address" />
             </label>
 
-            <fieldset class="payment-methods">
-              <legend>Medio de pago</legend>
-              <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="Efectivo" checked />
-                <span>Efectivo</span>
-              </label>
-              <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="Transferencia" />
-                <span>Transferencia</span>
-              </label>
-              <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="Débito" />
-                <span>Débito</span>
-              </label>
-              <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="Crédito" />
-                <span>Crédito</span>
-              </label>
-            </fieldset>
+            <label class="checkout-field payment-methods" for="paymentMethod">
+              <span>Medio de pago</span>
+              <select id="paymentMethod" name="paymentMethod">
+                <option value="Efectivo" selected>Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Débito">Débito</option>
+                <option value="Crédito">Crédito</option>
+              </select>
+            </label>
           </form>
+
+          <div class="cart-items-panel">
+            <div class="cart-items" id="cartItems"></div>
+
+            <div class="cart-scroll-controls" aria-label="Controles de desplazamiento del carrito">
+              <button class="cart-scroll-button" id="cartScrollUp" type="button" aria-label="Subir en el carrito">↑</button>
+              <button class="cart-scroll-button" id="cartScrollDown" type="button" aria-label="Bajar en el carrito">↓</button>
+            </div>
+          </div>
 
           <div class="cart-summary__row">
             <span>Subtotal</span>
@@ -197,6 +199,29 @@
 
     <!-- ✏️ EDITAR: consultas frecuentes predeterminadas. -->
     <div class="daikon-chat" id="daikonChat">
+      <div class="floating-menu" id="floatingMenu">
+        <button
+          class="floating-menu__toggle"
+          id="floatingMenuToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="floatingMenuPanel"
+          aria-label="Abrir menú de categorías"
+        >
+          <span class="floating-menu__label">Menú</span>
+        </button>
+
+        <section class="floating-menu__panel" id="floatingMenuPanel" aria-hidden="true" hidden>
+          <header class="floating-menu__header">
+            <div>
+              <p class="eyebrow">Navegación rápida</p>
+              <h2>Elegí una sección</h2>
+            </div>
+          </header>
+          <div class="chips floating-menu__chips" id="floatingCategoryChips" aria-label="Categorías rápidas"></div>
+        </section>
+      </div>
+
       <button
         class="daikon-chat__toggle"
         id="chatToggle"
@@ -223,6 +248,11 @@
         <div class="daikon-chat__suggestions" id="chatSuggestions" aria-label="Preguntas sugeridas"></div>
       </section>
     </div>
+
+    <button class="install-app-button" id="installAppButton" type="button" hidden aria-label="Instalar app">
+      <span class="install-app-button__icon" aria-hidden="true">+</span>
+      <span class="install-app-button__label">Instalar app</span>
+    </button>
 
     <template id="productCardTemplate">
       <article class="product-card reveal-card">
@@ -269,6 +299,6 @@
       </article>
     </template>
 
-    <script src="app.js" defer></script>
+    <script src="app.js?v=20260509-install-app-14" defer></script>
   </body>
 </html>
