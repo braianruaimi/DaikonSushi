@@ -3,12 +3,15 @@ const DELIVERY_FEE = 1500;
 const STORAGE_KEY = "daikon-sushi-cart";
 
 // ✏️ EDITAR: reemplazar por el numero real de WhatsApp del negocio.
-const WA_NUMBER = "5492215047962";
+const WA_NUMBER = "+542213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
+const ORDER_OPEN_HOUR = 18;
+const ORDER_CLOSE_HOUR = 0;
+const ORDER_CLOSE_MINUTE = 30;
 
 // ✏️ EDITAR: preguntas frecuentes y respuestas del asistente local.
 const chatFaqs = [
@@ -69,7 +72,7 @@ const products = [
     badge: "Pancho Sushi",
     description: "Roll caliente rebozado en panko, cortado al medio. Base de queso crema, cremoso de palta y salmón rosado fresco.",
     price: 18000,
-    image: "assets/products/neon-dragon-box.svg",
+    image: "assets/products/pancho sushi salmon.jpg",
     meta: "Roll caliente / panko",
     featured: true,
   },
@@ -80,7 +83,7 @@ const products = [
     badge: "Top venta",
     description: "Roll caliente rebozado en panko. Base de queso crema saborizado, langostinos cocidos, cremoso de palta y topping de papas fritas.",
     price: 18000,
-    image: "assets/products/akuma-roll.svg",
+    image: "assets/products/pancho sushi langostinos.jpg",
     meta: "Roll caliente / crunchy",
     featured: true,
   },
@@ -315,17 +318,21 @@ const floatingMenuToggle = document.querySelector("#floatingMenuToggle");
 const floatingMenuPanel = document.querySelector("#floatingMenuPanel");
 const floatingCategoryChips = document.querySelector("#floatingCategoryChips");
 const daikonChat = document.querySelector("#daikonChat");
+const openOrdersButton = document.querySelector("#openOrdersButton");
 const installAppButton = document.querySelector("#installAppButton");
 const chatPanel = document.querySelector("#chatPanel");
 const chatMessages = document.querySelector("#chatMessages");
 const chatSuggestions = document.querySelector("#chatSuggestions");
 const menuSection = document.querySelector("#menu");
+const heroSection = document.querySelector("#inicio");
+const heroNotice = document.querySelector(".hero__notice");
 
 let chatCloseTimeoutId;
 let cartCloseTimeoutId;
 let floatingMenuCloseTimeoutId;
 let cartGlowTimeoutId;
 let deferredInstallPrompt = null;
+let openOrdersIntervalId;
 
 bootstrap();
 
@@ -333,13 +340,31 @@ function bootstrap() {
   closeChat({ immediate: true });
   closeCart({ immediate: true });
   closeFloatingMenu({ immediate: true });
+  setupHeroNotice();
   renderCategories();
   renderProducts();
   updateCartUI();
   setupChat();
+  setupOpenOrdersButton();
   setupInstallApp();
+  setupFloatingDockVisibility();
   bindEvents();
   registerServiceWorker();
+}
+
+function setupHeroNotice() {
+  if (!heroNotice) {
+    return;
+  }
+
+  const noticeItems = [
+    "Todos los pedidos incluyen palillos, salsa de soja, wasabi y jengibre",
+    "Envíos en La Plata, Ensenada y Berisso",
+  ];
+
+  heroNotice.innerHTML = noticeItems
+    .map((item) => `<span class="hero__notice-item">${item}</span>`)
+    .join("");
 }
 
 function bindEvents() {
@@ -356,6 +381,10 @@ function bindEvents() {
 
   if (installAppButton) {
     installAppButton.addEventListener("click", handleInstallAppClick);
+  }
+
+  if (openOrdersButton) {
+    openOrdersButton.addEventListener("click", handleOpenOrdersClick);
   }
 
   searchToggle.addEventListener("click", () => {
@@ -394,6 +423,26 @@ function bindEvents() {
       closeCart();
     }
   });
+
+  window.addEventListener("scroll", updateFloatingDockVisibility, { passive: true });
+  window.addEventListener("resize", updateFloatingDockVisibility);
+}
+
+function setupFloatingDockVisibility() {
+  updateFloatingDockVisibility();
+}
+
+function updateFloatingDockVisibility() {
+  if (!heroSection) {
+    return;
+  }
+
+  const heroRect = heroSection.getBoundingClientRect();
+  const dockReserve = 88;
+  const shouldHideFloatingDock =
+    window.innerWidth <= 720 && heroRect.bottom > window.innerHeight - dockReserve;
+
+  document.body.classList.toggle("hero-focus", shouldHideFloatingDock);
 }
 
 function setupChat() {
@@ -408,6 +457,54 @@ function setupChat() {
     button.addEventListener("click", () => askPresetQuestion(faq));
     chatSuggestions.appendChild(button);
   });
+}
+
+function setupOpenOrdersButton() {
+  updateOpenOrdersVisibility();
+
+  if (openOrdersIntervalId) {
+    window.clearInterval(openOrdersIntervalId);
+  }
+
+  openOrdersIntervalId = window.setInterval(updateOpenOrdersVisibility, 60_000);
+}
+
+function isOrderWindowOpen(now = new Date()) {
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const openMinutes = ORDER_OPEN_HOUR * 60;
+  const closeMinutes = ORDER_CLOSE_HOUR * 60 + ORDER_CLOSE_MINUTE;
+
+  return currentMinutes >= openMinutes || currentMinutes < closeMinutes;
+}
+
+function updateOpenOrdersVisibility() {
+  if (!openOrdersButton) {
+    return;
+  }
+
+  const isOpen = isOrderWindowOpen();
+  const label = openOrdersButton.querySelector(".open-orders-button__label");
+
+  openOrdersButton.hidden = false;
+  openOrdersButton.classList.toggle("is-open", isOpen);
+  openOrdersButton.classList.toggle("is-closed", !isOpen);
+  openOrdersButton.setAttribute(
+    "aria-label",
+    isOpen ? "Pedidos abiertos de 18:00 a 00:30" : "Pedidos cerrados hasta las 18:00"
+  );
+
+  if (label) {
+    label.textContent = isOpen ? "Abierto ahora" : "Cerrado ahora";
+  }
+}
+
+function handleOpenOrdersClick() {
+  if (!isOrderWindowOpen()) {
+    showToast("Los pedidos se habilitan a las 18:00 y cierran a las 00:30.");
+    return;
+  }
+
+  openExternalUrl(buildWhatsAppLink("Hola Daikon, están abiertos? Quiero hacer un pedido."));
 }
 
 function askPresetQuestion(faq) {
@@ -903,9 +1000,8 @@ function openWhatsApp() {
     return;
   }
 
-  const message = encodeURIComponent(generateWhatsAppMessage());
   showToast("Pedido listo para confirmar por WhatsApp.");
-  window.open(`https://wa.me/${WA_NUMBER}?text=${message}`, "_blank", "noopener");
+  openExternalUrl(buildWhatsAppUrl());
 }
 
 function validateRequiredField(field) {
@@ -1015,8 +1111,38 @@ function persistCart() {
 }
 
 function buildWhatsAppUrl() {
-  const message = encodeURIComponent(generateWhatsAppMessage());
-  return `https://wa.me/${WA_NUMBER}?text=${message}`;
+  return buildWhatsAppLink(generateWhatsAppMessage());
+}
+
+function buildWhatsAppLink(message) {
+  const encodedMessage = encodeURIComponent(message);
+  const normalizedPhone = normalizeWhatsAppNumber(WA_NUMBER);
+  const baseUrl = getWhatsAppBaseUrl();
+  return `${baseUrl}?phone=${normalizedPhone}&text=${encodedMessage}`;
+}
+
+function normalizeWhatsAppNumber(phoneNumber) {
+  return String(phoneNumber).replace(/\D/g, "");
+}
+
+function getWhatsAppBaseUrl() {
+  return isMobileDevice()
+    ? "https://api.whatsapp.com/send"
+    : "https://web.whatsapp.com/send";
+}
+
+function isMobileDevice() {
+  return /android|iphone|ipad|ipod|mobile/i.test(window.navigator.userAgent);
+}
+
+function openExternalUrl(url) {
+  const openedWindow = window.open(url, "_blank", "noopener,noreferrer");
+
+  if (openedWindow) {
+    return;
+  }
+
+  window.location.href = url;
 }
 
 function renderCategoryChips() {
@@ -1092,7 +1218,7 @@ function createPromoCard() {
 
   card.querySelector("button").addEventListener("click", () => {
     showToast("Abriendo WhatsApp para consultar la promo.");
-    window.open(buildPromoWhatsAppUrl(), "_blank", "noopener");
+    openExternalUrl(buildPromoWhatsAppUrl());
   });
 
   return card;
@@ -1100,8 +1226,7 @@ function createPromoCard() {
 
 function buildPromoWhatsAppUrl() {
   // ✏️ EDITAR: mensaje rapido para consultas de la promo almuerzo.
-  const message = encodeURIComponent("Hola Daikon, quiero consultar el precio de la Promo Almuerzo.");
-  return `https://wa.me/${WA_NUMBER}?text=${message}`;
+  return buildWhatsAppLink("Hola Daikon, quiero consultar el precio de la Promo Almuerzo.");
 }
 
 function setupInstallApp() {

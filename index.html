@@ -8,7 +8,7 @@
       name="description"
       content="Daikon Sushi Delivery. Sushi fresco, rolls intensos y delivery veloz con una estetica cyberpunk japonesa."
     />
-    <meta name="theme-color" content="#FF003C" />
+    <meta name="theme-color" content="#171a1f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Daikon" />
@@ -22,20 +22,37 @@
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-    <link rel="stylesheet" href="style.css?v=20260509-scroll-fix-15" />
+    <link rel="stylesheet" href="style.css?v=20260513-stable-ui-38" />
     <title>Daikon Sushi Delivery</title>
   </head>
   <body>
     <div class="noise" aria-hidden="true"></div>
     <!-- ✏️ EDITAR: header, marca y accesos rapidos. -->
     <header class="topbar">
-      <a class="brand" href="#inicio" aria-label="Daikon Sushi Delivery inicio">
-        <span class="brand__mono">DAIKON</span>
-        <span class="brand__kanji">SUSHI DELIVERY</span>
-      </a>
+      <div class="topbar__identity">
+        <a class="brand" href="#inicio" aria-label="Daikon Sushi Delivery inicio">
+          <span class="brand__mono">DAIKON</span>
+          <span class="brand__kanji">SUSHI DELIVERY</span>
+        </a>
+
+        <button
+          class="open-orders-button"
+          id="openOrdersButton"
+          type="button"
+          aria-label="Estado de pedidos"
+        >
+          <span class="open-orders-button__dot" aria-hidden="true"></span>
+          <span class="open-orders-button__label">Cerrado ahora</span>
+        </button>
+      </div>
 
       <nav class="topbar__actions" aria-label="Acciones principales">
-        <button class="ghost-button" id="searchToggle" type="button">Buscar</button>
+        <button class="ghost-button ghost-button--icon" id="searchToggle" type="button" aria-label="Abrir búsqueda">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7" />
+            <path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
+          </svg>
+        </button>
         <button class="cart-button" id="cartToggle" type="button" aria-label="Abrir carrito">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path
@@ -49,7 +66,6 @@
             <circle cx="10" cy="19" r="1.6" fill="currentColor" />
             <circle cx="17" cy="19" r="1.6" fill="currentColor" />
           </svg>
-          <span class="sr-only">Carrito</span>
           <span class="cart-button__count" id="cartCount">0</span>
         </button>
       </nav>
@@ -61,16 +77,32 @@
         <div class="hero__overlay"></div>
         <div class="hero__content">
           <p class="eyebrow">SABORES QUE TE ENAMORAN</p>
-          <h1>Una experiencia que no se olvida. Se pide. Se espera. Se devora.</h1>
+          <h1>Una experiencia que no se olvida, se pide, se espera y se disfruta.</h1>
           <p class="hero__text">
             Sushi premium con envíos en La Plata, Ensenada y Berisso. Cada pieza, una obra.
           </p>
 
-          <p class="hero__notice">Todo pedido incluye palillos, salsa de soja, wasabi y jengibre · Envíos en La Plata, Ensenada y Berisso · Coordinación por WhatsApp</p>
+          <p class="hero__notice">
+            <span class="hero__notice-item">Todos los pedidos incluyen palillos, salsa de soja, wasabi y jengibre</span>
+            <span class="hero__notice-item">Envíos en La Plata, Ensenada y Berisso</span>
+          </p>
 
           <div class="hero__actions">
             <a class="primary-button" href="#menu">HACÉ TU PEDIDO AHORA →</a>
-            <button class="secondary-button" id="heroCartButton" type="button">Ver carrito</button>
+            <button class="secondary-button secondary-button--icon" id="heroCartButton" type="button" aria-label="Abrir carrito">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M3 4h2.2l1.6 8.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L20 7H7.1"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.7"
+                />
+                <circle cx="10" cy="19" r="1.6" fill="currentColor" />
+                <circle cx="17" cy="19" r="1.6" fill="currentColor" />
+              </svg>
+            </button>
           </div>
 
           <dl class="hero__stats" aria-label="Destacados">
@@ -90,6 +122,9 @@
         </div>
 
         <aside class="hero__panel">
+          <div class="hero__panel-media">
+            <img src="assets/products/pancho sushi salmon.jpg" alt="Pancho Sushi de Salmón" loading="eager" />
+          </div>
           <p class="hero__panel-label">Selección de la casa</p>
           <h2>Pancho Sushi de Salmón</h2>
           <p>
@@ -230,7 +265,7 @@
         aria-controls="chatPanel"
         aria-label="Abrir chat de Daikon"
       >
-        <span class="daikon-chat__icon" aria-hidden="true">🍣</span>
+        <span class="daikon-chat__icon" aria-hidden="true"></span>
         <span class="daikon-chat__label">Daikon</span>
       </button>
 
@@ -250,7 +285,7 @@
     </div>
 
     <button class="install-app-button" id="installAppButton" type="button" hidden aria-label="Instalar app">
-      <span class="install-app-button__icon" aria-hidden="true">+</span>
+      <span class="install-app-button__icon" aria-hidden="true"></span>
       <span class="install-app-button__label">Instalar app</span>
     </button>
 
@@ -299,6 +334,6 @@
       </article>
     </template>
 
-    <script src="app.js?v=20260509-install-app-14" defer></script>
+    <script src="app.js?v=20260513-stable-ui-23" defer></script>
   </body>
 </html>
