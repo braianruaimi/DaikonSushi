@@ -783,8 +783,18 @@ main {
 }
 
 .chips button.is-active {
-  background: linear-gradient(180deg, rgba(255, 91, 115, 0.16), rgba(255, 91, 115, 0.1));
-  box-shadow: 0 8px 18px rgba(7, 10, 15, 0.12);
+  background: transparent;
+  border-color: var(--primary);
+  box-shadow: var(--glow-soft);
+}
+
+.chips button.is-active::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 1px;
+  margin-top: 4px;
 }
 
 .menu-section {
@@ -793,7 +803,40 @@ main {
 }
 
 .section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 24px;
+}
+
+.section-heading .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-heading .eyebrow::before {
+  content: "";
+  width: 20px;
+  height: 1px;
+  background: var(--primary);
+  box-shadow: 0 0 6px rgba(255, 0, 60, 0.7);
+  display: block;
+}
+
+.section-heading__count {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.section-heading p:last-child {
+  width: 100%;
 }
 
 .section-heading h2,
@@ -977,7 +1020,23 @@ main {
   text-transform: uppercase;
 }
 
+.product-card__badge--hot {
+  background: linear-gradient(135deg, #ff003c, #cc0030);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: var(--glow);
+  letter-spacing: 0.08em;
+}
+
+.product-card__badge--ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--text);
+}
+
 .product-card__body {
+  display: flex;
+  flex-direction: column;
   padding: 14px;
   background:
     linear-gradient(180deg, rgba(255, 0, 60, 0.06), rgba(255, 0, 60, 0.02)),
@@ -1021,7 +1080,14 @@ main {
 }
 
 .product-card__footer {
-  align-items: flex-end;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.product-card__footer .product-card__meta {
+  margin-right: auto;
 }
 
 .card-stepper,
@@ -1032,8 +1098,8 @@ main {
 }
 
 .card-stepper {
-  padding: 4px;
-  border-radius: 999px;
+  padding: 6px;
+  border-radius: 12px;
   border: 1px solid var(--line);
   background: rgba(8, 8, 8, 0.78);
   box-shadow: var(--glow-soft);
@@ -1042,9 +1108,9 @@ main {
 .card-stepper button,
 .stepper button,
 .icon-button {
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   display: grid;
   place-items: center;
 }
@@ -1099,6 +1165,15 @@ main {
   box-shadow: var(--glow-soft);
 }
 
+.card-stepper button[data-action="increase"] {
+  background: rgba(255, 0, 60, 0.18);
+  color: var(--primary);
+}
+
+.card-stepper button[data-action="increase"]:hover {
+  background: rgba(255, 0, 60, 0.28);
+}
+
 .card-stepper__value,
 .stepper__value {
   min-width: 24px;
@@ -1106,7 +1181,21 @@ main {
   font-weight: 700;
 }
 
-.product-card__price,
+.product-card__price {
+  color: var(--primary);
+  text-shadow: 0 0 12px rgba(255, 0, 60, 0.5);
+  font-weight: 700;
+}
+
+.product-card__price-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
 .cart-item__price,
 .cart-summary strong {
   font-weight: 700;
@@ -1430,6 +1519,14 @@ main {
   padding: 8px 10px;
   font-size: 0.8rem;
   line-height: 1.15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+#checkoutButton {
+  border-radius: 14px;
 }
 
 .cart-drawer__body,
@@ -1596,20 +1693,54 @@ main {
   line-height: 1.6;
 }
 
+.cart-empty {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.cart-empty__emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.cart-empty p {
+  margin: 0;
+}
+
 .toast {
   position: fixed;
   left: 50%;
   bottom: 24px;
   transform: translateX(-50%) translateY(18px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 12px 18px;
-  border-radius: 999px;
+  border-radius: 12px;
   background: rgba(15, 15, 15, 0.94);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 0, 60, 0.5);
   opacity: 0;
   pointer-events: none;
   transition: opacity 200ms ease, transform 200ms ease;
-  box-shadow: var(--glow-soft);
+  box-shadow: 0 0 20px rgba(255, 0, 60, 0.2);
   z-index: 4;
+}
+
+.toast__icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #ff003c, #cc0030);
+  display: grid;
+  place-items: center;
 }
 
 .toast.is-visible {

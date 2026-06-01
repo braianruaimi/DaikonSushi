@@ -307,6 +307,7 @@ const featuredAdd = document.querySelector("#featuredAdd");
 const searchToggle = document.querySelector("#searchToggle");
 const searchBar = document.querySelector("#searchBar");
 const menuSearch = document.querySelector("#menuSearch");
+const productCount = document.querySelector("#productCount");
 const checkoutButton = document.querySelector("#checkoutButton");
 const checkoutForm = document.querySelector("#checkoutForm");
 const customerName = document.querySelector("#customerName");
@@ -704,15 +705,28 @@ function handleFloatingPointerDown(event) {
 }
 
 function renderCategories() {
-  // ✏️ EDITAR: si queres cambiar el orden fijo de categorias, modificá este array base.
-  const categories = [
-    "Todos",
-    promoLunch.category,
-    ...new Set(products.map((product) => product.category).filter((category) => category !== promoLunch.category)),
-  ];
+  const categories = getVisibleCategories();
+
+  if (!categories.includes(state.activeCategory)) {
+    state.activeCategory = "Todos";
+  }
 
   renderCategoryButtons(categoryChips, categories);
   renderCategoryButtons(floatingCategoryChips, categories, { closeOnClick: true });
+}
+
+function getVisibleCategories() {
+  // ✏️ EDITAR: si queres cambiar el orden fijo de categorias, modificá este array base.
+  const categories = [
+    "Todos",
+    ...new Set(products.map((product) => product.category)),
+  ];
+
+  if (isPromoLunchAvailable()) {
+    categories.splice(1, 0, promoLunch.category);
+  }
+
+  return categories;
 }
 
 function renderCategoryButtons(container, categories, options = {}) {
@@ -739,8 +753,15 @@ function renderCategoryButtons(container, categories, options = {}) {
 }
 
 function renderProducts(category = state.activeCategory) {
+  if (!isPromoLunchAvailable() && category === promoLunch.category) {
+    state.activeCategory = "Todos";
+    renderCategories();
+    return renderProducts("Todos");
+  }
+
   state.activeCategory = category;
   const showPromoCard =
+    isPromoLunchAvailable() &&
     (state.activeCategory === "Todos" || state.activeCategory === promoLunch.category) &&
     matchesPromoQuery(state.query);
 
@@ -757,6 +778,11 @@ function renderProducts(category = state.activeCategory) {
 
     return matchesCategory && matchesQuery;
   });
+
+  const visibleCount = filteredProducts.length;
+  if (productCount) {
+    productCount.textContent = `${visibleCount} productos`;
+  }
 
   productGrid.innerHTML = "";
 
@@ -778,10 +804,10 @@ function renderProducts(category = state.activeCategory) {
     const image = fragment.querySelector("img");
     const badge = fragment.querySelector(".product-card__badge");
     const category = fragment.querySelector(".product-card__category");
-    const price = fragment.querySelector(".product-card__price");
     const title = fragment.querySelector("h3");
     const description = fragment.querySelector(".product-card__description");
     const meta = fragment.querySelector(".product-card__meta");
+    const stepper = fragment.querySelector(".card-stepper");
     const quantity = fragment.querySelector(".card-stepper__value");
     const decreaseButton = fragment.querySelector('[data-action="decrease"]');
     const increaseButton = fragment.querySelector('[data-action="increase"]');
@@ -790,9 +816,11 @@ function renderProducts(category = state.activeCategory) {
     card.classList.toggle("product-card--featured", Boolean(product.featured));
     image.src = product.image;
     image.alt = product.name;
+    badge.classList.remove("product-card__badge--hot", "product-card__badge--ghost");
     badge.textContent = product.badge;
+    badge.classList.add(getProductBadgeVariantClass(product.badge));
     category.textContent = product.category;
-    price.textContent = formatPrice(product.price);
+    stepper.insertAdjacentHTML("beforebegin", `<span><span class="product-card__price-label">precio unitario</span><span class="product-card__price">${formatPrice(product.price)}</span></span>`);
     title.textContent = product.name;
     description.textContent = product.description;
     meta.textContent = product.meta;
@@ -810,48 +838,63 @@ function updateCartUI() {
 
   if (!state.cart.length) {
     const emptyState = document.createElement("div");
-    emptyState.className = "empty-state";
-    emptyState.textContent = "Todavia no sumaste nada. Elegi una pieza y armá tu combo.";
+    const emoji = document.createElement("div");
+    const message = document.createElement("p");
+    const actionButton = document.createElement("button");
+
+    emptyState.className = "cart-empty";
+    emoji.className = "cart-empty__emoji";
+    emoji.textContent = "🍣";
+    message.textContent = "Tu carrito está vacío";
+    actionButton.className = "primary-button primary-button--wide";
+    actionButton.type = "button";
+    actionButton.textContent = "Ver el menú →";
+    actionButton.addEventListener("click", () => {
+      closeCart();
+      menuSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    emptyState.append(emoji, message, actionButton);
     cartItems.appendChild(emptyState);
-  }
-
-  state.cart.forEach((item) => {
-    const product = products.find((entry) => entry.id === item.id);
-    if (!product) {
-      return;
-    }
-
-    const fragment = cartItemTemplate.content.cloneNode(true);
-    const title = fragment.querySelector("h3");
-    const note = fragment.querySelector(".cart-item__note");
-    const unitPrice = fragment.querySelector(".cart-item__unit-price");
-    const price = fragment.querySelector(".cart-item__price");
-    const quantity = fragment.querySelector(".stepper__value");
-    const decreaseButton = fragment.querySelector('[data-action="decrease"]');
-    const increaseButton = fragment.querySelector('[data-action="increase"]');
-    const cartItem = fragment.querySelector(".cart-item");
-
-    title.textContent = product.name;
-    note.textContent = `${product.meta} · ${product.category}`;
-    unitPrice.textContent = `Unitario: ${formatPrice(product.price)}`;
-    price.textContent = typeof product.price === "number"
-      ? formatCurrency(product.price * item.quantity)
-      : "Consultá precio";
-    quantity.textContent = String(item.quantity);
-
-    decreaseButton.addEventListener("click", () => {
-      if (item.quantity === 1) {
-        cartItem.classList.add("is-removing");
-        window.setTimeout(() => updateCartQuantity(item.id, 0), 160);
+  } else {
+    state.cart.forEach((item) => {
+      const product = products.find((entry) => entry.id === item.id);
+      if (!product) {
         return;
       }
 
-      removeFromCart(item.id);
-    });
-    increaseButton.addEventListener("click", () => updateCartQuantity(item.id, item.quantity + 1));
+      const fragment = cartItemTemplate.content.cloneNode(true);
+      const title = fragment.querySelector("h3");
+      const note = fragment.querySelector(".cart-item__note");
+      const unitPrice = fragment.querySelector(".cart-item__unit-price");
+      const price = fragment.querySelector(".cart-item__price");
+      const quantity = fragment.querySelector(".stepper__value");
+      const decreaseButton = fragment.querySelector('[data-action="decrease"]');
+      const increaseButton = fragment.querySelector('[data-action="increase"]');
+      const cartItem = fragment.querySelector(".cart-item");
 
-    cartItems.appendChild(fragment);
-  });
+      title.textContent = product.name;
+      note.textContent = `${product.meta} · ${product.category}`;
+      unitPrice.textContent = `Unitario: ${formatPrice(product.price)}`;
+      price.textContent = typeof product.price === "number"
+        ? formatCurrency(product.price * item.quantity)
+        : "Consultá precio";
+      quantity.textContent = String(item.quantity);
+
+      decreaseButton.addEventListener("click", () => {
+        if (item.quantity === 1) {
+          cartItem.classList.add("is-removing");
+          window.setTimeout(() => updateCartQuantity(item.id, 0), 160);
+          return;
+        }
+
+        removeFromCart(item.id);
+      });
+      increaseButton.addEventListener("click", () => updateCartQuantity(item.id, item.quantity + 1));
+
+      cartItems.appendChild(fragment);
+    });
+  }
 
   const summary = getCartSummary();
 
@@ -861,6 +904,16 @@ function updateCartUI() {
   totalValue.textContent = formatCartTotal(summary).label;
 
   saveCartToStorage();
+}
+
+function getProductBadgeVariantClass(badgeText) {
+  const normalizedBadge = String(badgeText || "").toUpperCase();
+
+  if (normalizedBadge === "TOP VENTA" || normalizedBadge.includes("PROMO")) {
+    return "product-card__badge--hot";
+  }
+
+  return "product-card__badge--ghost";
 }
 
 function pulseCartButton() {
@@ -1165,10 +1218,18 @@ function showToast(message) {
   if (!toast) {
     toast = document.createElement("div");
     toast.className = "toast";
+    toast.innerHTML = `
+      <span class="toast__icon">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="2,6 5,9 10,3"/>
+        </svg>
+      </span>
+      <span class="toast__text"></span>
+    `;
     document.body.appendChild(toast);
   }
 
-  toast.textContent = message;
+  toast.querySelector(".toast__text").textContent = message;
   toast.classList.add("is-visible");
 
   clearTimeout(toastTimeoutId);
@@ -1198,6 +1259,11 @@ function matchesPromoQuery(query) {
     .join(" ")
     .toLowerCase()
     .includes(query);
+}
+
+function isPromoLunchAvailable() {
+  const currentHour = new Date().getHours();
+  return currentHour >= 11 && currentHour <= 16;
 }
 
 function createPromoCard() {
