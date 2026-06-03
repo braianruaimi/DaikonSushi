@@ -1,4 +1,4 @@
-const CACHE_NAME = "daikon-sushi-" + "20260517";
+const CACHE_NAME = "daikon-sushi-" + "20260531";
 const APP_SHELL = [
   "./",
   "index.html",
