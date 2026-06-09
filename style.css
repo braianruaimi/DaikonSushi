@@ -2851,6 +2851,19 @@ html, body {
   .mobile-cta { display: none !important; }
 }
 
+/* En mobile, elevar la barra de total/CTA para no solaparse con los botones flotantes */
+@media (max-width: 720px) {
+  .mobile-cta {
+    bottom: calc(12px + var(--safe-bottom) + 76px);
+    left: 12px;
+    right: 12px;
+    z-index: 30; /* debajo de toasts pero por encima del contenido */
+  }
+  /* Asegurar que los botones flotantes queden sobre la barra (clickables) */
+  .daikon-chat { z-index: 40; }
+  .install-app-button { z-index: 40; }
+}
+
 
 
 
