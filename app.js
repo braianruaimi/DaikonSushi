@@ -360,6 +360,7 @@ const daikonChat = document.querySelector("#daikonChat");
 const openOrdersButton = document.querySelector("#openOrdersButton");
 const installAppButton = document.querySelector("#installAppButton");
 const updateAppButton = document.querySelector("#updateAppButton");
+const rouletteButton = document.querySelector('#rouletteButton');
 const chatPanel = document.querySelector("#chatPanel");
 const chatMessages = document.querySelector("#chatMessages");
 const chatSuggestions = document.querySelector("#chatSuggestions");
@@ -752,6 +753,7 @@ function toggleChat() {
 
 function openChat() {
   if (!daikonChat || !chatPanel || !chatToggle) return;
+  if (rouletteButton) rouletteButton.hidden = true;
   window.clearTimeout(chatCloseTimeoutId);
   chatPanel.hidden = false;
   chatPanel.setAttribute("aria-hidden", "false");
@@ -769,6 +771,8 @@ function closeChat(options = {}) {
   chatPanel.setAttribute("aria-hidden", "true");
   chatToggle.setAttribute("aria-expanded", "false");
   daikonChat.classList.remove("is-open");
+
+  if (rouletteButton) rouletteButton.hidden = false;
 
   if (immediate) {
     daikonChat.classList.remove("is-visible");
@@ -798,6 +802,7 @@ function toggleFloatingMenu() {
 
 function openFloatingMenu() {
   if (!floatingMenu || !floatingMenuPanel || !floatingMenuToggle) return;
+  if (rouletteButton) rouletteButton.hidden = true;
   window.clearTimeout(floatingMenuCloseTimeoutId);
   floatingMenuPanel.hidden = false;
   floatingMenuPanel.setAttribute("aria-hidden", "false");
@@ -815,6 +820,8 @@ function closeFloatingMenu(options = {}) {
   floatingMenuPanel.setAttribute("aria-hidden", "true");
   floatingMenuToggle.setAttribute("aria-expanded", "false");
   floatingMenu.classList.remove("is-open");
+
+  if (rouletteButton) rouletteButton.hidden = false;
 
   if (immediate) {
     floatingMenu.classList.remove("is-visible");
