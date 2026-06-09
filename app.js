@@ -406,16 +406,18 @@ function setupHeroNotice() {
 }
 
 function bindEvents() {
-  cartToggle.addEventListener("click", toggleCart);
-  heroCartButton.addEventListener("click", openCart);
-  cartClose.addEventListener("click", closeCart);
-  backdrop.addEventListener("click", closeCart);
-  cartScrollUp.addEventListener("click", () => scrollCartItems(-180));
-  cartScrollDown.addEventListener("click", () => scrollCartItems(180));
+  if (cartToggle) cartToggle.addEventListener("click", toggleCart);
+  if (heroCartButton) heroCartButton.addEventListener("click", openCart);
+  if (cartClose) cartClose.addEventListener("click", closeCart);
+  if (backdrop) backdrop.addEventListener("click", closeCart);
+  if (cartScrollUp) cartScrollUp.addEventListener("click", () => scrollCartItems(-180));
+  if (cartScrollDown) cartScrollDown.addEventListener("click", () => scrollCartItems(180));
 
-  featuredAdd.addEventListener("click", () => {
-    addToCart("pancho-salmon");
-  });
+  if (featuredAdd) {
+    featuredAdd.addEventListener("click", () => {
+      addToCart("pancho-salmon");
+    });
+  }
 
   if (installAppButton) {
     installAppButton.addEventListener("click", handleInstallAppClick);
@@ -425,32 +427,34 @@ function bindEvents() {
     openOrdersButton.addEventListener("click", handleOpenOrdersClick);
   }
 
-  searchToggle.addEventListener("click", () => {
-    const hidden = searchBar.hasAttribute("hidden");
-    searchBar.toggleAttribute("hidden");
+  if (searchToggle && searchBar && menuSearch) {
+    searchToggle.addEventListener("click", () => {
+      const hidden = searchBar.hasAttribute("hidden");
+      searchBar.toggleAttribute("hidden");
 
-    if (hidden) {
-      menuSearch.focus();
-    } else {
-      menuSearch.value = "";
-      state.query = "";
+      if (hidden) {
+        menuSearch.focus();
+      } else {
+        menuSearch.value = "";
+        state.query = "";
+        renderProducts();
+      }
+    });
+
+    menuSearch.addEventListener("input", (event) => {
+      state.query = event.target.value.trim().toLowerCase();
       renderProducts();
-    }
-  });
+    });
+  }
 
-  menuSearch.addEventListener("input", (event) => {
-    state.query = event.target.value.trim().toLowerCase();
-    renderProducts();
-  });
+  if (customerName) customerName.addEventListener("input", () => validateRequiredField(customerName));
+  if (customerAddress) customerAddress.addEventListener("input", () => validateRequiredField(customerAddress));
 
-  customerName.addEventListener("input", () => validateRequiredField(customerName));
-  customerAddress.addEventListener("input", () => validateRequiredField(customerAddress));
+  if (checkoutButton) checkoutButton.addEventListener("click", openWhatsApp);
 
-  checkoutButton.addEventListener("click", openWhatsApp);
-
-  floatingMenuToggle.addEventListener("click", toggleFloatingMenu);
-  chatToggle.addEventListener("click", toggleChat);
-  chatClose.addEventListener("click", closeChat);
+  if (floatingMenuToggle) floatingMenuToggle.addEventListener("click", toggleFloatingMenu);
+  if (chatToggle) chatToggle.addEventListener("click", toggleChat);
+  if (chatClose) chatClose.addEventListener("click", closeChat);
   document.addEventListener("pointerdown", handleFloatingPointerDown, true);
   document.addEventListener("pointerdown", handleChatPointerDown, true);
 
@@ -574,6 +578,7 @@ function appendChatMessage(message) {
 }
 
 function toggleChat() {
+  if (!daikonChat) return;
   const isOpen = daikonChat.classList.contains("is-open");
   if (!isOpen) {
     closeFloatingMenu();
@@ -585,6 +590,7 @@ function toggleChat() {
 }
 
 function openChat() {
+  if (!daikonChat || !chatPanel || !chatToggle) return;
   window.clearTimeout(chatCloseTimeoutId);
   chatPanel.hidden = false;
   chatPanel.setAttribute("aria-hidden", "false");
@@ -598,6 +604,7 @@ function openChat() {
 function closeChat(options = {}) {
   const { immediate = false } = options;
   window.clearTimeout(chatCloseTimeoutId);
+  if (!daikonChat || !chatPanel || !chatToggle) return;
   chatPanel.setAttribute("aria-hidden", "true");
   chatToggle.setAttribute("aria-expanded", "false");
   daikonChat.classList.remove("is-open");
@@ -617,6 +624,7 @@ function closeChat(options = {}) {
 }
 
 function toggleFloatingMenu() {
+  if (!floatingMenu) return;
   const isOpen = floatingMenu.classList.contains("is-open");
   if (!isOpen) {
     closeChat();
@@ -628,6 +636,7 @@ function toggleFloatingMenu() {
 }
 
 function openFloatingMenu() {
+  if (!floatingMenu || !floatingMenuPanel || !floatingMenuToggle) return;
   window.clearTimeout(floatingMenuCloseTimeoutId);
   floatingMenuPanel.hidden = false;
   floatingMenuPanel.setAttribute("aria-hidden", "false");
@@ -641,6 +650,7 @@ function openFloatingMenu() {
 function closeFloatingMenu(options = {}) {
   const { immediate = false } = options;
   window.clearTimeout(floatingMenuCloseTimeoutId);
+  if (!floatingMenu || !floatingMenuPanel || !floatingMenuToggle) return;
   floatingMenuPanel.setAttribute("aria-hidden", "true");
   floatingMenuToggle.setAttribute("aria-expanded", "false");
   floatingMenu.classList.remove("is-open");
@@ -660,6 +670,7 @@ function closeFloatingMenu(options = {}) {
 }
 
 function toggleCart() {
+  if (!cartDrawer) return;
   if (cartDrawer.classList.contains("is-open")) {
     closeCart();
     return;
@@ -669,6 +680,7 @@ function toggleCart() {
 }
 
 function openCart() {
+  if (!cartDrawer || !backdrop || !cartDrawerBody || !cartItems) return;
   window.clearTimeout(cartCloseTimeoutId);
   cartDrawer.hidden = false;
   backdrop.hidden = false;
@@ -688,6 +700,7 @@ function openCart() {
 function closeCart(options = {}) {
   const { immediate = false } = options;
   window.clearTimeout(cartCloseTimeoutId);
+  if (!cartDrawer || !backdrop) return;
   cartDrawer.setAttribute("aria-hidden", "true");
   cartDrawer.classList.remove("is-open");
   backdrop.classList.remove("is-open");
