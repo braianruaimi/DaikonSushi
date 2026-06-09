@@ -246,8 +246,12 @@ a {
 }
 
 .open-orders-button.is-closed {
-  border-color: rgba(255, 255, 255, 0.14);
-  color: rgba(245, 240, 232, 0.84);
+  border-color: rgba(255, 90, 90, 0.9);
+  background:
+    radial-gradient(circle at top left, rgba(255, 130, 130, 0.12), transparent 48%),
+    linear-gradient(180deg, rgba(60, 10, 10, 0.95), rgba(30, 6, 6, 0.95));
+  color: #fff5f5;
+  box-shadow: 0 0 0 1px rgba(255, 90, 90, 0.06), 0 8px 20px rgba(0,0,0,0.36);
 }
 
 .open-orders-button__dot {
@@ -258,6 +262,8 @@ a {
   box-shadow: 0 0 0 4px rgba(160, 171, 164, 0.12);
   flex: 0 0 auto;
 }
+
+.open-orders-button.is-closed .open-orders-button__dot { background: #ff6b6b; box-shadow: 0 0 0 6px rgba(255,107,107,0.12); }
 
 .open-orders-button.is-open .open-orders-button__dot {
   background: #7cffb5;

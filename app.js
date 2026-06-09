@@ -1,5 +1,6 @@
 // ✏️ EDITAR: cargos base y claves de almacenamiento.
-const DELIVERY_FEE = 1500;
+// Envío actualizado según pedido: 4.000
+const DELIVERY_FEE = 4000;
 const STORAGE_KEY = "daikon-sushi-cart";
 
 // ✏️ EDITAR: reemplazar por el numero real de WhatsApp del negocio.
@@ -9,9 +10,10 @@ const WA_NUMBER = "2213039649";
 const CURRENCY = "$";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
-const ORDER_OPEN_HOUR = 18;
+// Horario de toma de pedidos: desde las 14:00 hasta las 00:00
+const ORDER_OPEN_HOUR = 14;
 const ORDER_CLOSE_HOUR = 0;
-const ORDER_CLOSE_MINUTE = 30;
+const ORDER_CLOSE_MINUTE = 0;
 // Control para suprimir toasts cuando añadimos varios ítems programáticamente
 let SUPPRESS_TOASTS = false;
 
@@ -701,7 +703,7 @@ function updateOpenOrdersVisibility() {
   openOrdersButton.classList.toggle("is-closed", !isOpen);
   openOrdersButton.setAttribute(
     "aria-label",
-    isOpen ? "Pedidos abiertos de 18:00 a 00:30" : "Pedidos cerrados hasta las 18:00"
+    isOpen ? "Pedidos abiertos de 14:00 a 00:00" : "Pedidos cerrados hasta las 14:00"
   );
 
   if (label) {
@@ -738,7 +740,7 @@ function updateOpenOrdersVisibility() {
 
 function handleOpenOrdersClick() {
   if (!isOrderWindowOpen()) {
-    showToast("Los pedidos se habilitan a las 18:00 y cierran a las 00:30.");
+    showToast("Los pedidos se habilitan a las 14:00 y cierran a las 00:00.");
     return;
   }
 
