@@ -46,3 +46,10 @@ Abrí `index.html` en el navegador para probar la tienda localmente.
 - Promociones: `Promo CENA Daikon` y `Promo CENA para dos` implementadas en el catálogo.
 
 Si necesitás que empuje este README al repositorio remoto con un mensaje de commit específico, pedímelo y lo hago.
+
+## Estado de publicación
+
+- Rama `gh-pages` creada y empujada al remoto para facilitar GitHub Pages.
+- Si la página devuelve 404: abrí Settings → Pages en GitHub y seleccioná `gh-pages` como Source → `/ (root)`.
+
+Publicado: 2026-06-09
