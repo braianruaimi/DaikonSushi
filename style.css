@@ -927,17 +927,50 @@ main {
 }
 
 .chips button {
-  white-space: nowrap;
-  padding: 12px 18px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+    white-space: nowrap;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 .chips button.is-active {
   background: transparent;
   border-color: var(--primary);
   box-shadow: var(--glow-soft);
+}
+
+/* Mobile: make category chips big touch targets and bubble-like */
+@media (max-width: 720px) {
+  .chips {
+    padding: 10px 12px;
+    gap: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chips button {
+    padding: 14px 18px;
+    min-height: 48px;
+    font-size: 0.96rem;
+    border-radius: 999px;
+    background: rgba(20,20,22,0.6);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    flex: 0 0 auto;
+    -webkit-tap-highlight-color: rgba(255,255,255,0.06);
+  }
+
+  .chips button:active {
+    transform: translateY(1px) scale(0.995);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  }
+
+  .chips { overflow-x: auto; padding-bottom: 8px; }
+  .chips::-webkit-scrollbar { display: none; }
 }
 
 .chips button.is-active::after {
