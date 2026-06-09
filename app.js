@@ -1758,9 +1758,9 @@ function formatCartSubtotal(summary) {
 }
 
 function formatCartDelivery(summary) {
-  // Si la promo CENA está aplicada, el total debe mostrarse como $49.999 (incluye oferta), por lo que ocultamos envío
+  // Si la promo CENA está aplicada, el envío igualmente se aplica
   if (isPromoCenaApplied()) {
-    return formatCurrency(0);
+    return formatCurrency(DELIVERY_FEE);
   }
   if (summary.hasQuotedItems) {
     return "A confirmar";
@@ -1782,7 +1782,8 @@ function formatCartTotal(summary) {
   // Si la promo CENA está aplicada, forzamos el total a $49.999
   if (isPromoCenaApplied()) {
     const promoTotal = 49999;
-    return { label: formatCurrency(promoTotal), message: formatCurrency(promoTotal) };
+    const totalWithDelivery = promoTotal + DELIVERY_FEE;
+    return { label: formatCurrency(totalWithDelivery), message: formatCurrency(totalWithDelivery) };
   }
 
   const total = summary.subtotal ? summary.subtotal + DELIVERY_FEE : 0;
