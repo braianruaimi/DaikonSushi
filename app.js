@@ -65,7 +65,7 @@ const chatFaqs = [
   {
     label: "Incluye",
     keywords: ["incluye", "palillos", "soja", "wasabi", "jengibre", "salsas"],
-    answer: "Todo pedido incluye palillos, salsa de soja, wasabi y jengibre.",
+    answer: "SALSAS extras: Agridulce, Soja, Palillos.",
   },
   {
     label: "Cómo pedir",
@@ -1155,10 +1155,15 @@ function renderProducts(category = state.activeCategory) {
     meta.textContent = displayMeta;
     quantity.textContent = String(getQuantity(product.id, selectedOptionId));
 
-    // Renderizar controles de add-ons solo en los productos "pancho-" (cards que ocupan mitad)
-    if (product.id && product.id.startsWith("pancho-")) {
+    // Renderizar controles de add-ons (salsas y palillos) en todas las tarjetas
+    {
       const addons = document.createElement("div");
       addons.className = "product-addons";
+
+      const header = document.createElement('div');
+      header.className = 'product-addons__header';
+      header.textContent = 'SALSAS extras: Agridulce, Soja, Palillos';
+      addons.appendChild(header);
 
       const extrasToShow = [
         { id: "extra-salsa-agridulce", label: "Agridulce", price: 1500 },
@@ -1174,9 +1179,9 @@ function renderProducts(category = state.activeCategory) {
         input.dataset.extraId = ex.id;
         input.setAttribute("aria-label", `Agregar ${ex.label}`);
         const span = document.createElement("span");
-        // Mostrar texto específico para salsas: "Salsa extra por {precio}"
+        // Etiquetado claro: mostrar el nombre de la salsa y el precio
         if (/salsa/i.test(ex.id)) {
-          span.textContent = `Salsa extra por ${formatPrice(ex.price)}`;
+          span.textContent = `${ex.label} por ${formatPrice(ex.price)}`;
         } else if (/palillos/i.test(ex.id)) {
           span.textContent = ex.price ? `Palillos extra por ${formatPrice(ex.price)}` : `Palillos extra`;
         } else {
