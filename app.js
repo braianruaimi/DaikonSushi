@@ -65,6 +65,94 @@ window.addEventListener('unhandledrejection', function (event) {
   saveGlobalError({ type: 'unhandledrejection', reason: (event.reason && (event.reason.message || event.reason)) || String(event.reason) });
 });
 
+// Mostrar un banner temporal con el último error guardado cuando la app corre en standalone
+function showLastErrorOverlay() {
+  try {
+    const raw = localStorage.getItem('daikon-last-error');
+    if (!raw) return;
+    const payload = JSON.parse(raw);
+    const isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    if (!isStandalone) return; // solo mostrar en app instalada
+
+    const existing = document.getElementById('daikon-last-error-banner');
+    if (existing) return;
+
+    const container = document.createElement('div');
+    container.id = 'daikon-last-error-banner';
+    container.style.position = 'fixed';
+    container.style.left = '8px';
+    container.style.right = '8px';
+    container.style.top = '8px';
+    container.style.zIndex = '99999';
+    container.style.background = 'rgba(255,240,240,0.95)';
+    container.style.color = '#300';
+    container.style.border = '1px solid #f66';
+    container.style.padding = '12px';
+    container.style.borderRadius = '8px';
+    container.style.boxShadow = '0 6px 18px rgba(0,0,0,0.2)';
+    container.style.fontSize = '13px';
+    container.style.maxHeight = '60vh';
+    container.style.overflow = 'auto';
+
+    const title = document.createElement('div');
+    title.style.fontWeight = '700';
+    title.style.marginBottom = '6px';
+    title.textContent = 'Error al iniciar (modo app):';
+
+    const time = document.createElement('div');
+    time.style.opacity = '0.8';
+    time.style.fontSize = '12px';
+    time.style.marginBottom = '8px';
+    time.textContent = payload.time || '';
+
+    const pre = document.createElement('pre');
+    pre.style.whiteSpace = 'pre-wrap';
+    pre.style.margin = '0 0 8px 0';
+    pre.style.fontSize = '12px';
+    pre.textContent = JSON.stringify(payload.info, null, 2);
+
+    const btns = document.createElement('div');
+    btns.style.display = 'flex';
+    btns.style.gap = '8px';
+
+    const clearBtn = document.createElement('button');
+    clearBtn.textContent = 'Borrar y recargar';
+    clearBtn.style.background = '#d33';
+    clearBtn.style.color = 'white';
+    clearBtn.style.border = 'none';
+    clearBtn.style.padding = '6px 10px';
+    clearBtn.style.borderRadius = '6px';
+    clearBtn.addEventListener('click', () => {
+      localStorage.removeItem('daikon-last-error');
+      location.reload();
+    });
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Cerrar';
+    closeBtn.style.background = '#eee';
+    closeBtn.style.border = '1px solid #ccc';
+    closeBtn.style.padding = '6px 10px';
+    closeBtn.style.borderRadius = '6px';
+    closeBtn.addEventListener('click', () => {
+      try { container.remove(); } catch (e) {}
+    });
+
+    btns.appendChild(clearBtn);
+    btns.appendChild(closeBtn);
+
+    container.appendChild(title);
+    container.appendChild(time);
+    container.appendChild(pre);
+    container.appendChild(btns);
+
+    document.body.appendChild(container);
+  } catch (e) {
+    console.error('showLastErrorOverlay failed', e);
+  }
+}
+
+window.addEventListener('load', showLastErrorOverlay);
+
 // ✏️ EDITAR: preguntas frecuentes y respuestas del asistente local.
 const chatFaqs = [
   {
