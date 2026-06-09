@@ -3,7 +3,7 @@ const DELIVERY_FEE = 1500;
 const STORAGE_KEY = "daikon-sushi-cart";
 
 // ✏️ EDITAR: reemplazar por el numero real de WhatsApp del negocio.
-const WA_NUMBER = "+542213039649";
+const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
@@ -12,6 +12,31 @@ const CART_TRANSITION_MS = 320;
 const ORDER_OPEN_HOUR = 18;
 const ORDER_CLOSE_HOUR = 0;
 const ORDER_CLOSE_MINUTE = 30;
+// Control para suprimir toasts cuando añadimos varios ítems programáticamente
+let SUPPRESS_TOASTS = false;
+
+// Splash init: mostrar logo al inicio y ocultarlo cuando la app esté lista
+function initSplash() {
+  const splash = document.getElementById('splash');
+  if (!splash) return;
+
+  const hide = () => {
+    if (!splash.classList.contains('splash--hidden')) {
+      splash.classList.add('splash--hidden');
+      splash.addEventListener('transitionend', () => {
+        try { splash.remove(); } catch (e) { /* ignore */ }
+      }, { once: true });
+    }
+  };
+
+  // Preferir esperar al evento load, pero no más de 1800ms
+  window.addEventListener('load', () => setTimeout(hide, 700));
+  // Fallback: forzar ocultado pasado un máximo razonable
+  setTimeout(hide, 1800);
+}
+
+// Ejecutar inmediatamente (app.js se carga con `defer`)
+initSplash();
 
 // ✏️ EDITAR: preguntas frecuentes y respuestas del asistente local.
 const chatFaqs = [
@@ -851,12 +876,29 @@ function renderProducts(category = state.activeCategory) {
     card.classList.toggle("product-card--featured", Boolean(product.featured));
     image.src = product.image;
     image.alt = product.name;
+    // Blur-up / skeleton: toggle loaded class on parent when image finishes loading
+    const placeholder = media.querySelector('.image-placeholder');
+    const imgEl = fragment.querySelector('.product-image') || image;
+    function markLoaded() {
+      media.classList.add('is-loaded');
+      if (placeholder) placeholder.style.opacity = '0';
+    }
+    if (imgEl.complete && imgEl.naturalWidth) {
+      markLoaded();
+    } else {
+      imgEl.addEventListener('load', markLoaded, { once: true });
+      imgEl.addEventListener('error', () => { media.classList.add('is-loaded'); }, { once: true });
+    }
     badge.classList.remove("product-card__badge--hot", "product-card__badge--ghost");
     // Priorizar propiedades que pueden contener etiquetas: badge, tag o flavor
     const badgeSource = product.badge ?? product.tag ?? product.flavor ?? "";
     badge.textContent = badgeSource;
     const variantClass = getProductBadgeVariantClass(badgeSource);
     badge.classList.add(variantClass);
+    // Render badge content with icon
+    if (badgeSource) {
+      badge.innerHTML = `<span class="badge__icon" aria-hidden="true"></span><span class="badge__text">${badgeSource}</span>`;
+    }
     // Posicionar badges "ghost" (ej: AGRIDULCE, CLÁSICO) sobre la imagen dentro de .product-card__media
     if (badgeSource && variantClass === "product-card__badge--ghost") {
       media.appendChild(badge);
@@ -867,6 +909,24 @@ function renderProducts(category = state.activeCategory) {
     category.textContent = product.category;
     stepper.insertAdjacentHTML("beforebegin", `<span><span class="product-card__price-label">precio unitario</span><span class="product-card__price">${formatPrice(displayPrice)}</span></span>`);
     title.textContent = product.name;
+    // Microcopy: mostrar ventaja o "desde" para combos
+    const micro = document.createElement('span');
+    micro.className = 'product-badge__microcopy';
+    let microcopyText = '';
+    if (Array.isArray(product.comboOptions) && product.comboOptions.length) {
+      const minPrice = Math.min(...product.comboOptions.map((o) => o.price || Infinity));
+      if (Number.isFinite(minPrice)) microcopyText = `Desde ${formatPrice(minPrice)}`;
+    } else if (badgeSource && /TOP\s*VENTA/i.test(badgeSource)) {
+      microcopyText = 'Favorito de la casa';
+    } else if (badgeSource && /HOT/i.test(badgeSource)) {
+      microcopyText = 'Recomendado';
+    } else if (badgeSource && /(DELUXE|PREMIUM)/i.test(badgeSource)) {
+      microcopyText = 'Edición limitada';
+    }
+    if (microcopyText) {
+      micro.textContent = microcopyText;
+      title.insertAdjacentElement('afterend', micro);
+    }
     description.textContent = product.description;
     meta.textContent = displayMeta;
     quantity.textContent = String(getQuantity(product.id, selectedOptionId));
@@ -955,6 +1015,9 @@ function renderProducts(category = state.activeCategory) {
     increaseButton.addEventListener("click", () => {
       // Agregar el producto principal
       addToCart(product.id, selectedOptionId);
+      // micro-interaction: fly image to cart
+      const imgNode = card.querySelector('.product-image') || card.querySelector('img');
+      if (imgNode) flyToCartFrom(imgNode);
       // Si hay addons seleccionados dentro de la card, agregarlos también como items separados
       const addonContainer = card.querySelector(".product-addons");
       if (addonContainer) {
@@ -1050,6 +1113,21 @@ function updateCartUI() {
   deliveryValue.textContent = formatCartDelivery(summary);
   totalValue.textContent = formatCartTotal(summary).label;
 
+  // Update mobile CTA
+  const mobileCta = document.getElementById('mobileCta');
+  const mobilePrice = document.getElementById('mobileCtaPrice');
+  const mobileBtn = document.getElementById('mobileCtaButton');
+  if (mobileCta && mobilePrice && mobileBtn) {
+    mobilePrice.textContent = formatCartSubtotal(summary);
+    if (summary.count > 0) {
+      mobileCta.hidden = false;
+      mobileBtn.removeAttribute('disabled');
+    } else {
+      mobileCta.hidden = true;
+      mobileBtn.setAttribute('disabled', '');
+    }
+  }
+
   saveCartToStorage();
 }
 
@@ -1093,7 +1171,110 @@ function addToCart(productId, optionId) {
   renderProducts();
   updateCartUI();
   pulseCartButton();
-  showToast("Producto agregado al carrito.");
+  if (!SUPPRESS_TOASTS) showToast("Producto agregado al carrito.");
+}
+
+// Oferta emergente: mostrar modal pasados 5s y añadir paquete al carrito
+function initOfferModal() {
+  const modal = document.getElementById('offerModal');
+  const backdrop = document.getElementById('backdrop');
+  if (!modal) return;
+
+  const showModal = () => {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    if (backdrop) { backdrop.hidden = false; backdrop.removeAttribute('aria-hidden'); }
+    // Enfocar CTA para accesibilidad
+    const cta = document.getElementById('offerCta');
+    if (cta) cta.focus();
+  };
+
+  const hideModal = () => {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    if (backdrop) { backdrop.hidden = true; backdrop.setAttribute('aria-hidden', 'true'); }
+  };
+
+  document.getElementById('offerClose')?.addEventListener('click', hideModal);
+  document.getElementById('offerLater')?.addEventListener('click', hideModal);
+
+  document.getElementById('offerCta')?.addEventListener('click', () => {
+    // Añadir items: 1x premium-combo (16), 1x hotburger-smoked, 1x pancho-salmon
+    SUPPRESS_TOASTS = true;
+    try {
+      addToCart('premium-combo', '16');
+      addToCart('hotburger-smoked', null);
+      addToCart('pancho-salmon', null);
+    } finally {
+      SUPPRESS_TOASTS = false;
+    }
+    showToast('Oferta agregada al carrito.');
+    hideModal();
+  });
+
+  // Mostrar a los 5 segundos si no se mostró aún
+  window.setTimeout(showModal, 5000);
+}
+
+// Hero CTA: agregar el producto actualmente mostrado en los carousels
+function initHeroCtas() {
+  const featuredBtn = document.getElementById('featuredAdd');
+  const hotBtn = document.getElementById('hotburgerAdd');
+
+  function findProductByImgId(imgId) {
+    const img = document.getElementById(imgId);
+    if (!img) return null;
+    const raw = (img.currentSrc || img.src || "");
+    const cleaned = raw.split("?")[0];
+    const fname = decodeURIComponent((cleaned.split('/').pop() || '').trim()).toLowerCase();
+    if (!fname) return null;
+    return (
+      products.find((p) => ((p.image || '').split('/').pop() || '').toLowerCase() === fname) || null
+    );
+  }
+
+  // Mejor fallback: intentar buscar por alt text (nombre derivado) si la coincidencia por archivo falla
+  function findProductByImgIdWithFallback(imgId) {
+    const primary = findProductByImgId(imgId);
+    if (primary) return primary;
+    const img = document.getElementById(imgId);
+    if (!img) return null;
+    const alt = (img.alt || '').toLowerCase().trim();
+    if (alt) {
+      const byName = products.find((p) => p.name && p.name.toLowerCase().includes(alt));
+      if (byName) return byName;
+      // también probar con slug del alt
+      const slug = alt.replace(/[^a-z0-9]+/g, ' ').trim();
+      const bySlug = products.find((p) => ((p.image || '').toLowerCase().includes(slug)));
+      if (bySlug) return bySlug;
+    }
+    console.debug('Hero CTA: no se identificó producto para', imgId, { src: img.currentSrc || img.src, alt: img.alt });
+    return null;
+  }
+
+  if (featuredBtn) {
+    featuredBtn.addEventListener('click', () => {
+      const prod = findProductByImgIdWithFallback('featuredCarousel');
+      if (!prod) {
+        showToast('No se pudo identificar el producto.');
+        return;
+      }
+      const option = getDefaultProductOption(prod);
+      addToCart(prod.id, option ? option.id : null);
+    });
+  }
+
+  if (hotBtn) {
+    hotBtn.addEventListener('click', () => {
+      const prod = findProductByImgIdWithFallback('hotburgerCarousel');
+      if (!prod) {
+        showToast('No se pudo identificar el producto.');
+        return;
+      }
+      const option = getDefaultProductOption(prod);
+      addToCart(prod.id, option ? option.id : null);
+    });
+  }
 }
 
 function removeFromCart(productId, optionId) {
@@ -1421,6 +1602,33 @@ function registerServiceWorker() {
 window.addEventListener("load", () => {
   initFeaturedCarousel();
   initHotburgerCarousel();
+  initOfferModal();
+  initHeroCtas();
+  // Ensure hero placeholders are removed when hero images load
+  ["featuredCarousel", "hotburgerCarousel"].forEach((id) => {
+    const img = document.getElementById(id);
+    if (!img) return;
+    const parent = img.parentElement;
+    const placeholder = parent?.querySelector('.image-placeholder');
+    function mark() {
+      parent && parent.classList.add('is-loaded');
+      if (placeholder) placeholder.style.opacity = '0';
+    }
+    if (img.complete && img.naturalWidth) mark(); else img.addEventListener('load', mark, { once: true });
+  });
+    // Mobile CTA button behaviour
+    const mobileBtn = document.getElementById('mobileCtaButton');
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', () => {
+        const cartDrawer = document.getElementById('cartDrawer');
+        if (cartDrawer) {
+          cartDrawer.hidden = false;
+          cartDrawer.removeAttribute('aria-hidden');
+        }
+        const cartToggleBtn = document.getElementById('cartToggle');
+        if (cartToggleBtn) cartToggleBtn.focus();
+      });
+    }
 });
 }
 
@@ -1489,28 +1697,77 @@ function isStandaloneApp() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
 }
 
-function initFeaturedCarousel() {
-  const images = [
-    "assets/products/pancho pollo.jpg",
-    "assets/products/pancho sushi salmon.jpg",
-    "assets/products/pancho langostino.jpg",
-    "assets/products/kanikama.png",
-  ];
+function createCarousel({imgId, images, prevId, nextId, statusId, interval = 2000}) {
+  const imgEl = document.getElementById(imgId);
+  if (!imgEl) return null;
 
   let idx = 0;
-  const imgEl = document.getElementById("featuredCarousel");
-  if (!imgEl) return;
+  let timer = null;
 
-  function showIndex(i) {
-    imgEl.src = images[i];
-    imgEl.alt = `Pancho ${i + 1}`;
+  function show(i) {
+    idx = i % images.length;
+    imgEl.src = images[idx];
+    imgEl.alt = images[idx].split("/").pop().replace(/[-_.]/g, " ");
+    const status = document.getElementById(statusId);
+    if (status) status.textContent = `Mostrando ${idx + 1} de ${images.length}`;
   }
 
-  showIndex(0);
-  setInterval(() => {
-    idx = (idx + 1) % images.length;
-    showIndex(idx);
-  }, 2000);
+  function next() { show((idx + 1) % images.length); }
+  function prev() { show((idx - 1 + images.length) % images.length); }
+
+  function start() {
+    if (timer) return;
+    timer = setInterval(next, interval);
+  }
+
+  function stop() {
+    if (!timer) return;
+    clearInterval(timer);
+    timer = null;
+  }
+
+  // Controls
+  const prevBtn = document.getElementById(prevId);
+  const nextBtn = document.getElementById(nextId);
+  if (prevBtn) prevBtn.addEventListener("click", () => { stop(); prev(); prevBtn.blur(); });
+  if (nextBtn) nextBtn.addEventListener("click", () => { stop(); next(); nextBtn.blur(); });
+
+  // Pause on interaction and visibility change
+  imgEl.addEventListener("mouseenter", stop);
+  imgEl.addEventListener("mouseleave", start);
+  imgEl.addEventListener("focus", stop);
+  imgEl.addEventListener("blur", start);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop(); else start();
+  });
+
+  // Keyboard support
+  imgEl.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") { stop(); prevBtn && prevBtn.click(); }
+    if (e.key === "ArrowRight") { stop(); nextBtn && nextBtn.click(); }
+  });
+
+  show(0);
+  start();
+
+  return {start, stop, show, next, prev};
+}
+
+function initFeaturedCarousel() {
+  createCarousel({
+    imgId: "featuredCarousel",
+    images: [
+      "assets/products/pancho pollo.jpg",
+      "assets/products/pancho sushi salmon.jpg",
+      "assets/products/pancho langostino.jpg",
+      "assets/products/kanikama.png",
+    ],
+    prevId: "featuredPrev",
+    nextId: "featuredNext",
+    statusId: "featuredStatus",
+    interval: 2000,
+  });
 }
 
 function isIosDevice() {
@@ -1622,24 +1879,42 @@ function getCartItemDetails(item) {
 }
 
 function initHotburgerCarousel() {
-  const images = [
-    "assets/products/Sakura.jpg",
-    "assets/products/Smoked.jpg",
-    "assets/products/Lang in the house.jpg",
-  ];
+  createCarousel({
+    imgId: "hotburgerCarousel",
+    images: ["assets/products/Sakura.jpg", "assets/products/Smoked.jpg", "assets/products/Lang in the house.jpg"],
+    prevId: "hotPrev",
+    nextId: "hotNext",
+    statusId: "hotStatus",
+    interval: 2000,
+  });
+}
 
-  let idx = 0;
-  const imgEl = document.getElementById("hotburgerCarousel");
-  if (!imgEl) return;
+function flyToCartFrom(imgEl) {
+  const cartBtn = document.getElementById('cartToggle');
+  if (!imgEl || !cartBtn) return;
 
-  function showIndex(i) {
-    imgEl.src = images[i];
-    imgEl.alt = `Hotburger ${i + 1}`;
-  }
+  const src = imgEl.currentSrc || imgEl.src;
+  const rect = imgEl.getBoundingClientRect();
+  const cartRect = cartBtn.getBoundingClientRect();
 
-  showIndex(0);
-  setInterval(() => {
-    idx = (idx + 1) % images.length;
-    showIndex(idx);
-  }, 2000);
+  const clone = document.createElement('img');
+  clone.src = src;
+  clone.className = 'fly-image';
+  clone.style.left = `${rect.left}px`;
+  clone.style.top = `${rect.top}px`;
+  clone.style.width = `${rect.width}px`;
+  clone.style.height = `${rect.height}px`;
+  document.body.appendChild(clone);
+
+  // Force layout
+  void clone.offsetWidth;
+
+  const translateX = cartRect.left + cartRect.width / 2 - (rect.left + rect.width / 2);
+  const translateY = cartRect.top + cartRect.height / 2 - (rect.top + rect.height / 2);
+  clone.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.2)`;
+  clone.style.opacity = '0.2';
+
+  setTimeout(() => {
+    clone.remove();
+  }, 800);
 }

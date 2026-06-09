@@ -1,3 +1,21 @@
+# Daikon Sushi Delivery
+
+Repositorio de la web estática de Daikon Sushi Delivery (SPA vanilla JS).
+
+Enlaces útiles:
+
+- Instagram: https://www.instagram.com/daikonsushi.lp/
+
+Prueba rápida desde el móvil:
+
+1. Esperá a que haga `commit` y `push` (ya ejecuté los comandos desde el equipo).
+2. Abrí la app GitHub o el navegador en tu celular y visitá el repositorio para ver este `README.md` y los archivos actualizados.
+
+Contacto de pruebas (WhatsApp): `2213039649` (usado por la acción "ENVIAR PEDIDO").
+
+Notas:
+- El proyecto es una SPA con `index.html`, `style.css`, `app.js` y `service-worker.js`.
+- Cambios recientes: splash inicial, modal oferta, mejoras de badges, ajustes tipográficos y enlaces a Instagram.
 https://github.com/braianruaimi/DaikonSushi
 
 # Daikon Sushi Delivery

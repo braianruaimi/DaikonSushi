@@ -90,6 +90,26 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Stale-while-revalidate for images: respond from cache immediately if available, update cache in background
+  const accepts = event.request.headers.get("Accept") || "";
+  if (accepts.includes("image") || event.request.destination === "image") {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const networkFetch = fetch(event.request)
+          .then((networkResponse) => {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+            return networkResponse;
+          })
+          .catch(() => undefined);
+
+        // Return cached if available immediately, otherwise wait for network
+        return cachedResponse || networkFetch;
+      })
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
