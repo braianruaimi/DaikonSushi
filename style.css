@@ -333,7 +333,8 @@ a {
 .roulette-button {
   position: fixed;
   left: calc(18px + var(--safe-left));
-  bottom: calc(18px + var(--safe-bottom));
+  /* sitúa la ruleta justo arriba del botón de menú/chat */
+  bottom: calc(84px + var(--safe-bottom));
   display: inline-flex;
   align-items: center;
   gap: 8px;

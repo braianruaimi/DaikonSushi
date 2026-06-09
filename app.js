@@ -406,12 +406,12 @@ function initRoulette() {
 
   if (!btn || !modal || !wheel) return;
 
+  // Solo sugerencias de producto: pancho o hotburger
   const promos = [
-    { id: 'p-hot-10', message: 'Hoy te toca: Hotburger +10% OFF en tu pedido', productId: 'hotburger-sakura', discount: 0.10 },
-    { id: 'p-pancho-free', message: '¡Suerte! Pancho gratis en el próximo pedido (1 unidad)', productId: 'pancho-salmon', quantity: 1 },
-    { id: 'p-delivery-free', message: 'Envío gratis en tu próximo pedido', freeDelivery: true },
-    { id: 'p-5off', message: '10% OFF en Combo Daikon', productId: 'daikon-combo', discount: 0.10 },
-    { id: 'p-nada', message: 'Te toca: 5% OFF en tu próxima compra', discount: 0.05 },
+    { id: 'p-hot-1', message: 'Hoy te toca: Hotburger Sakura', productId: 'hotburger-sakura' },
+    { id: 'p-hot-2', message: 'Hoy te toca: Hotburger Smoked', productId: 'hotburger-smoked' },
+    { id: 'p-pancho-1', message: 'Hoy te toca: Pancho Sushi de Salmón', productId: 'pancho-salmon' },
+    { id: 'p-pancho-2', message: 'Hoy te toca: Pancho Sushi de Langostinos', productId: 'pancho-langostinos' },
   ];
 
   function openModal() {
@@ -461,16 +461,8 @@ function initRoulette() {
       const p = JSON.parse(e.currentTarget.dataset.promo || null);
       if (!p) return;
       if (p.productId) {
-        const qty = p.quantity || 1;
-        for (let i = 0; i < qty; i++) addToCart(p.productId, null);
-        showToast(`Promoción aplicada: ${p.message}`);
-      } else if (p.freeDelivery) {
-        showToast('Promoción aplicada: Envío gratis (se aplicará al enviar el pedido).');
-        // mark freeDelivery in session state (simple flag)
-        state.freeDelivery = true;
-      } else if (p.discount) {
-        showToast(`Promoción aplicada: ${Math.round(p.discount * 100)}% OFF (se aplica en local).`);
-        state.lastDiscount = p.discount;
+        addToCart(p.productId, null);
+        showToast(`Sugerencia agregada: ${p.message}`);
       }
     } catch (err) {
       console.debug('Apply promo error', err);
