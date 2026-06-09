@@ -3071,9 +3071,9 @@ html, body {
   .hero { display: grid; grid-template-columns: 1fr; gap: 18px; padding: 20px 12px; }
   .hero__content { order: 1; }
   .hero__panel { order: 2; width: 100%; }
-  .hero__panel-media img { width: 100%; height: 220px; object-fit: cover; border-radius: 14px; }
+  .hero__panel-media img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
   .hero__panel-hotburgers { margin-top: 12px; }
-  .hero__panel-media--hot img, #hotburgerCarousel, #featuredCarousel { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; }
+  .hero__panel-media--hot img, #hotburgerCarousel, #featuredCarousel { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px; }
   .product-card { min-height: auto; }
   .primary-button, .ghost-button, .secondary-button { min-height: 44px; padding: 12px 14px; }
@@ -3081,8 +3081,8 @@ html, body {
 
 @media (max-width: 480px) {
   .product-grid { grid-template-columns: 1fr; }
-  .hero__panel-media img { height: 180px; }
-  .hero__panel-media--hot img, #hotburgerCarousel, #featuredCarousel { height: 140px; }
+  .hero__panel-media img { height: 100%; }
+  .hero__panel-media--hot img, #hotburgerCarousel, #featuredCarousel { height: 100%; }
   .topbar { padding: calc(8px + var(--safe-top)) 12px; border-radius: 0; }
   .install-app-button { min-height: 40px; padding: 8px; }
 }
