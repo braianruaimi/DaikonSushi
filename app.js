@@ -103,6 +103,18 @@ const promoDinnerTwo = {
 
 const EXTRAS_CATEGORY = "Extras";
 
+// Producto representante de la oferta emergente (precio fijo de la promo)
+products.splice(0,0, {
+  id: "promo-offer",
+  name: "Oferta Especial",
+  category: "Promos",
+  badge: "PROMO",
+  description: "Oferta especial: paquete promocional por tiempo limitado.",
+  price: 54999,
+  image: "assets/products/promo-offer.jpg",
+  meta: "Oferta especial",
+});
+
 // ✏️ EDITAR: catalogo completo del menu. El cliente puede cambiar textos, precios e imagenes locales.
 const products = [
   {
@@ -1441,16 +1453,14 @@ function initOfferModal() {
   document.getElementById('offerLater')?.addEventListener('click', hideModal);
 
   document.getElementById('offerCta')?.addEventListener('click', () => {
-    // Añadir items: 1x premium-combo (16), 1x hotburger-smoked, 1x pancho-salmon
+    // Añadir el item promocional único con precio fijo
     SUPPRESS_TOASTS = true;
     try {
-      addToCart('premium-combo', '16');
-      addToCart('hotburger-smoked', null);
-      addToCart('pancho-salmon', null);
+      addToCart('promo-offer', null);
     } finally {
       SUPPRESS_TOASTS = false;
     }
-    showToast('Oferta agregada al carrito.');
+    showToast('Promoción agregada al carrito.');
     hideModal();
   });
 
