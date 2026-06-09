@@ -38,7 +38,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
   );
-  self.skipWaiting();
+  // Wait for explicit user action to skip waiting so the app can prompt updates
 });
 
 self.addEventListener("activate", (event) => {
@@ -52,6 +52,14 @@ self.addEventListener("activate", (event) => {
     )
   );
   self.clients.claim();
+});
+
+// Listen for skip waiting message from the page
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("fetch", (event) => {

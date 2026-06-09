@@ -359,6 +359,7 @@ const floatingCategoryChips = document.querySelector("#floatingCategoryChips");
 const daikonChat = document.querySelector("#daikonChat");
 const openOrdersButton = document.querySelector("#openOrdersButton");
 const installAppButton = document.querySelector("#installAppButton");
+const updateAppButton = document.querySelector("#updateAppButton");
 const chatPanel = document.querySelector("#chatPanel");
 const chatMessages = document.querySelector("#chatMessages");
 const chatSuggestions = document.querySelector("#chatSuggestions");
@@ -1825,7 +1826,26 @@ function registerServiceWorker() {
   }
 
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js").catch(() => {
+    navigator.serviceWorker.register("service-worker.js").then((registration) => {
+      // If there's already a waiting worker, show update prompt when app is installed
+      if (registration.waiting) {
+        if (isStandaloneApp() && updateAppButton) updateAppButton.hidden = false;
+      }
+
+      registration.addEventListener('updatefound', () => {
+        const installing = registration.installing;
+        if (!installing) return;
+        installing.addEventListener('statechange', () => {
+          if (installing.state === 'installed') {
+            // New update installed and waiting
+            if (registration.waiting && isStandaloneApp() && updateAppButton) {
+              updateAppButton.hidden = false;
+            }
+          }
+        });
+      });
+
+    }).catch(() => {
       showToast("PWA no pudo registrarse en este entorno.");
     });
   });
@@ -1909,11 +1929,39 @@ function setupInstallApp() {
     deferredInstallPrompt = null;
     updateInstallAppVisibility();
     showToast("App instalada correctamente.");
+    // When app is installed, if there's a waiting SW, show update button
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+      navigator.serviceWorker.getRegistration().then((reg) => {
+        if (reg && reg.waiting && updateAppButton) {
+          updateAppButton.hidden = false;
+        }
+      }).catch(() => {});
+    }
   });
 }
 
 function isStandaloneApp() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+// Handle update button action: send skipWaiting to waiting SW and reload on controllerchange
+if (updateAppButton) {
+  updateAppButton.addEventListener('click', async () => {
+    try {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) return;
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+    } catch (e) {
+      console.debug('Update action error', e);
+    }
+  });
+
+  // Reload page when new SW takes control
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
 }
 
 function createCarousel({imgId, images, prevId, nextId, statusId, interval = 2000}) {
