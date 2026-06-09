@@ -40,6 +40,31 @@ function initSplash() {
 // Ejecutar inmediatamente (app.js se carga con `defer`)
 initSplash();
 
+// Global error capture: guarda el último error en localStorage para poder inspeccionarlo
+function saveGlobalError(info) {
+  try {
+    const payload = {
+      time: new Date().toISOString(),
+      info,
+      ua: navigator.userAgent,
+      path: location.pathname + location.search + location.hash,
+      displayModeStandalone: window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true,
+    };
+    localStorage.setItem('daikon-last-error', JSON.stringify(payload));
+    console.error('Daikon captured error:', payload);
+  } catch (e) {
+    console.error('Failed to save global error', e);
+  }
+}
+
+window.addEventListener('error', function (event) {
+  saveGlobalError({ type: 'error', message: event.message, filename: event.filename, lineno: event.lineno, colno: event.colno, stack: (event.error && event.error.stack) || null });
+});
+
+window.addEventListener('unhandledrejection', function (event) {
+  saveGlobalError({ type: 'unhandledrejection', reason: (event.reason && (event.reason.message || event.reason)) || String(event.reason) });
+});
+
 // ✏️ EDITAR: preguntas frecuentes y respuestas del asistente local.
 const chatFaqs = [
   {
