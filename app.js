@@ -103,20 +103,18 @@ const promoDinnerTwo = {
 
 const EXTRAS_CATEGORY = "Extras";
 
-// Producto representante de la oferta emergente (precio fijo de la promo)
-products.splice(0,0, {
-  id: "promo-offer",
-  name: "Oferta Especial",
-  category: "Promos",
-  badge: "PROMO",
-  description: "Oferta especial: paquete promocional por tiempo limitado.",
-  price: 54999,
-  image: "assets/products/promo-offer.jpg",
-  meta: "Oferta especial",
-});
-
 // ✏️ EDITAR: catalogo completo del menu. El cliente puede cambiar textos, precios e imagenes locales.
 const products = [
+  {
+    id: "promo-offer",
+    name: "Oferta Especial",
+    category: "Promos",
+    badge: "PROMO",
+    description: "Oferta especial: paquete promocional por tiempo limitado.",
+    price: 54999,
+    image: "assets/products/promo-offer.jpg",
+    meta: "Oferta especial",
+  },
   {
     id: "pancho-salmon",
     name: "Pancho Sushi de Salmón",
