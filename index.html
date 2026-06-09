@@ -224,7 +224,13 @@
 
             <label class="checkout-field" for="customerLocality">
               <span>Localidad</span>
-              <input id="customerLocality" name="customerLocality" type="text" placeholder="Localidad (La Plata, Ensenada, Berisso)" autocomplete="address-level2" />
+              <select id="customerLocality" name="customerLocality" required>
+                <option value="" disabled selected>Seleccioná localidad</option>
+                <option value="La Plata">La Plata</option>
+                <option value="Ensenada">Ensenada</option>
+                <option value="Berisso">Berisso</option>
+              </select>
+              <small class="muted">Obligatorio</small>
             </label>
 
             <label class="checkout-field" for="customerAddress">

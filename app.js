@@ -449,7 +449,7 @@ function bindEvents() {
   }
 
   if (customerName) customerName.addEventListener("input", () => validateRequiredField(customerName));
-  if (customerLocality) customerLocality.addEventListener("input", () => {/* optional field, no-op for now */});
+  if (customerLocality) customerLocality.addEventListener("change", () => validateRequiredField(customerLocality));
   if (customerAddress) customerAddress.addEventListener("input", () => validateRequiredField(customerAddress));
 
   if (checkoutButton) checkoutButton.addEventListener("click", openWhatsApp);
@@ -1459,11 +1459,18 @@ function openWhatsApp() {
   }
 
   const isNameValid = validateRequiredField(customerName);
+  const isLocalityValid = validateRequiredField(customerLocality);
   const isAddressValid = validateRequiredField(customerAddress);
 
-  if (!isNameValid || !isAddressValid) {
-    showToast("Completá nombre y dirección para enviar el pedido.");
-    (isNameValid ? customerAddress : customerName).focus();
+  if (!isNameValid || !isLocalityValid || !isAddressValid) {
+    showToast("Completá nombre, localidad y dirección para enviar el pedido.");
+    if (!isNameValid) {
+      customerName.focus();
+    } else if (!isLocalityValid) {
+      customerLocality.focus();
+    } else {
+      customerAddress.focus();
+    }
     return;
   }
 
