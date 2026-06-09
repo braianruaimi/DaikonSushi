@@ -452,6 +452,19 @@ function bindEvents() {
 
   if (checkoutButton) checkoutButton.addEventListener("click", openWhatsApp);
 
+  // Update scheduled note when schedule time changes
+  const scheduleSelect = document.getElementById('scheduleTime');
+  if (scheduleSelect) {
+    scheduleSelect.addEventListener('change', (e) => {
+      const scheduledNote = document.getElementById('scheduledNote');
+      const scheduledTimeDisplay = document.getElementById('scheduledTimeDisplay');
+      if (scheduledNote && scheduledTimeDisplay) {
+        scheduledTimeDisplay.textContent = e.target.value;
+        scheduledNote.hidden = false;
+      }
+    });
+  }
+
   if (floatingMenuToggle) floatingMenuToggle.addEventListener("click", toggleFloatingMenu);
   if (chatToggle) chatToggle.addEventListener("click", toggleChat);
   if (chatClose) chatClose.addEventListener("click", closeChat);
@@ -549,12 +562,20 @@ function updateOpenOrdersVisibility() {
       const scheduleSelect = document.getElementById('scheduleTime');
       if (scheduleWrapper) scheduleWrapper.hidden = false;
       if (scheduleSelect) scheduleSelect.value = `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
+      const scheduledNote = document.getElementById('scheduledNote');
+      const scheduledTimeDisplay = document.getElementById('scheduledTimeDisplay');
+      if (scheduledNote && scheduledTimeDisplay) {
+        scheduledTimeDisplay.textContent = scheduleSelect ? scheduleSelect.value : `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
+        scheduledNote.hidden = false;
+      }
     } else {
       if (labelSpan) labelSpan.textContent = "ENVIAR PEDIDO";
       checkoutButton.removeAttribute("disabled");
       checkoutButton.classList.remove('is-schedule');
       const scheduleWrapper = document.getElementById('scheduleWrapper');
       if (scheduleWrapper) scheduleWrapper.hidden = true;
+      const scheduledNote = document.getElementById('scheduledNote');
+      if (scheduledNote) scheduledNote.hidden = true;
     }
   }
 }

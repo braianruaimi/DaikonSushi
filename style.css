@@ -1786,6 +1786,25 @@ product-card__selector select {
   line-height: 1.05;
 }
 
+/* Scheduled note badge shown in the cart header when the order is scheduled */
+.scheduled-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg,#0f1724,#172034);
+  color: #ffdf6b;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-left: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+@media (max-width: 720px) {
+  .scheduled-note { display: block; margin: 8px 0 0 0; }
+}
+
 .cart-drawer__header .eyebrow {
   margin: 0 0 4px;
   font-size: 0.62rem;
