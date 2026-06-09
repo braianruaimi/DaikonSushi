@@ -1742,6 +1742,10 @@ function getCartSummary() {
 }
 
 function formatCartSubtotal(summary) {
+  // Si la promo CENA está activa en el carrito, mostramos el subtotal promocional
+  if (isPromoCenaApplied()) {
+    return formatCurrency(49999);
+  }
   if (summary.hasQuotedItems && summary.subtotal > 0) {
     return `${formatCurrency(summary.subtotal)} + items a consultar`;
   }
@@ -1754,6 +1758,10 @@ function formatCartSubtotal(summary) {
 }
 
 function formatCartDelivery(summary) {
+  // Si la promo CENA está aplicada, el total debe mostrarse como $49.999 (incluye oferta), por lo que ocultamos envío
+  if (isPromoCenaApplied()) {
+    return formatCurrency(0);
+  }
   if (summary.hasQuotedItems) {
     return "A confirmar";
   }
@@ -1771,11 +1779,28 @@ function formatCartTotal(summary) {
     };
   }
 
+  // Si la promo CENA está aplicada, forzamos el total a $49.999
+  if (isPromoCenaApplied()) {
+    const promoTotal = 49999;
+    return { label: formatCurrency(promoTotal), message: formatCurrency(promoTotal) };
+  }
+
   const total = summary.subtotal ? summary.subtotal + DELIVERY_FEE : 0;
   return {
     label: formatCurrency(total),
     message: formatCurrency(total),
   };
+}
+
+function isPromoCenaApplied() {
+  try {
+    const hasHot = getQuantity('hotburger-sakura', null) >= 1;
+    const hasCombo = getQuantity('daikon-combo', '16') >= 1;
+    const hasEbi = getQuantity('entrada-ebi-crocante', null) >= 1;
+    return hasHot && hasCombo && hasEbi;
+  } catch (e) {
+    return false;
+  }
 }
 
 function persistCart() {
