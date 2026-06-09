@@ -545,10 +545,16 @@ function updateOpenOrdersVisibility() {
       if (labelSpan) labelSpan.textContent = "Programar pedido para la apertura";
       checkoutButton.removeAttribute("disabled");
       checkoutButton.classList.add('is-schedule');
+      const scheduleWrapper = document.getElementById('scheduleWrapper');
+      const scheduleSelect = document.getElementById('scheduleTime');
+      if (scheduleWrapper) scheduleWrapper.hidden = false;
+      if (scheduleSelect) scheduleSelect.value = `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
     } else {
       if (labelSpan) labelSpan.textContent = "ENVIAR PEDIDO";
       checkoutButton.removeAttribute("disabled");
       checkoutButton.classList.remove('is-schedule');
+      const scheduleWrapper = document.getElementById('scheduleWrapper');
+      if (scheduleWrapper) scheduleWrapper.hidden = true;
     }
   }
 }
@@ -1348,7 +1354,7 @@ function saveCartToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.cart));
 }
 
-function generateWhatsAppMessage(scheduled = false) {
+function generateWhatsAppMessage(scheduledTime = null) {
   const customer = customerName.value.trim();
   const address = customerAddress.value.trim();
   const paymentMethod = new FormData(checkoutForm).get("paymentMethod") || "Efectivo";
@@ -1373,7 +1379,10 @@ function generateWhatsAppMessage(scheduled = false) {
 
   const totalLabel = formatCartTotal(summary).message;
   const deliveryLabel = formatCartDelivery(summary);
-  const scheduledNote = scheduled ? `\n\n⏰ Pedido programado para la apertura (${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00).` : "";
+  let scheduledNote = "";
+  if (scheduledTime) {
+    scheduledNote = `\n\n⏰ Pedido programado para ${scheduledTime}.`;
+  }
 
   return `🍣 *NUEVO PEDIDO - DAIKON SUSHI*\n\n👤 *Cliente:* ${customer}\n📍 *Dirección:* ${address}\n\n🛒 *Detalle del pedido:*\n${lines.join("\n")}\n\n🚚 *Envío:* ${deliveryLabel}\n💰 *Total:* ${totalLabel}\n💳 *Medio de pago:* ${paymentMethod}${scheduledNote}`;
 }
@@ -1404,13 +1413,16 @@ function openWhatsApp() {
   }
 
   const isScheduling = !isOrderWindowOpen();
+  let scheduledTime = null;
   if (isScheduling) {
-    showToast(`Pedido programado. Se enviará por WhatsApp a la apertura (${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00).`);
+    const scheduleSelect = document.getElementById('scheduleTime');
+    scheduledTime = scheduleSelect ? scheduleSelect.value : `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
+    showToast(`Pedido programado. Se enviará por WhatsApp a ${scheduledTime}.`);
   } else {
     showToast("Pedido listo para confirmar por WhatsApp.");
   }
 
-  const message = generateWhatsAppMessage(isScheduling);
+  const message = generateWhatsAppMessage(scheduledTime);
   openExternalUrl(buildWhatsAppLink(message));
 }
 
