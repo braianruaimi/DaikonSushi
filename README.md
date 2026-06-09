@@ -36,3 +36,13 @@ Esto permite controlar las actualizaciones desde la interfaz instalada y evita r
 ## Uso local
 
 Abrí `index.html` en el navegador para probar la tienda localmente.
+
+## Últimos cambios (2026-06-09)
+
+- Actualización del flujo PWA: botón `Actualizar app` y manejo de `skipWaiting`/`controllerchange`.
+- Registro y captura global de errores para depuración en modo PWA standalone (`localStorage['daikon-last-error']`).
+- Ajuste de tarifa de envío a $4.000 y horario de toma de pedidos: 14:00–00:00.
+- Microcopy y UI: `SALSAS extras: Agridulce, Soja, Palillos` en hero y cards; selector de `Programar pedido` agregado.
+- Promociones: `Promo CENA Daikon` y `Promo CENA para dos` implementadas en el catálogo.
+
+Si necesitás que empuje este README al repositorio remoto con un mensaje de commit específico, pedímelo y lo hago.
