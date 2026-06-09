@@ -36,7 +36,13 @@ const APP_SHELL_PATHS = new Set(APP_SHELL.map((entry) => new URL(entry, self.loc
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll(APP_SHELL).catch((err) => {
+        // If some resources fail to cache (404, CORS), log and continue so SW can still install
+        console.error('Failed to cache some app shell resources:', err);
+        return Promise.resolve();
+      })
+    )
   );
   // Wait for explicit user action to skip waiting so the app can prompt updates
 });

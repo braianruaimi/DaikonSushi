@@ -1955,8 +1955,9 @@ function registerServiceWorker() {
         });
       });
 
-    }).catch(() => {
-      showToast("PWA no pudo registrarse en este entorno.");
+    }).catch((err) => {
+      console.error('Service worker registration failed:', err);
+      showToast("PWA no pudo registrarse en este entorno. Revisa la consola remota para detalles.");
     });
   });
 
