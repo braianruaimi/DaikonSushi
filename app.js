@@ -352,6 +352,8 @@ const customerAddress = document.querySelector("#customerAddress");
 const customerLocality = document.querySelector("#customerLocality");
 const chatToggle = document.querySelector("#chatToggle");
 const chatClose = document.querySelector("#chatClose");
+const paymentMethodEl = document.querySelector('#paymentMethod');
+const paymentGivenEl = document.querySelector('#paymentGiven');
 const floatingMenu = document.querySelector("#floatingMenu");
 const floatingMenuToggle = document.querySelector("#floatingMenuToggle");
 const floatingMenuPanel = document.querySelector("#floatingMenuPanel");
@@ -585,6 +587,27 @@ function bindEvents() {
 
   if (checkoutButton) checkoutButton.addEventListener("click", openWhatsApp);
 
+  // Disable paymentGiven when payment method is not cash
+  function updatePaymentGivenVisibility() {
+    if (!paymentMethodEl || !paymentGivenEl) return;
+    const wrapper = paymentGivenEl.closest('label');
+    const val = String(paymentMethodEl.value || '').toLowerCase();
+    if (val !== 'efectivo') {
+      if (wrapper) wrapper.hidden = true;
+      paymentGivenEl.disabled = true;
+      paymentGivenEl.value = '';
+    } else {
+      if (wrapper) wrapper.hidden = false;
+      paymentGivenEl.disabled = false;
+    }
+  }
+
+  if (paymentMethodEl) {
+    paymentMethodEl.addEventListener('change', updatePaymentGivenVisibility);
+    // init state
+    updatePaymentGivenVisibility();
+  }
+
   // Update scheduled note when schedule time changes
   const scheduleSelect = document.getElementById('scheduleTime');
   if (scheduleSelect) {
@@ -694,11 +717,11 @@ function updateOpenOrdersVisibility() {
       const scheduleWrapper = document.getElementById('scheduleWrapper');
       const scheduleSelect = document.getElementById('scheduleTime');
       if (scheduleWrapper) scheduleWrapper.hidden = false;
-      if (scheduleSelect) scheduleSelect.value = `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
+      if (scheduleSelect) scheduleSelect.value = `19:00`;
       const scheduledNote = document.getElementById('scheduledNote');
       const scheduledTimeDisplay = document.getElementById('scheduledTimeDisplay');
       if (scheduledNote && scheduledTimeDisplay) {
-        scheduledTimeDisplay.textContent = scheduleSelect ? scheduleSelect.value : `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
+        scheduledTimeDisplay.textContent = scheduleSelect ? scheduleSelect.value : `19:00`;
         scheduledNote.hidden = false;
       }
     } else {
