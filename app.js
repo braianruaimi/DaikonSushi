@@ -85,9 +85,9 @@ const promoLunch = {
   category: "Promo CENA Daikon",
   badge: "PROMO",
   title: "Promo CENA Daikon",
-  description: "HotBurger SAKURA + Combo Daikon + Eby crocante por $49.999. Coordiná tu pedido directo por WhatsApp.",
+  description: "HotBurger SAKURA + Combo Daikon + Eby crocante por $49.999.",
   image: "assets/products/promo-cena.jpg",
-  cta: "Pedir promo",
+  cta: "Sumar al carrito",
 };
 
 const EXTRAS_CATEGORY = "Extras";
@@ -1928,8 +1928,10 @@ function createPromoCard() {
   const card = document.createElement("article");
   card.className = "promo-card reveal-card";
   card.innerHTML = `
-    <div class="promo-card__media">
-      <img src="${promoLunch.image}" alt="${promoLunch.title}" loading="lazy" />
+    <div class="promo-card__media promo-card__media--triplet">
+      <img src="assets/products/Sakura.jpg" alt="HotBurger Sakura" loading="lazy" />
+      <img src="assets/products/combo daikon.jpg" alt="Combo Daikon" loading="lazy" />
+      <img src="assets/products/eby crocante.jpg" alt="Ebi Crocante" loading="lazy" />
       <span class="promo-card__badge">${promoLunch.badge}</span>
     </div>
     <div class="promo-card__body">
@@ -1941,8 +1943,17 @@ function createPromoCard() {
   `;
 
   card.querySelector("button").addEventListener("click", () => {
-    showToast("Abriendo WhatsApp para consultar la promo.");
-    openExternalUrl(buildPromoWhatsAppUrl());
+    // Agregar los tres productos de la promo al carrito y abrir el drawer
+    SUPPRESS_TOASTS = true;
+    try {
+      addToCart('hotburger-sakura', null);
+      addToCart('daikon-combo', '16');
+      addToCart('entrada-ebi-crocante', null);
+    } finally {
+      SUPPRESS_TOASTS = false;
+    }
+    showToast('Promo agregada al carrito.');
+    openCart();
   });
 
   return card;
