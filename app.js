@@ -349,6 +349,7 @@ const checkoutButton = document.querySelector("#checkoutButton");
 const checkoutForm = document.querySelector("#checkoutForm");
 const customerName = document.querySelector("#customerName");
 const customerAddress = document.querySelector("#customerAddress");
+const customerLocality = document.querySelector("#customerLocality");
 const chatToggle = document.querySelector("#chatToggle");
 const chatClose = document.querySelector("#chatClose");
 const floatingMenu = document.querySelector("#floatingMenu");
@@ -448,6 +449,7 @@ function bindEvents() {
   }
 
   if (customerName) customerName.addEventListener("input", () => validateRequiredField(customerName));
+  if (customerLocality) customerLocality.addEventListener("input", () => {/* optional field, no-op for now */});
   if (customerAddress) customerAddress.addEventListener("input", () => validateRequiredField(customerAddress));
 
   if (checkoutButton) checkoutButton.addEventListener("click", openWhatsApp);
@@ -1396,6 +1398,7 @@ function saveCartToStorage() {
 function generateWhatsAppMessage(scheduledTime = null) {
   const customer = customerName.value.trim();
   const address = customerAddress.value.trim();
+  const locality = (customerLocality && customerLocality.value) ? customerLocality.value.trim() : '';
   const paymentMethod = new FormData(checkoutForm).get("paymentMethod") || "Efectivo";
   const summary = getCartSummary();
   const separator = "----------------------------------------";
@@ -1432,7 +1435,7 @@ function generateWhatsAppMessage(scheduledTime = null) {
 
   const header = `¡Hola Daikon! 🍣 Quiero hacer un pedido:`;
 
-  const addressLine = `📍 Dirección: ${address || 'No indicada'}`;
+  const addressLine = `📍 Dirección: ${address || 'No indicada'}${locality ? `, ${locality}` : ''}`;
   const paymentDisplay = `💵 Pago: ${paymentLine}`;
   const deliveryDisplay = `🚴 Envío: ${deliveryLabel}`;
   const totalDisplay = `💰 Total: ${totalMessage}`;
@@ -1465,7 +1468,8 @@ function openWhatsApp() {
   }
 
   // Validar que la dirección esté dentro de las zonas cubiertas
-  const addressValue = String(customerAddress.value || "").toLowerCase();
+  const localityVal = String((customerLocality && customerLocality.value) || "").toLowerCase();
+  const addressValue = (localityVal + " " + String(customerAddress.value || "")).toLowerCase();
   const allowedZones = ["la plata", "ensenada", "berisso"];
   const inZone = allowedZones.some((z) => addressValue.includes(z));
   if (!inZone) {
