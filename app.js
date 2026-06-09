@@ -403,6 +403,8 @@ function initRoulette() {
   const resultWrap = document.getElementById('rouletteResult');
   const resultMsg = document.getElementById('rouletteMessage');
   const applyBtn = document.getElementById('rouletteApply');
+  const thumb = document.getElementById('rouletteThumb');
+  const thumbImg = document.getElementById('rouletteThumbImg');
 
   if (!btn || !modal || !wheel) return;
 
@@ -419,6 +421,7 @@ function initRoulette() {
     modal.setAttribute('aria-hidden', 'false');
     resultWrap.hidden = true;
     inner.textContent = 'GIRAR';
+    if (thumb) thumb.hidden = true;
   }
 
   function closeModal() {
@@ -441,6 +444,17 @@ function initRoulette() {
       resultMsg.textContent = promo.message;
       resultWrap.hidden = false;
       inner.textContent = '';
+      // show thumbnail if product exists
+      if (promo.productId && thumb && thumbImg) {
+        const prod = products.find((p) => p.id === promo.productId);
+        if (prod && prod.image) {
+          thumbImg.src = prod.image;
+          thumbImg.alt = prod.name || 'Producto';
+          thumb.hidden = false;
+        } else {
+          thumb.hidden = true;
+        }
+      }
       // store current promo on apply button
       applyBtn.dataset.promo = JSON.stringify(promo);
       btn.disabled = false;
