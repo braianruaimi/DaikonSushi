@@ -334,21 +334,22 @@ a {
   position: fixed;
   left: calc(18px + var(--safe-left));
   /* sitúa la ruleta justo arriba del botón de menú/chat */
-  bottom: calc(110px + var(--safe-bottom));
+  bottom: calc(200px + var(--safe-bottom));
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 999px;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 12px;
   background: linear-gradient(90deg,#ff7a5a,#ffbf60);
   color: #111;
   font-weight:700;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  font-size: 0.9rem;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.36);
   border: none;
   cursor: pointer;
   z-index: 1600;
 }
-.roulette-button__icon { font-size: 18px; }
+.roulette-button__icon { font-size: 14px; }
 
 /* Roulette modal */
 .roulette-modal {
@@ -427,7 +428,8 @@ a {
   .roulette-wheel { width: 180px; height:180px; }
   .roulette-wheel__inner { width: 100px; height:100px; }
   /* Mantener la ruleta por encima del menú flotante en pantallas pequeñas */
-  .roulette-button { left: calc(12px + var(--safe-left)); bottom: calc(120px + var(--safe-bottom)); z-index:1600; }
+  .roulette-button { left: calc(12px + var(--safe-left)); bottom: calc(240px + var(--safe-bottom)); z-index:1600; padding:6px 8px; gap:6px; }
+  .roulette-button__icon { font-size:12px; }
 }
 
 .floating-menu {
