@@ -431,19 +431,42 @@ function initRoulette() {
 
   function spin() {
     if (!wheel) return;
-    // animate
-    wheel.classList.remove('spinning');
-    void wheel.offsetWidth;
-    wheel.classList.add('spinning');
-    // disable interactions briefly
+    // disable interactions during spin
     btn.disabled = true;
-    // pick random promo after animation
-    setTimeout(() => {
-      const idx = Math.floor(Math.random() * promos.length);
-      const promo = promos[idx];
+
+    // choose result index first so we can compute rotation
+    const idx = Math.floor(Math.random() * promos.length);
+    const promo = promos[idx];
+    const slices = promos.length;
+    const sliceAngle = 360 / slices;
+
+    // number of full spins (3..6)
+    const spins = Math.floor(Math.random() * 3) + 4;
+
+    // target rotation: spins * 360 + offset so that the chosen slice lands under the needle
+    // We subtract idx*sliceAngle to rotate that slice into place. Add half slice to center it.
+    const targetAngle = spins * 360 + (idx * sliceAngle) + sliceAngle / 2;
+
+    // apply rotation
+    // ensure we force a reflow if needed
+    wheel.classList.remove('spin-reset');
+    void wheel.offsetWidth;
+    wheel.style.transform = `rotate(${targetAngle}deg)`;
+
+    function onEnd(e) {
+      if (e && e.target !== wheel) return;
+      wheel.removeEventListener('transitionend', onEnd);
+
+      // normalize rotation to keep DOM tidy
+      const normalized = targetAngle % 360;
+      wheel.classList.add('spin-reset');
+      wheel.style.transform = `rotate(${normalized}deg)`;
+
+      // show result
       resultMsg.textContent = promo.message;
       resultWrap.hidden = false;
       inner.textContent = '';
+
       // show thumbnail if product exists
       if (promo.productId && thumb && thumbImg) {
         const prod = products.find((p) => p.id === promo.productId);
@@ -455,10 +478,13 @@ function initRoulette() {
           thumb.hidden = true;
         }
       }
+
       // store current promo on apply button
       applyBtn.dataset.promo = JSON.stringify(promo);
       btn.disabled = false;
-    }, 1400);
+    }
+
+    wheel.addEventListener('transitionend', onEnd);
   }
 
   btn.addEventListener('click', () => {
