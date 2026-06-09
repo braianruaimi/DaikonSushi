@@ -5,8 +5,8 @@ https://braianruaimi.github.io/DaikonSushi/
 Repositorio de la web estática de Daikon Sushi Delivery (SPA vanilla JS).
 
 Enlaces útiles:
-
 - GitHub Pages: https://braianruaimi.github.io/DaikonSushi/
+- Repo (GitHub): https://github.com/braianruaimi/DaikonSushi.git
 - Instagram: https://www.instagram.com/daikonsushi.lp/
 
 Prueba rápida desde el móvil:
@@ -26,6 +26,12 @@ Notas:
 - `style.css`: estilos visuales y responsive.
 - `app.js`: catálogo, filtros, carrito y lógica de combos.
 - `service-worker.js`: cache y estrategias PWA.
+
+Actualización PWA:
+
+- Cuando la app está instalada (PWA), la aplicación mostrará un botón `Actualizar app` si hay una nueva versión disponible. Pulsando el botón se aplicará la nueva versión y la app se recargará.
+
+Esto permite controlar las actualizaciones desde la interfaz instalada y evita recargas inesperadas mientras el usuario está usando la app.
 
 ## Uso local
 
