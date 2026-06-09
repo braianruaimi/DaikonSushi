@@ -106,16 +106,6 @@ const EXTRAS_CATEGORY = "Extras";
 // ✏️ EDITAR: catalogo completo del menu. El cliente puede cambiar textos, precios e imagenes locales.
 const products = [
   {
-    id: "promo-offer",
-    name: "Oferta Especial",
-    category: "Promos",
-    badge: "PROMO",
-    description: "Oferta especial: paquete promocional por tiempo limitado.",
-    price: 54999,
-    image: "assets/products/promo-offer.jpg",
-    meta: "Oferta especial",
-  },
-  {
     id: "pancho-salmon",
     name: "Pancho Sushi de Salmón",
     category: "Destacados",
@@ -1451,14 +1441,16 @@ function initOfferModal() {
   document.getElementById('offerLater')?.addEventListener('click', hideModal);
 
   document.getElementById('offerCta')?.addEventListener('click', () => {
-    // Añadir el item promocional único con precio fijo
+    // Añadir items: 1x premium-combo (16), 1x hotburger-smoked, 1x pancho-salmon
     SUPPRESS_TOASTS = true;
     try {
-      addToCart('promo-offer', null);
+      addToCart('premium-combo', '16');
+      addToCart('hotburger-smoked', null);
+      addToCart('pancho-salmon', null);
     } finally {
       SUPPRESS_TOASTS = false;
     }
-    showToast('Promoción agregada al carrito.');
+    showToast('Oferta agregada al carrito.');
     hideModal();
   });
 
