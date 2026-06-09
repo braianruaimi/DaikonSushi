@@ -1933,6 +1933,21 @@ product-card__selector select {
   .scheduled-note { display: block; margin: 8px 0 0 0; }
 }
 
+/* Aviso debajo de Programar pedido */
+.delivery-warning {
+  margin-top: 8px;
+  background: linear-gradient(180deg, rgba(255,245,210,0.06), rgba(255,245,210,0.02));
+  border: 1px solid rgba(255,215,120,0.08);
+  color: #fff6e6;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .delivery-warning { font-size: 0.85rem; }
+}
+
 /* Product card micro-animations: subtle lift, glass sheen and "salsa" overlay */
 .product-card {
   position: relative;
