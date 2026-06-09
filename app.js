@@ -60,7 +60,7 @@ const chatFaqs = [
   {
     label: "Promo",
     keywords: ["promo", "almuerzo", "mediodia", "mediodía", "oferta", "2x1"],
-    answer: "Tenemos Promo Almuerzo y promos rotativas como el 2x1 after office. Para confirmar disponibilidad y precio del día, abrí la promo o escribinos por WhatsApp.",
+    answer: "Tenemos Promo CENA y promos rotativas. Para confirmar disponibilidad y precio del día, abrí la promo o escribinos por WhatsApp.",
   },
   {
     label: "Incluye",
@@ -81,13 +81,13 @@ const chatFaqs = [
 
 // ✏️ EDITAR: contenido destacado de la promo especial del menu.
 const promoLunch = {
-  id: "promo-almuerzo",
-  category: "Promo Almuerzo",
+  id: "promo-cena",
+  category: "Promo CENA Daikon",
   badge: "PROMO",
-  title: "Promo Almuerzo Daikon",
-  description: "Consultá la promo del mediodía y coordiná tu pedido directo por WhatsApp.",
-  image: "assets/products/midnight-gyoza.svg",
-  cta: "Consultar promo",
+  title: "Promo CENA Daikon",
+  description: "HotBurger SAKURA + Combo Daikon + Eby crocante por $49.999. Coordiná tu pedido directo por WhatsApp.",
+  image: "assets/products/promo-cena.jpg",
+  cta: "Pedir promo",
 };
 
 const EXTRAS_CATEGORY = "Extras";
