@@ -900,6 +900,7 @@ function renderProducts(category = state.activeCategory) {
     const image = fragment.querySelector("img");
     const badge = fragment.querySelector(".product-card__badge");
     const media = fragment.querySelector(".product-card__media");
+    const sauceOverlay = fragment.querySelector('.sauce-overlay');
     const footer = fragment.querySelector(".product-card__footer");
     const category = fragment.querySelector(".product-card__category");
     const title = fragment.querySelector("h3");
@@ -949,6 +950,23 @@ function renderProducts(category = state.activeCategory) {
       footer.appendChild(badge);
     }
     category.textContent = product.category;
+
+    // Assign overlay variant classes based on product id or category
+    try {
+      const id = String(product.id || "").toLowerCase();
+      const cat = String(product.category || "").toLowerCase();
+      if (id.startsWith('pancho') || cat.includes('pancho') || cat.includes('pancho sushi')) {
+        media.classList.add('sauce--pancho');
+      } else if (id.includes('hotburger') || cat.includes('hot') || cat.includes('hotburger')) {
+        media.classList.add('sauce--hotburger');
+      } else if (cat.includes('combo')) {
+        media.classList.add('sauce--combo');
+      } else {
+        media.classList.add('sauce--default');
+      }
+    } catch (e) {
+      media.classList.add('sauce--default');
+    }
     stepper.insertAdjacentHTML("beforebegin", `<span><span class="product-card__price-label">precio unitario</span><span class="product-card__price">${formatPrice(displayPrice)}</span></span>`);
     title.textContent = product.name;
     // Microcopy: mostrar ventaja o "desde" para combos
