@@ -11,12 +11,26 @@ const APP_SHELL = [
   "assets/products/neon-dragon-box.svg",
   "assets/products/akuma-roll.svg",
   "assets/products/tokyo-crunch.svg",
+  "assets/products/premiun.jpg",
   "assets/products/nigiri-lux.svg",
   "assets/products/midnight-gyoza.svg",
   "assets/products/matcha-mochi.svg",
+  "assets/products/deluxe.jpg",
+  "assets/products/salsa agridulce.jpg",
+  "assets/products/salsa soja.jpg",
+  "assets/products/palillos extras.jpg",
+  "assets/products/Sakura.jpg",
+  "assets/products/Smoked.jpg",
+  "assets/products/Lang in the house.jpg",
+  "assets/products/combo daikon.jpg",
+  "assets/products/pancho pollo.jpg",
+  "assets/products/kanikama.png",
+  "assets/products/pancho sushi salmon.jpg",
+  "assets/products/pancho langostino.jpg",
   "assets/icons/icon-192.png",
   "assets/icons/icon-512.png"
 ];
+// additional pancho images are included above in the array
 
 const APP_SHELL_PATHS = new Set(APP_SHELL.map((entry) => new URL(entry, self.location.origin).pathname));
 

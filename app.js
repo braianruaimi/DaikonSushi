@@ -85,7 +85,8 @@ const products = [
     badge: "Top venta",
     description: "Roll caliente rebozado en panko. Base de queso crema saborizado, langostinos cocidos, cremoso de palta y topping de papas fritas.",
     price: 18000,
-    image: "assets/products/pancho sushi langostinos.jpg",
+    image: "assets/products/pancho langostino.jpg",
+    
     meta: "Roll caliente / crunchy",
     featured: true,
   },
@@ -96,8 +97,19 @@ const products = [
     badge: "Agridulce",
     description: "Roll caliente rebozado en panko. Base de queso crema con hondashi, kanikama y salsa agridulce.",
     price: 15000,
-    image: "assets/products/tokyo-crunch.svg",
+    image: "assets/products/kanikama.png",
     meta: "Roll caliente / hondashi",
+    featured: true,
+  },
+  {
+    id: "pancho-pollo-teriyaki",
+    name: "Pancho Pollo Teriyaki",
+    category: "Destacados",
+    badge: "Pancho Sushi",
+    description: "Roll caliente rebozado en panko. Base de queso crema saborizado, pollo salteado en salsa teriyaki, cremoso de palta y ciboulette.",
+    price: 15000,
+    image: "assets/products/pancho pollo.jpg",
+    meta: "Roll caliente / panko",
     featured: true,
   },
   {
@@ -107,9 +119,8 @@ const products = [
     badge: "Top venta",
     description: "Queso Phila, palta, langostinos salteados en teriyaki, verdeo y tapas rebozadas.",
     price: 18000,
-    image: "assets/products/pancho sushi langostinos.jpg",
+    image: "assets/products/Lang in the house.jpg",
     meta: "Hotburger / langostinos",
-    featured: true,
   },
   {
     id: "hotburger-sakura",
@@ -118,9 +129,8 @@ const products = [
     badge: "HOT",
     description: "Queso Phila saborizado, palta cremosa, salmón fresco, ciboulette, salsa teriyaki y tapas rebozadas.",
     price: 18000,
-    image: "assets/products/pancho sushi salmon.jpg",
+    image: "assets/products/Sakura.jpg",
     meta: "Hotburger / salmón fresco",
-    featured: true,
   },
   {
     id: "hotburger-smoked",
@@ -129,9 +139,8 @@ const products = [
     badge: "HOT",
     description: "Queso phila, langostinos salteados en teriyaki, salmón ahumado, lluvia de batatas y tapas rebozadas.",
     price: 18000,
-    image: "assets/products/pancho sushi langostinos.jpg",
+    image: "assets/products/Smoked.jpg",
     meta: "Hotburger / ahumado",
-    featured: true,
   },
   {
     id: "daikon-combo",
@@ -140,7 +149,7 @@ const products = [
     badge: "Clásico",
     description: "Philadelphia, salmón, salmón cocido, kanikama, tamago y atún.",
     price: 18000,
-    image: "assets/products/nigiri-lux.svg",
+    image: "assets/products/combo daikon.jpg",
     meta: "Elegí la cantidad de piezas",
     comboOptions: [
       { id: "16", label: "16 piezas", price: 18000, meta: "16 piezas / combo Daikon" },
@@ -157,7 +166,7 @@ const products = [
     badge: "Premium",
     description: "Philadelphia, Feel Roll, Salmón Cocido, Langostinos, Bs.As. Roll, Tentación Roll, Placer Roll, California Especial.",
     price: 21000,
-    image: "assets/products/tokyo-crunch.svg",
+    image: "assets/products/premiun.jpg",
     meta: "Elegí la cantidad de piezas",
     comboOptions: [
       { id: "16", label: "16 piezas", price: 21000, meta: "16 piezas / combo Premium" },
@@ -168,12 +177,12 @@ const products = [
   },
   {
     id: "deluxe-16",
-    name: "Deluxe 16 pzas",
+    name: "Combo Deluxe",
     category: "Combos Deluxe",
     badge: "Deluxe",
     description: "Combo de 16 piezas con salmón crudo, salmón cocido, salmón ahumado, caviar, langostinos, Feel Roll y Soul Roll.",
     price: 24000,
-    image: "assets/products/neon-dragon-box.svg",
+    image: "assets/products/deluxe.jpg",
     meta: "16 piezas / deluxe",
   },
   {
@@ -183,7 +192,7 @@ const products = [
     badge: "Salmón",
     description: "Philadelphia, Feel Roll, Geishas, Nigiri Sake, Bs.As. Roll.",
     price: 25000,
-    image: "assets/products/akuma-roll.svg",
+    image: "assets/products/todo salmon 4 piezas regalo.jpg",
     meta: "Elegí la cantidad de piezas",
     comboOptions: [
       { id: "16", label: "16 piezas", price: 25000, meta: "16 piezas / combo Salmón" },
@@ -192,24 +201,18 @@ const products = [
     ],
   },
   {
-    id: "entrada-roll-caliente-salmon",
-    name: "Roll Caliente Salmón",
+    id: "entrada-roll-caliente",
+    name: "Roll Caliente",
     category: "Entradas",
     badge: "Entrada",
-    description: "Relleno de salmón — 8 piezas.",
+    description: "Roll caliente — 8 piezas.",
     price: 15000,
-    image: "assets/products/neon-dragon-box.svg",
-    meta: "8 piezas / salmón",
-  },
-  {
-    id: "entrada-roll-caliente-kanikama",
-    name: "Roll Caliente Kanikama",
-    category: "Entradas",
-    badge: "Entrada",
-    description: "Relleno de kanikama — 8 piezas.",
-    price: 13000,
-    image: "assets/products/tokyo-crunch.svg",
-    meta: "8 piezas / kanikama",
+    image: "assets/products/Roll caliente.jpg",
+    meta: "Elegí la opción",
+    comboOptions: [
+      { id: "salmon", label: "8 piezas (Salmon)", price: 15000, meta: "8 piezas / salmón" },
+      { id: "kanikama", label: "8 piezas (Kanikama)", price: 13000, meta: "8 piezas / kanikama" },
+    ],
   },
   {
     id: "entrada-spring-rolls",
@@ -218,7 +221,7 @@ const products = [
     badge: "Entrada",
     description: "4 unidades rellenas de carne o verdura.",
     price: 12000,
-    image: "assets/products/matcha-mochi.svg",
+    image: "assets/products/Spring rolls.jpg",
     meta: "4 unidades / carne o verdura",
   },
   {
@@ -228,7 +231,7 @@ const products = [
     badge: "Entrada",
     description: "Rellenas de cerdo — 5 unidades.",
     price: 12000,
-    image: "assets/products/midnight-gyoza.svg",
+    image: "assets/products/gyozas.jpg",
     meta: "5 unidades / cerdo",
   },
   {
@@ -238,7 +241,7 @@ const products = [
     badge: "Entrada",
     description: "Langostinos rebozados — 5 unidades.",
     price: 15000,
-    image: "assets/products/akuma-roll.svg",
+    image: "assets/products/eby crocante.jpg",
     meta: "5 unidades / langostinos",
   },
   {
@@ -248,7 +251,7 @@ const products = [
     badge: "Extra",
     description: "Porción extra para acompañar tu pedido.",
     price: 1500,
-    image: "assets/products/tokyo-crunch.svg",
+    image: "assets/products/salsa agridulce.jpg",
     meta: "Extra / salsa",
   },
   {
@@ -258,7 +261,7 @@ const products = [
     badge: "Extra",
     description: "Porción adicional de salsa de soja.",
     price: 1500,
-    image: "assets/products/midnight-gyoza.svg",
+    image: "assets/products/salsa soja.jpg",
     meta: "Extra / soja",
   },
   {
@@ -268,7 +271,7 @@ const products = [
     badge: "Extra",
     description: "Par adicional de palillos descartables.",
     price: 1500,
-    image: "assets/products/matcha-mochi.svg",
+    image: "assets/products/palillos extras.jpg",
     meta: "Extra / palillos",
   },
 ];
@@ -505,6 +508,17 @@ function updateOpenOrdersVisibility() {
 
   if (label) {
     label.textContent = isOpen ? "Abierto ahora" : "Cerrado ahora";
+  }
+  // Actualizar estado del botón de checkout según el horario
+  if (checkoutButton) {
+    const labelSpan = checkoutButton.querySelector("span");
+    if (!isOpen) {
+      if (labelSpan) labelSpan.textContent = "Abrimos a las 18:00";
+      checkoutButton.setAttribute("disabled", "");
+    } else {
+      if (labelSpan) labelSpan.textContent = "ENVIAR PEDIDO";
+      checkoutButton.removeAttribute("disabled");
+    }
   }
 }
 
@@ -818,6 +832,8 @@ function renderProducts(category = state.activeCategory) {
     const card = fragment.querySelector(".product-card");
     const image = fragment.querySelector("img");
     const badge = fragment.querySelector(".product-card__badge");
+    const media = fragment.querySelector(".product-card__media");
+    const footer = fragment.querySelector(".product-card__footer");
     const category = fragment.querySelector(".product-card__category");
     const title = fragment.querySelector("h3");
     const description = fragment.querySelector(".product-card__description");
@@ -836,8 +852,18 @@ function renderProducts(category = state.activeCategory) {
     image.src = product.image;
     image.alt = product.name;
     badge.classList.remove("product-card__badge--hot", "product-card__badge--ghost");
-    badge.textContent = product.badge;
-    badge.classList.add(getProductBadgeVariantClass(product.badge));
+    // Priorizar propiedades que pueden contener etiquetas: badge, tag o flavor
+    const badgeSource = product.badge ?? product.tag ?? product.flavor ?? "";
+    badge.textContent = badgeSource;
+    const variantClass = getProductBadgeVariantClass(badgeSource);
+    badge.classList.add(variantClass);
+    // Posicionar badges "ghost" (ej: AGRIDULCE, CLÁSICO) sobre la imagen dentro de .product-card__media
+    if (badgeSource && variantClass === "product-card__badge--ghost") {
+      media.appendChild(badge);
+    } else if (footer) {
+      // Para badges calientes como TOP VENTA, colocarlos en el footer por compatibilidad visual
+      footer.appendChild(badge);
+    }
     category.textContent = product.category;
     stepper.insertAdjacentHTML("beforebegin", `<span><span class="product-card__price-label">precio unitario</span><span class="product-card__price">${formatPrice(displayPrice)}</span></span>`);
     title.textContent = product.name;
@@ -845,34 +871,102 @@ function renderProducts(category = state.activeCategory) {
     meta.textContent = displayMeta;
     quantity.textContent = String(getQuantity(product.id, selectedOptionId));
 
+    // Renderizar controles de add-ons solo en los productos "pancho-" (cards que ocupan mitad)
+    if (product.id && product.id.startsWith("pancho-")) {
+      const addons = document.createElement("div");
+      addons.className = "product-addons";
+
+      const extrasToShow = [
+        { id: "extra-salsa-agridulce", label: "Agridulce", price: 1500 },
+        { id: "extra-salsa-soja", label: "Soja", price: 1500 },
+        { id: "extra-palillos", label: "Palillos", price: 1500 },
+      ];
+
+      extrasToShow.forEach((ex) => {
+        const label = document.createElement("label");
+        label.className = "addon-checkbox";
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.dataset.extraId = ex.id;
+        input.setAttribute("aria-label", `Agregar ${ex.label}`);
+        const span = document.createElement("span");
+        // Mostrar texto específico para salsas: "Salsa extra por {precio}"
+        if (/salsa/i.test(ex.id)) {
+          span.textContent = `Salsa extra por ${formatPrice(ex.price)}`;
+        } else if (/palillos/i.test(ex.id)) {
+          span.textContent = ex.price ? `Palillos extra por ${formatPrice(ex.price)}` : `Palillos extra`;
+        } else {
+          span.textContent = `${ex.label} (+${formatPrice(ex.price)})`;
+        }
+        label.append(input, span);
+        addons.appendChild(label);
+      });
+
+      // Insertar los addons dentro del body, justo después de la descripción
+      description.insertAdjacentElement("afterend", addons);
+    }
+
     if (Array.isArray(product.comboOptions) && product.comboOptions.length) {
-      const selector = document.createElement("label");
-      const selectorLabel = document.createElement("span");
-      const select = document.createElement("select");
+      // Si solo hay una variante, mostrar un badge estático con el tamaño
+      if (product.comboOptions.length === 1) {
+        const only = product.comboOptions[0];
+        const sizeBadge = document.createElement("span");
+        sizeBadge.className = "size-badge";
+        sizeBadge.textContent = only.label;
+        if (stepper) {
+          stepper.insertAdjacentElement("beforebegin", sizeBadge);
+        }
+      } else {
+        const selector = document.createElement("label");
+        const selectorLabel = document.createElement("span");
+        const select = document.createElement("select");
 
-      selector.className = "product-card__selector";
-      selectorLabel.className = "product-card__selector-label";
-      selectorLabel.textContent = "Elegí el combo";
-      select.setAttribute("aria-label", `Cantidad de piezas para ${product.name}`);
+        selector.className = "product-card__selector";
+        selectorLabel.className = "product-card__selector-label";
+        selectorLabel.textContent = "Elegí el combo";
+        select.setAttribute("aria-label", `Cantidad de piezas para ${product.name}`);
 
-      product.comboOptions.forEach((option) => {
-        const optionElement = document.createElement("option");
-        optionElement.value = option.id;
-        optionElement.textContent = `${option.label} · ${formatPrice(option.price)}`;
-        optionElement.selected = option.id === selectedOptionId;
-        select.appendChild(optionElement);
-      });
+        product.comboOptions.forEach((option) => {
+          const optionElement = document.createElement("option");
+          optionElement.value = option.id;
+          optionElement.textContent = `${option.label} · ${formatPrice(option.price)}`;
+          optionElement.selected = option.id === selectedOptionId;
+          select.appendChild(optionElement);
+        });
 
-      select.addEventListener("change", () => {
-        setProductSelection(product.id, select.value);
-      });
+        select.addEventListener("change", () => {
+          setProductSelection(product.id, select.value);
+        });
 
-      selector.append(selectorLabel, select);
-      description.insertAdjacentElement("afterend", selector);
+        // Agregar etiqueta de cantidad antes del stepper para separar visualmente
+        const comboQtyLabel = document.createElement("span");
+        comboQtyLabel.className = "combo-qty-label";
+        comboQtyLabel.textContent = "Cantidad";
+        if (stepper) {
+          stepper.insertAdjacentElement("beforebegin", comboQtyLabel);
+        }
+
+        selector.append(selectorLabel, select);
+        description.insertAdjacentElement("afterend", selector);
+      }
     }
 
     decreaseButton.addEventListener("click", () => removeFromCart(product.id, selectedOptionId));
-    increaseButton.addEventListener("click", () => addToCart(product.id, selectedOptionId));
+    increaseButton.addEventListener("click", () => {
+      // Agregar el producto principal
+      addToCart(product.id, selectedOptionId);
+      // Si hay addons seleccionados dentro de la card, agregarlos también como items separados
+      const addonContainer = card.querySelector(".product-addons");
+      if (addonContainer) {
+        const checked = addonContainer.querySelectorAll('input[type="checkbox"]:checked');
+        checked.forEach((chk) => {
+          const extraId = chk.dataset.extraId;
+          if (extraId) {
+            addToCart(extraId, null);
+          }
+        });
+      }
+    });
     decreaseButton.disabled = getQuantity(product.id, selectedOptionId) === 0;
     productGrid.appendChild(fragment);
   });
@@ -946,6 +1040,12 @@ function updateCartUI() {
   const summary = getCartSummary();
 
   cartCount.textContent = String(summary.count);
+  const cartBtn = document.getElementById('cartToggle');
+  if (cartBtn) {
+    cartBtn.classList.remove('cart-button--glow');
+    void cartBtn.offsetWidth;
+    cartBtn.classList.add('cart-button--glow');
+  }
   subtotalValue.textContent = formatCartSubtotal(summary);
   deliveryValue.textContent = formatCartDelivery(summary);
   totalValue.textContent = formatCartTotal(summary).label;
@@ -1099,6 +1199,16 @@ function openWhatsApp() {
   if (!isNameValid || !isAddressValid) {
     showToast("Completá nombre y dirección para enviar el pedido.");
     (isNameValid ? customerAddress : customerName).focus();
+    return;
+  }
+
+  // Validar que la dirección esté dentro de las zonas cubiertas
+  const addressValue = String(customerAddress.value || "").toLowerCase();
+  const allowedZones = ["la plata", "ensenada", "berisso"];
+  const inZone = allowedZones.some((z) => addressValue.includes(z));
+  if (!inZone) {
+    showToast("Solo hacemos envíos a La Plata, Ensenada y Berisso. Revisá tu dirección.");
+    customerAddress.focus();
     return;
   }
 
@@ -1307,6 +1417,11 @@ function registerServiceWorker() {
       showToast("PWA no pudo registrarse en este entorno.");
     });
   });
+
+window.addEventListener("load", () => {
+  initFeaturedCarousel();
+  initHotburgerCarousel();
+});
 }
 
 function matchesPromoQuery(query) {
@@ -1372,6 +1487,30 @@ function setupInstallApp() {
 
 function isStandaloneApp() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function initFeaturedCarousel() {
+  const images = [
+    "assets/products/pancho pollo.jpg",
+    "assets/products/pancho sushi salmon.jpg",
+    "assets/products/pancho langostino.jpg",
+    "assets/products/kanikama.png",
+  ];
+
+  let idx = 0;
+  const imgEl = document.getElementById("featuredCarousel");
+  if (!imgEl) return;
+
+  function showIndex(i) {
+    imgEl.src = images[i];
+    imgEl.alt = `Pancho ${i + 1}`;
+  }
+
+  showIndex(0);
+  setInterval(() => {
+    idx = (idx + 1) % images.length;
+    showIndex(idx);
+  }, 2000);
 }
 
 function isIosDevice() {
@@ -1480,4 +1619,27 @@ function getCartItemDetails(item) {
     meta,
     price,
   };
+}
+
+function initHotburgerCarousel() {
+  const images = [
+    "assets/products/Sakura.jpg",
+    "assets/products/Smoked.jpg",
+    "assets/products/Lang in the house.jpg",
+  ];
+
+  let idx = 0;
+  const imgEl = document.getElementById("hotburgerCarousel");
+  if (!imgEl) return;
+
+  function showIndex(i) {
+    imgEl.src = images[i];
+    imgEl.alt = `Hotburger ${i + 1}`;
+  }
+
+  showIndex(0);
+  setInterval(() => {
+    idx = (idx + 1) % images.length;
+    showIndex(idx);
+  }, 2000);
 }

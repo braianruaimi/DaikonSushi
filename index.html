@@ -102,13 +102,14 @@
                 <circle cx="10" cy="19" r="1.6" fill="currentColor" />
                 <circle cx="17" cy="19" r="1.6" fill="currentColor" />
               </svg>
+              <span class="secondary-button__label">Ver carrito</span>
             </button>
           </div>
 
           <dl class="hero__stats" aria-label="Destacados">
             <div>
               <dt>Delivery</dt>
-              <dd>La Plata, Ensenada y Berisso</dd>
+              <dd>LP · Ensenada · Berisso</dd>
             </div>
             <div>
               <dt>Promo</dt>
@@ -123,7 +124,7 @@
 
         <aside class="hero__panel">
           <div class="hero__panel-media">
-            <img src="assets/products/pancho sushi salmon.jpg" alt="Pancho Sushi de Salmón" loading="eager" />
+            <img id="featuredCarousel" src="assets/products/pancho sushi salmon.jpg" alt="Pancho Sushi de Salmón" loading="eager" />
           </div>
           <p class="hero__panel-label">Selección de la casa</p>
           <h2>Pancho Sushi de Salmón</h2>
@@ -135,6 +136,16 @@
             <button class="primary-button primary-button--small" id="featuredAdd" type="button">
               Agregar
             </button>
+          </div>
+          <div class="hero__panel-hotburgers">
+            <p class="hero__panel-label">Hotburgers</p>
+            <div class="hero__panel-media--hot">
+              <img id="hotburgerCarousel" src="assets/products/Sakura.jpg" alt="Hotburger" loading="lazy" />
+            </div>
+            <div class="hero__panel-footer">
+              <span>$18.000</span>
+              <button class="primary-button primary-button--small" id="hotburgerAdd" type="button">Agregar</button>
+            </div>
           </div>
         </aside>
       </section>
@@ -155,7 +166,8 @@
           <span class="section-heading__count" id="productCount"></span>
           <h2>Elegí tu combo y ajustá cantidades al instante</h2>
           <p>
-            Navegá por categorías, sumá o restá unidades desde cada card y armá tu pedido con envíos disponibles en La Plata, Ensenada y Berisso.
+            Usá los filtros para encontrar tu pedido ideal. 
+            Sumá o restá desde cada card.
           </p>
         </div>
 
