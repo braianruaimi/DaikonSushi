@@ -1126,19 +1126,12 @@ function updateCartUI() {
   deliveryValue.textContent = formatCartDelivery(summary);
   totalValue.textContent = formatCartTotal(summary).label;
 
-  // Update mobile CTA
+  // Update mobile CTA (show total only)
   const mobileCta = document.getElementById('mobileCta');
   const mobilePrice = document.getElementById('mobileCtaPrice');
-  const mobileBtn = document.getElementById('mobileCtaButton');
-  if (mobileCta && mobilePrice && mobileBtn) {
+  if (mobileCta && mobilePrice) {
     mobilePrice.textContent = formatCartSubtotal(summary);
-    if (summary.count > 0) {
-      mobileCta.hidden = false;
-      mobileBtn.removeAttribute('disabled');
-    } else {
-      mobileCta.hidden = true;
-      mobileBtn.setAttribute('disabled', '');
-    }
+    mobileCta.hidden = summary.count === 0;
   }
 
   saveCartToStorage();
@@ -1629,19 +1622,7 @@ window.addEventListener("load", () => {
     }
     if (img.complete && img.naturalWidth) mark(); else img.addEventListener('load', mark, { once: true });
   });
-    // Mobile CTA button behaviour
-    const mobileBtn = document.getElementById('mobileCtaButton');
-    if (mobileBtn) {
-      mobileBtn.addEventListener('click', () => {
-        const cartDrawer = document.getElementById('cartDrawer');
-        if (cartDrawer) {
-          cartDrawer.hidden = false;
-          cartDrawer.removeAttribute('aria-hidden');
-        }
-        const cartToggleBtn = document.getElementById('cartToggle');
-        if (cartToggleBtn) cartToggleBtn.focus();
-      });
-    }
+    // Mobile CTA removed button: no handler required
 });
 }
 
