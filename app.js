@@ -90,6 +90,17 @@ const promoLunch = {
   cta: "Sumar al carrito",
 };
 
+// Promo CENA para dos
+const promoDinnerTwo = {
+  id: "promo-cena-dos",
+  category: "Promo CENA para dos",
+  badge: "PROMO",
+  title: "Promo CENA para dos",
+  description: "HotBurger SAKURA + Combo Daikon 32p + Ebi crocante por $54.999.",
+  image: "assets/products/promo-cena-dos.jpg",
+  cta: "Sumar al carrito",
+};
+
 const EXTRAS_CATEGORY = "Extras";
 
 // ✏️ EDITAR: catalogo completo del menu. El cliente puede cambiar textos, precios e imagenes locales.
@@ -1023,6 +1034,11 @@ function renderProducts(category = state.activeCategory) {
     (state.activeCategory === "Todos" || state.activeCategory === promoLunch.category) &&
     matchesPromoQuery(state.query);
 
+  const showPromoDinnerTwo =
+    isPromoDinnerTwoAvailable() &&
+    (state.activeCategory === "Todos" || state.activeCategory === promoDinnerTwo.category) &&
+    matchesPromoQuery(state.query);
+
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       state.activeCategory === "Todos" ||
@@ -1056,6 +1072,10 @@ function renderProducts(category = state.activeCategory) {
 
   if (showPromoCard) {
     productGrid.appendChild(createPromoCard());
+  }
+
+  if (showPromoDinnerTwo) {
+    productGrid.appendChild(createPromoCardDinnerTwo());
   }
 
   filteredProducts.forEach((product, index) => {
@@ -1746,6 +1766,10 @@ function formatCartSubtotal(summary) {
   if (isPromoCenaApplied()) {
     return formatCurrency(49999);
   }
+
+  if (isPromoCenaDosApplied()) {
+    return formatCurrency(54999);
+  }
   if (summary.hasQuotedItems && summary.subtotal > 0) {
     return `${formatCurrency(summary.subtotal)} + items a consultar`;
   }
@@ -1759,7 +1783,7 @@ function formatCartSubtotal(summary) {
 
 function formatCartDelivery(summary) {
   // Si la promo CENA está aplicada, el envío igualmente se aplica
-  if (isPromoCenaApplied()) {
+  if (isPromoCenaApplied() || isPromoCenaDosApplied()) {
     return formatCurrency(DELIVERY_FEE);
   }
   if (summary.hasQuotedItems) {
@@ -1779,9 +1803,15 @@ function formatCartTotal(summary) {
     };
   }
 
-  // Si la promo CENA está aplicada, forzamos el total a $49.999
+  // Si alguna promo de cena está aplicada, forzamos el total promocional
   if (isPromoCenaApplied()) {
     const promoTotal = 49999;
+    const totalWithDelivery = promoTotal + DELIVERY_FEE;
+    return { label: formatCurrency(totalWithDelivery), message: formatCurrency(totalWithDelivery) };
+  }
+
+  if (isPromoCenaDosApplied()) {
+    const promoTotal = 54999;
     const totalWithDelivery = promoTotal + DELIVERY_FEE;
     return { label: formatCurrency(totalWithDelivery), message: formatCurrency(totalWithDelivery) };
   }
@@ -1797,6 +1827,17 @@ function isPromoCenaApplied() {
   try {
     const hasHot = getQuantity('hotburger-sakura', null) >= 1;
     const hasCombo = getQuantity('daikon-combo', '16') >= 1;
+    const hasEbi = getQuantity('entrada-ebi-crocante', null) >= 1;
+    return hasHot && hasCombo && hasEbi;
+  } catch (e) {
+    return false;
+  }
+}
+
+function isPromoCenaDosApplied() {
+  try {
+    const hasHot = getQuantity('hotburger-sakura', null) >= 1;
+    const hasCombo = getQuantity('daikon-combo', '32') >= 1;
     const hasEbi = getQuantity('entrada-ebi-crocante', null) >= 1;
     return hasHot && hasCombo && hasEbi;
   } catch (e) {
@@ -2258,4 +2299,45 @@ function flyToCartFrom(imgEl) {
   setTimeout(() => {
     clone.remove();
   }, 800);
+}
+
+function isPromoDinnerTwoAvailable() {
+  const currentHour = new Date().getHours();
+  // Mostrar la promo de cena para dos en horario nocturno (18:00 - 23:00)
+  return currentHour >= 18 && currentHour <= 23;
+}
+
+function createPromoCardDinnerTwo() {
+  const card = document.createElement("article");
+  card.className = "promo-card reveal-card";
+  card.innerHTML = `
+    <div class="promo-card__media promo-card__media--triplet">
+      <img src="assets/products/Sakura.jpg" alt="HotBurger Sakura" loading="lazy" />
+      <img src="assets/products/combo daikon.jpg" alt="Combo Daikon 32p" loading="lazy" />
+      <img src="assets/products/eby crocante.jpg" alt="Ebi Crocante" loading="lazy" />
+      <span class="promo-card__badge">${promoDinnerTwo.badge}</span>
+    </div>
+    <div class="promo-card__body">
+      <p class="promo-card__eyebrow">${promoDinnerTwo.category}</p>
+      <h3>${promoDinnerTwo.title}</h3>
+      <p>${promoDinnerTwo.description}</p>
+      <button class="primary-button promo-card__button" type="button">${promoDinnerTwo.cta}</button>
+    </div>
+  `;
+
+  card.querySelector("button").addEventListener("click", () => {
+    // Agregar los tres productos de la promo al carrito y abrir el drawer
+    SUPPRESS_TOASTS = true;
+    try {
+      addToCart('hotburger-sakura', null);
+      addToCart('daikon-combo', '32');
+      addToCart('entrada-ebi-crocante', null);
+    } finally {
+      SUPPRESS_TOASTS = false;
+    }
+    showToast('Promo CENA para dos agregada al carrito.');
+    openCart();
+  });
+
+  return card;
 }
