@@ -1768,7 +1768,8 @@ function formatCartSubtotal(summary) {
   }
 
   if (isPromoCenaDosApplied()) {
-    return formatCurrency(54999);
+    // Mostrar subtotal ya con el total promocional de la oferta para dos
+    return formatCurrency(58999);
   }
   if (summary.hasQuotedItems && summary.subtotal > 0) {
     return `${formatCurrency(summary.subtotal)} + items a consultar`;
@@ -1783,8 +1784,13 @@ function formatCartSubtotal(summary) {
 
 function formatCartDelivery(summary) {
   // Si la promo CENA está aplicada, el envío igualmente se aplica
-  if (isPromoCenaApplied() || isPromoCenaDosApplied()) {
+  // Para la promo CENA normal el envío se aplica; para la promo para dos lo ocultamos
+  if (isPromoCenaApplied()) {
     return formatCurrency(DELIVERY_FEE);
+  }
+
+  if (isPromoCenaDosApplied()) {
+    return formatCurrency(0);
   }
   if (summary.hasQuotedItems) {
     return "A confirmar";
@@ -1811,9 +1817,9 @@ function formatCartTotal(summary) {
   }
 
   if (isPromoCenaDosApplied()) {
-    const promoTotal = 54999;
-    const totalWithDelivery = promoTotal + DELIVERY_FEE;
-    return { label: formatCurrency(totalWithDelivery), message: formatCurrency(totalWithDelivery) };
+    // Para la promo para dos, el subtotal ya representa el total promocional $58.999
+    const promoTotal = 58999;
+    return { label: formatCurrency(promoTotal), message: formatCurrency(promoTotal) };
   }
 
   const total = summary.subtotal ? summary.subtotal + DELIVERY_FEE : 0;
