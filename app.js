@@ -447,9 +447,11 @@ function initRoulette() {
     // We subtract idx*sliceAngle to rotate that slice into place. Add half slice to center it.
     const targetAngle = spins * 360 + (idx * sliceAngle) + sliceAngle / 2;
 
-    // apply rotation
-    // ensure we force a reflow if needed
+    // prepare wheel for smooth transition and force repaint
     wheel.classList.remove('spin-reset');
+    // ensure explicit transition in case CSS wasn't applied
+    wheel.style.transition = 'transform 1800ms cubic-bezier(.15,.9,.2,1)';
+    wheel.style.willChange = 'transform';
     void wheel.offsetWidth;
     wheel.style.transform = `rotate(${targetAngle}deg)`;
 
@@ -485,6 +487,12 @@ function initRoulette() {
     }
 
     wheel.addEventListener('transitionend', onEnd);
+    // safety: if transitionend doesn't fire, fallback after duration
+    const fallback = setTimeout(() => {
+      try { onEnd(); } catch (e) { /* ignore */ }
+    }, 2000);
+    function clearFallback() { clearTimeout(fallback); }
+    wheel.addEventListener('transitionend', clearFallback, { once: true });
   }
 
   btn.addEventListener('click', () => {

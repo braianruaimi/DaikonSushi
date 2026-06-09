@@ -426,7 +426,8 @@ a {
 @media (max-width: 640px) {
   .roulette-wheel { width: 180px; height:180px; }
   .roulette-wheel__inner { width: 100px; height:100px; }
-  .roulette-button { left: 12px; bottom: 12px; }
+  /* Mantener la ruleta por encima del menú flotante en pantallas pequeñas */
+  .roulette-button { left: calc(12px + var(--safe-left)); bottom: calc(84px + var(--safe-bottom)); }
 }
 
 .floating-menu {
