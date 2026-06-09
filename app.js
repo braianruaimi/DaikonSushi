@@ -1614,7 +1614,7 @@ window.addEventListener("load", () => {
   ["featuredCarousel", "hotburgerCarousel"].forEach((id) => {
     const img = document.getElementById(id);
     if (!img) return;
-    const parent = img.parentElement;
+    const parent = img.closest('.product-card__media, .hero__panel-media, .promo-card__media') || img.parentElement;
     const placeholder = parent?.querySelector('.image-placeholder');
     function mark() {
       parent && parent.classList.add('is-loaded');
