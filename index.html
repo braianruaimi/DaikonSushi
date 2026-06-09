@@ -368,6 +368,29 @@
       <span class="install-app-button__label">Instalar app</span>
     </button>
 
+    <!-- Roulette floating button -->
+    <button id="rouletteButton" class="roulette-button" type="button" aria-label="Girar la ruleta - elegir promo">
+      <span class="roulette-button__icon">🎯</span>
+      <span class="roulette-button__label">Ruleta</span>
+    </button>
+
+    <!-- Roulette modal -->
+    <div id="rouletteModal" class="roulette-modal" role="dialog" aria-hidden="true" hidden>
+      <div class="roulette-modal__card">
+        <button class="icon-button roulette-modal__close" id="rouletteClose" aria-label="Cerrar">×</button>
+        <div class="roulette-wheel" id="rouletteWheel" aria-hidden="true">
+          <div class="roulette-wheel__inner" id="rouletteInner">GIRAR</div>
+        </div>
+        <div class="roulette-result" id="rouletteResult" hidden>
+          <p id="rouletteMessage"></p>
+          <div class="roulette-actions">
+            <button id="rouletteApply" class="primary-button">Aplicar</button>
+            <button id="rouletteCloseBtn" class="ghost-button">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <template id="productCardTemplate">
       <article class="product-card reveal-card">
         <div class="product-card__media">

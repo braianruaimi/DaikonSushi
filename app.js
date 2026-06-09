@@ -388,7 +388,96 @@ function bootstrap() {
   setupInstallApp();
   setupFloatingDockVisibility();
   bindEvents();
+  initRoulette();
   registerServiceWorker();
+}
+
+// Roulette / promo spinner
+function initRoulette() {
+  const btn = document.getElementById('rouletteButton');
+  const modal = document.getElementById('rouletteModal');
+  const close = document.getElementById('rouletteClose');
+  const closeBtn = document.getElementById('rouletteCloseBtn');
+  const wheel = document.getElementById('rouletteWheel');
+  const inner = document.getElementById('rouletteInner');
+  const resultWrap = document.getElementById('rouletteResult');
+  const resultMsg = document.getElementById('rouletteMessage');
+  const applyBtn = document.getElementById('rouletteApply');
+
+  if (!btn || !modal || !wheel) return;
+
+  const promos = [
+    { id: 'p-hot-10', message: 'Hoy te toca: Hotburger +10% OFF en tu pedido', productId: 'hotburger-sakura', discount: 0.10 },
+    { id: 'p-pancho-free', message: '¡Suerte! Pancho gratis en el próximo pedido (1 unidad)', productId: 'pancho-salmon', quantity: 1 },
+    { id: 'p-delivery-free', message: 'Envío gratis en tu próximo pedido', freeDelivery: true },
+    { id: 'p-5off', message: '10% OFF en Combo Daikon', productId: 'daikon-combo', discount: 0.10 },
+    { id: 'p-nada', message: 'Te toca: 5% OFF en tu próxima compra', discount: 0.05 },
+  ];
+
+  function openModal() {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    resultWrap.hidden = true;
+    inner.textContent = 'GIRAR';
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function spin() {
+    if (!wheel) return;
+    // animate
+    wheel.classList.remove('spinning');
+    void wheel.offsetWidth;
+    wheel.classList.add('spinning');
+    // disable interactions briefly
+    btn.disabled = true;
+    // pick random promo after animation
+    setTimeout(() => {
+      const idx = Math.floor(Math.random() * promos.length);
+      const promo = promos[idx];
+      resultMsg.textContent = promo.message;
+      resultWrap.hidden = false;
+      inner.textContent = '';
+      // store current promo on apply button
+      applyBtn.dataset.promo = JSON.stringify(promo);
+      btn.disabled = false;
+    }, 1400);
+  }
+
+  btn.addEventListener('click', () => {
+    openModal();
+    // give a moment and spin
+    setTimeout(spin, 120);
+  });
+
+  close?.addEventListener('click', closeModal);
+  closeBtn?.addEventListener('click', closeModal);
+
+  applyBtn?.addEventListener('click', (e) => {
+    try {
+      const p = JSON.parse(e.currentTarget.dataset.promo || null);
+      if (!p) return;
+      if (p.productId) {
+        const qty = p.quantity || 1;
+        for (let i = 0; i < qty; i++) addToCart(p.productId, null);
+        showToast(`Promoción aplicada: ${p.message}`);
+      } else if (p.freeDelivery) {
+        showToast('Promoción aplicada: Envío gratis (se aplicará al enviar el pedido).');
+        // mark freeDelivery in session state (simple flag)
+        state.freeDelivery = true;
+      } else if (p.discount) {
+        showToast(`Promoción aplicada: ${Math.round(p.discount * 100)}% OFF (se aplica en local).`);
+        state.lastDiscount = p.discount;
+      }
+    } catch (err) {
+      console.debug('Apply promo error', err);
+    } finally {
+      closeModal();
+    }
+  });
 }
 
 function setupHeroNotice() {
