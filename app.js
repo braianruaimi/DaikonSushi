@@ -1398,32 +1398,55 @@ function generateWhatsAppMessage(scheduledTime = null) {
   const address = customerAddress.value.trim();
   const paymentMethod = new FormData(checkoutForm).get("paymentMethod") || "Efectivo";
   const summary = getCartSummary();
+  const separator = "----------------------------------------";
+
   const lines = state.cart
     .map((item) => {
       const cartItemDetails = getCartItemDetails(item);
-      if (!cartItemDetails) {
-        return "";
-      }
-
+      if (!cartItemDetails) return null;
       const { name, price: unitPriceValue } = cartItemDetails;
-
-      const itemSubtotal = typeof unitPriceValue === "number"
-        ? formatCurrency(unitPriceValue * item.quantity)
-        : "Consultá precio";
-      return typeof unitPriceValue === "number"
-        ? `- ${item.quantity}x ${name} — ${itemSubtotal}`
-        : `- ${item.quantity}x ${name} — Consultá precio`;
+      if (typeof unitPriceValue === 'number') {
+        const unitLabel = formatCurrency(unitPriceValue);
+        return `• ${item.quantity}x ${name} (${unitLabel})`;
+      }
+      return `• ${item.quantity}x ${name} (Consultá precio)`;
     })
     .filter(Boolean);
 
-  const totalLabel = formatCartTotal(summary).message;
   const deliveryLabel = formatCartDelivery(summary);
-  let scheduledNote = "";
+  const totalMessage = formatCartTotal(summary).label;
+
+  // Pago: si el formulario incluye un field 'paymentGiven' (monto en efectivo), lo usamos
+  const form = new FormData(checkoutForm);
+  const paymentGivenRaw = form.get('paymentGiven');
+  let paymentLine = paymentMethod;
+  if (String(paymentMethod).toLowerCase() === 'efectivo' && paymentGivenRaw) {
+    const n = Number(String(paymentGivenRaw).replace(/[^0-9\-\.]/g, ''));
+    paymentLine = isFinite(n) ? `${paymentMethod} (Paga con ${formatCurrency(n)})` : `${paymentMethod} (${String(paymentGivenRaw)})`;
+  }
+
+  let scheduledNote = '';
   if (scheduledTime) {
     scheduledNote = `\n\n⏰ Pedido programado para ${scheduledTime}.`;
   }
 
-  return `🍣 *NUEVO PEDIDO - DAIKON SUSHI*\n\n👤 *Cliente:* ${customer}\n📍 *Dirección:* ${address}\n\n🛒 *Detalle del pedido:*\n${lines.join("\n")}\n\n🚚 *Envío:* ${deliveryLabel}\n💰 *Total:* ${totalLabel}\n💳 *Medio de pago:* ${paymentMethod}${scheduledNote}`;
+  const header = `¡Hola Daikon! 🍣 Quiero hacer un pedido:`;
+
+  const addressLine = `📍 Dirección: ${address || 'No indicada'}`;
+  const paymentDisplay = `💵 Pago: ${paymentLine}`;
+  const deliveryDisplay = `🚴 Envío: ${deliveryLabel}`;
+  const totalDisplay = `💰 Total: ${totalMessage}`;
+
+  return [
+    header,
+    separator,
+    ...lines,
+    separator,
+    addressLine,
+    paymentDisplay,
+    deliveryDisplay,
+    totalDisplay,
+  ].join("\n").concat(scheduledNote);
 }
 
 function openWhatsApp() {
