@@ -32,12 +32,15 @@ const APP_SHELL = [
 ];
 // additional pancho images are included above in the array
 
-const APP_SHELL_PATHS = new Set(APP_SHELL.map((entry) => new URL(entry, self.location.origin).pathname));
+// Encode entries to avoid issues with spaces in filenames when requesting resources
+const APP_SHELL_ENCODED = APP_SHELL.map((entry) => encodeURI(entry));
+
+const APP_SHELL_PATHS = new Set(APP_SHELL_ENCODED.map((entry) => new URL(entry, self.location.origin).pathname));
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) =>
-      cache.addAll(APP_SHELL).catch((err) => {
+      cache.addAll(APP_SHELL_ENCODED).catch((err) => {
         // If some resources fail to cache (404, CORS), log and continue so SW can still install
         console.error('Failed to cache some app shell resources:', err);
         return Promise.resolve();
