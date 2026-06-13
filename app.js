@@ -650,11 +650,21 @@ function bindEvents() {
   const scheduleSelect = document.getElementById('scheduleTime');
   if (scheduleSelect) {
     scheduleSelect.addEventListener('change', (e) => {
+      const scheduleValue = e.target.value;
       const scheduledNote = document.getElementById('scheduledNote');
       const scheduledTimeDisplay = document.getElementById('scheduledTimeDisplay');
-      if (scheduledNote && scheduledTimeDisplay) {
-        scheduledTimeDisplay.textContent = e.target.value;
-        scheduledNote.hidden = false;
+      const checkoutBtn = document.getElementById('checkoutButton');
+      const labelSpan = checkoutBtn ? checkoutBtn.querySelector('span') : null;
+
+      if (scheduleValue && scheduleValue !== "") {
+        if (scheduledNote && scheduledTimeDisplay) {
+          scheduledTimeDisplay.textContent = scheduleValue;
+          scheduledNote.hidden = false;
+        }
+        if (labelSpan) labelSpan.textContent = `Programado — ${scheduleValue}`;
+      } else {
+        if (scheduledNote) scheduledNote.hidden = true;
+        if (labelSpan) labelSpan.textContent = "ENVIAR PEDIDO";
       }
     });
   }
