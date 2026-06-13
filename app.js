@@ -767,7 +767,10 @@ function updateOpenOrdersVisibility() {
       checkoutButton.removeAttribute("disabled");
       checkoutButton.classList.remove('is-schedule');
       const scheduleWrapper = document.getElementById('scheduleWrapper');
-      if (scheduleWrapper) scheduleWrapper.hidden = true;
+      const scheduleSelect = document.getElementById('scheduleTime');
+      // Mostrar el selector incluso si el local está abierto (permite programar aunque esté abierto)
+      if (scheduleWrapper) scheduleWrapper.hidden = false;
+      if (scheduleSelect) scheduleSelect.value = ``; // valor vacío = enviar ahora (ASAP)
       const scheduledNote = document.getElementById('scheduledNote');
       if (scheduledNote) scheduledNote.hidden = true;
     }
@@ -1697,11 +1700,12 @@ function openWhatsApp() {
     return;
   }
 
-  const isScheduling = !isOrderWindowOpen();
+  // Determinar si el usuario quiere programar usando el selector (valor vacío = enviar ahora)
+  const scheduleSelect = document.getElementById('scheduleTime');
+  const isScheduling = scheduleSelect && scheduleSelect.value && scheduleSelect.value !== "";
   let scheduledTime = null;
   if (isScheduling) {
-    const scheduleSelect = document.getElementById('scheduleTime');
-    scheduledTime = scheduleSelect ? scheduleSelect.value : `${String(ORDER_OPEN_HOUR).padStart(2,'0')}:00`;
+    scheduledTime = scheduleSelect.value;
     showToast(`Pedido programado. Se enviará por WhatsApp a ${scheduledTime}.`);
   } else {
     showToast("Pedido listo para confirmar por WhatsApp.");

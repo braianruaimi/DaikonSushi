@@ -252,9 +252,10 @@
               <input id="paymentGiven" name="paymentGiven" type="text" inputmode="numeric" placeholder="Ej: 10000" />
               <small class="muted">Indicá con cuánto vas a pagar para calcular cambio.</small>
             </label>
-            <label class="checkout-field" id="scheduleWrapper" for="scheduleTime" hidden>
+            <label class="checkout-field" id="scheduleWrapper" for="scheduleTime">
               <span>Programar pedido</span>
               <select id="scheduleTime" name="scheduleTime">
+                <option value="" selected>Enviar ahora (ASAP)</option>
                 <option value="19:00">19:00</option>
                 <option value="19:30">19:30</option>
                 <option value="20:00">20:00</option>
