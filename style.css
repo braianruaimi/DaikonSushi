@@ -1182,7 +1182,24 @@ main {
   overflow: hidden;
   box-shadow: var(--glow-soft);
 }
-.hero__featured-media img { width: 100%; height: 100%; object-fit: cover; display:block; }
+.hero__featured-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1);
+  transition: transform 280ms ease, filter 280ms ease;
+}
+.hero__featured-media img { cursor: pointer; }
+.hero__featured-media:hover img,
+.hero__featured-media:focus-within img {
+  transform: scale(1.08);
+  filter: saturate(1.08);
+}
+.hero__featured-media:active img {
+  transform: scale(1.06);
+  filter: saturate(1.06);
+}
 .hero__featured-caption { max-width: 360px; }
 .hero__featured-caption h3 { margin: 0 0 6px; }
 .carousel__control.carousel__control--prev,

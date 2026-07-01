@@ -126,6 +126,33 @@ const promoDinnerTwo = {
   cta: "Sumar al carrito",
 };
 
+// Promo MUNDIAL (precio fijo para el pack)
+const promoMundialBurger = {
+  id: "promo-mundial-burger",
+  category: "Promo",
+  badge: "PROMO",
+  title: "Promo MUNDIAL — 2 Sakuras",
+  name: "Promo MUNDIAL — 2 Sakuras",
+  description: "2 Hotburger Sakura por $30.000",
+  price: 30000,
+  image: "assets/products/Sakura.jpg",
+  cta: "Sumar promo",
+};
+
+const promoMundialPancho = {
+  id: "promo-mundial-pancho",
+  category: "Promo",
+  badge: "PROMO",
+  title: "Promo MUNDIAL — 2 Pancho",
+  name: "Promo MUNDIAL — 2 Pancho",
+  description: "2 Pancho a elección por $30.000",
+  price: 30000,
+  image: "assets/products/pancho sushi salmon.jpg",
+  cta: "Sumar promo",
+};
+
+// Promo items will be inserted into the products catalog after the list is defined below
+
 const EXTRAS_CATEGORY = "Extras";
 
 // ✏️ EDITAR: catalogo completo del menu. El cliente puede cambiar textos, precios e imagenes locales.
@@ -338,6 +365,9 @@ const products = [
     meta: "Extra / palillos",
   },
 ];
+
+// Append promo MUNDIAL items into the products catalog so they are discoverable
+products.push(promoMundialBurger, promoMundialPancho);
 
 const state = {
   activeCategory: "Todos",
@@ -1479,16 +1509,16 @@ function initOfferModal() {
   document.getElementById('offerLater')?.addEventListener('click', hideModal);
 
   document.getElementById('offerCta')?.addEventListener('click', () => {
-    // Añadir items: 1x premium-combo (16), 1x hotburger-smoked, 1x pancho-salmon
+    // Añadir oferta para dos: 2 Burgers SAKURA + 2 Panchos a elección
     SUPPRESS_TOASTS = true;
     try {
-      addToCart('premium-combo', '16');
-      addToCart('hotburger-smoked', null);
-      addToCart('pancho-salmon', null);
+      // Insert packaged promos (cada uno representa 2 unidades por $30.000)
+      addToCart('promo-mundial-burger', null);
+      addToCart('promo-mundial-pancho', null);
     } finally {
       SUPPRESS_TOASTS = false;
     }
-    showToast('Oferta agregada al carrito.');
+    showToast('Oferta para dos agregada al carrito.');
     hideModal();
   });
 
@@ -2005,6 +2035,7 @@ window.addEventListener("load", () => {
   initHotburgerCarousel();
   initSideFeaturedCarousel();
   initOfferModal();
+  initMundialModal();
   initHeroCtas();
   // Ensure hero placeholders are removed when hero images load
   ["featuredCarousel", "hotburgerCarousel"].forEach((id) => {
@@ -2286,6 +2317,35 @@ function migrateLegacyCartItem(item) {
 }
 
 function getCartItemDetails(item) {
+  // Special handling for Promo MUNDIAL items
+  if (item.id === 'promo-mundial-burger') {
+    const promo = products.find((p) => p.id === 'promo-mundial-burger');
+    if (!promo) return null;
+    return {
+      product: promo,
+      option: null,
+      name: promo.name || 'Promo MUNDIAL — 2 Sakuras',
+      meta: promo.description || 'Promo — 2x Hotburger Sakura',
+      price: promo.price,
+    };
+  }
+
+  if (item.id === 'promo-mundial-pancho') {
+    const promo = products.find((p) => p.id === 'promo-mundial-pancho');
+    if (!promo) return null;
+    // optionId holds the chosen pancho product id
+    const chosen = products.find((p) => p.id === item.optionId);
+    const name = chosen ? `Promo MUNDIAL — 2x ${chosen.name}` : promo.name;
+    const meta = chosen ? (chosen.meta || chosen.category) : promo.description;
+    return {
+      product: promo,
+      option: chosen || null,
+      name,
+      meta,
+      price: promo.price,
+    };
+  }
+
   const product = products.find((entry) => entry.id === item.id);
   if (!product) {
     return null;
@@ -2424,4 +2484,97 @@ function initSideFeaturedCarousel() {
   }
 
   imgEl && imgEl.addEventListener('load', () => updateCaptionForSrc(imgEl.currentSrc || imgEl.src));
+}
+
+// Modal Promo Mundial: flujo Burger / Pancho -> agregar 2 unidades al carrito
+function initMundialModal() {
+  const modal = document.getElementById('mundialModal');
+  const backdropEl = document.getElementById('backdrop');
+  if (!modal) return;
+
+  const step1 = document.getElementById('mundialStep1');
+  const step2 = document.getElementById('mundialStep2');
+  const btnClose = document.getElementById('mundialClose');
+  const btnBurger = document.getElementById('mundialBurger');
+  const btnPancho = document.getElementById('mundialPancho');
+  const btnBack = document.getElementById('mundialBack');
+  const panchoOptions = document.getElementById('panchoOptions');
+
+  function openModal() {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    if (backdropEl) { backdropEl.hidden = false; backdropEl.removeAttribute('aria-hidden'); }
+    step1.hidden = false;
+    step2.hidden = true;
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    if (backdropEl) { backdropEl.hidden = true; backdropEl.setAttribute('aria-hidden', 'true'); }
+  }
+
+  // Agregar 2 unidades del producto indicado
+  function addPromoItems(productId) {
+    SUPPRESS_TOASTS = true;
+    try {
+      if (productId === 'hotburger-sakura') {
+        // add the packaged promo burger (one item representing 2 sakuras)
+        addToCart('promo-mundial-burger', null);
+      } else if (
+        productId === 'pancho-pollo-teriyaki' ||
+        productId === 'pancho-kanikama' ||
+        productId === 'pancho-salmon' ||
+        productId === 'pancho-langostinos'
+      ) {
+        // add packaged promo pancho with optionId storing chosen pancho
+        addToCart('promo-mundial-pancho', productId);
+      } else {
+        // fallback: treat as adding two of the same product
+        addToCart(productId, null);
+        addToCart(productId, null);
+      }
+    } finally {
+      SUPPRESS_TOASTS = false;
+    }
+
+    showToast('Promo MUNDIAL agregada al carrito.');
+    closeModal();
+    openCart();
+  }
+
+  // Event handlers
+  btnClose?.addEventListener('click', closeModal);
+  backdropEl?.addEventListener('click', closeModal);
+
+  // When clicking the featured side image, open modal
+  const sideImg = document.getElementById('sideFeaturedCarousel');
+  sideImg?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal();
+  });
+
+  btnBurger?.addEventListener('click', () => {
+    // Burger MUNDIAL -> 2x Hotburger Sakura
+    addPromoItems('hotburger-sakura');
+  });
+
+  btnPancho?.addEventListener('click', () => {
+    // show pancho options
+    step1.hidden = true;
+    step2.hidden = false;
+  });
+
+  btnBack?.addEventListener('click', () => {
+    step2.hidden = true;
+    step1.hidden = false;
+  });
+
+  panchoOptions?.addEventListener('click', (e) => {
+    const btn = e.target.closest && e.target.closest('.pancho-option');
+    if (!btn) return;
+    const prod = btn.dataset.prod;
+    if (!prod) return;
+    addPromoItems(prod);
+  });
 }

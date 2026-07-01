@@ -327,8 +327,8 @@
       <div class="offer-modal__card">
         <button class="offer-modal__close icon-button" id="offerClose" aria-label="Cerrar oferta">×</button>
         <h2 class="offer-modal__title">COMIDA para DOS</h2>
-        <p class="offer-modal__body">1 Combo PREMIUM 16p + 1 HotBurger Smoked + 1 Pancho de Salmon</p>
-        <p class="offer-modal__price">a solo <strong>$54.999</strong></p>
+        <p class="offer-modal__body">2 Burgers SAKURA + 2 Panchos a elección</p>
+        <p class="offer-modal__price">a solo <strong>$60.000</strong></p>
         <div class="offer-modal__actions">
           <button id="offerCta" class="primary-button">SUMAR al carrito</button>
           <button id="offerLater" class="ghost-button">Ahora no</button>
@@ -419,6 +419,34 @@
           <div class="roulette-actions">
             <button id="rouletteApply" class="primary-button">Sumar carrito</button>
             <button id="rouletteCloseBtn" class="ghost-button">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Promo Mundial -->
+    <div id="mundialModal" class="offer-modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+      <div class="offer-modal__card">
+        <button class="offer-modal__close icon-button" id="mundialClose" aria-label="Cerrar">×</button>
+        <h2 class="offer-modal__title">PROMO MUNDIAL</h2>
+        <div id="mundialStep1">
+          <p class="offer-modal__body">Elegí tu pack:</p>
+          <div class="offer-modal__actions">
+            <button id="mundialBurger" class="primary-button">Burger MUNDIAL!</button>
+            <button id="mundialPancho" class="ghost-button">Pancho MUNDIAL!</button>
+          </div>
+        </div>
+
+        <div id="mundialStep2" hidden>
+          <p class="offer-modal__body">Elegí el Pancho:</p>
+          <div class="offer-modal__actions" id="panchoOptions">
+            <button class="ghost-button pancho-option" data-prod="pancho-pollo-teriyaki">Pollo Teriyaki</button>
+            <button class="ghost-button pancho-option" data-prod="pancho-kanikama">Sushi de Kanikama</button>
+            <button class="ghost-button pancho-option" data-prod="pancho-salmon">Sushi de Salmón</button>
+            <button class="ghost-button pancho-option" data-prod="pancho-langostinos">Sushi de Langostinos</button>
+          </div>
+          <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+            <button id="mundialBack" class="ghost-button">Volver</button>
           </div>
         </div>
       </div>
