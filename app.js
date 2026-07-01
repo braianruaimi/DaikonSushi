@@ -2003,6 +2003,7 @@ function registerServiceWorker() {
 window.addEventListener("load", () => {
   initFeaturedCarousel();
   initHotburgerCarousel();
+  initSideFeaturedCarousel();
   initOfferModal();
   initHeroCtas();
   // Ensure hero placeholders are removed when hero images load
@@ -2386,4 +2387,41 @@ function createPromoCardDinnerTwo() {
   });
 
   return card;
+}
+
+function initSideFeaturedCarousel() {
+  const images = [
+    "assets/products/burgermundial.jpg",
+    "assets/products/panchomundial.jpg",
+  ];
+
+  createCarousel({
+    imgId: "sideFeaturedCarousel",
+    images,
+    prevId: "sideFeaturedPrev",
+    nextId: "sideFeaturedNext",
+    statusId: "sideFeaturedStatus",
+    interval: 3000,
+  });
+
+  const imgEl = document.getElementById('sideFeaturedCarousel');
+  const titleEl = document.getElementById('sideFeaturedTitle');
+  const descEl = document.getElementById('sideFeaturedDesc');
+
+  function updateCaptionForSrc(src) {
+    if (!src) return;
+    const lname = src.toLowerCase();
+    if (lname.includes('burgermundial')) {
+      titleEl.textContent = 'Burger Mundial';
+      descEl.textContent = 'Jugosa burger artesanal con doble carne, queso fundido y nuestra salsa secreta — una explosión de sabor.';
+    } else if (lname.includes('pancho') || lname.includes('panchomundial')) {
+      titleEl.textContent = 'Pancho Mundial';
+      descEl.textContent = 'Pancho gourmet con salchicha premium, cebolla caramelizada y toppings crujientes — el clásico perfeccionado.';
+    } else {
+      titleEl.textContent = 'Producto destacado';
+      descEl.textContent = '';
+    }
+  }
+
+  imgEl && imgEl.addEventListener('load', () => updateCaptionForSrc(imgEl.currentSrc || imgEl.src));
 }
