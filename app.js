@@ -217,7 +217,7 @@ const products = [
     name: "Hotburger Sakura",
     category: "Sushi Hotburger",
     badge: "HOT",
-    description: "Queso Phila saborizado, palta cremosa, salmón fresco, ciboulette, salsa teriyaki y tapas rebozadas.",
+    description: "Hotburger Sakura: doble salmón fresco, queso Philadelphia, palta cremosa y salsa teriyaki — jugosa y lista para compartir.",
     price: 18000,
     image: "assets/products/Sakura.jpg",
     meta: "Hotburger / salmón fresco",
@@ -715,6 +715,15 @@ function bindEvents() {
 
   window.addEventListener("scroll", updateFloatingDockVisibility, { passive: true });
   window.addEventListener("resize", updateFloatingDockVisibility);
+  // Make the total value clickable to open the cart and indicate action
+  const totalEl = document.getElementById('totalValue');
+  if (totalEl) {
+    totalEl.style.cursor = 'pointer';
+    totalEl.addEventListener('click', () => {
+      openCart();
+      pulseCartButton();
+    });
+  }
 }
 
 function setupFloatingDockVisibility() {
@@ -1469,6 +1478,17 @@ function pulseCartButton() {
   }, 700);
 }
 
+function flashTotalPrice() {
+  const totalEl = document.getElementById('totalValue');
+  if (!totalEl) return;
+  totalEl.classList.remove('flash-total');
+  void totalEl.offsetWidth;
+  totalEl.classList.add('flash-total');
+  window.setTimeout(() => {
+    totalEl.classList.remove('flash-total');
+  }, 600);
+}
+
 function addToCart(productId, optionId) {
   const existingItem = state.cart.find((item) => item.id === productId && (item.optionId ?? null) === (optionId ?? null));
 
@@ -1481,6 +1501,7 @@ function addToCart(productId, optionId) {
   renderProducts();
   updateCartUI();
   pulseCartButton();
+  flashTotalPrice();
   if (!SUPPRESS_TOASTS) showToast("Producto agregado al carrito.");
 }
 
@@ -1611,6 +1632,9 @@ function updateCartQuantity(productId, quantity, optionId) {
 
   if (previousQuantity !== quantity) {
     pulseCartButton();
+    if (quantity > previousQuantity) {
+      flashTotalPrice();
+    }
   }
 }
 
