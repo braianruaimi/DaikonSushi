@@ -124,11 +124,13 @@
 
           <!-- Carrusel destacado (al lado de los panchos/burger) -->
           <div class="hero__featured-carousel" aria-label="Carrusel destacado">
-            <button class="carousel__control carousel__control--prev" id="sideFeaturedPrev" aria-label="Anterior"></button>
-            <div class="hero__featured-media">
+            <div class="hero__panel-media">
+              <button class="carousel__control carousel__control--prev" id="sideFeaturedPrev" aria-label="Anterior"></button>
+              <div class="image-placeholder image-placeholder--hero" aria-hidden="true"></div>
               <img id="sideFeaturedCarousel" src="assets/products/burgermundial.jpg" alt="Producto destacado" loading="lazy" width="360" height="240" decoding="async" />
+              <button class="carousel__control carousel__control--next" id="sideFeaturedNext" aria-label="Siguiente"></button>
+              <span id="sideFeaturedStatus" class="sr-only" aria-live="polite"></span>
             </div>
-            <button class="carousel__control carousel__control--next" id="sideFeaturedNext" aria-label="Siguiente"></button>
             <div class="hero__featured-caption">
               <h3 id="sideFeaturedTitle">Burger Mundial</h3>
               <p id="sideFeaturedDesc" class="muted">Jugosa burger artesanal con doble carne, queso fundido y nuestra salsa secreta — una explosión de sabor que no podés dejar pasar.</p>
