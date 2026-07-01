@@ -732,6 +732,13 @@ function bindEvents() {
       pulseCartButton();
     });
   }
+  const floatingBtn = document.getElementById('floatingTotal');
+  if (floatingBtn) {
+    floatingBtn.addEventListener('click', () => {
+      openCart();
+      pulseCartButton();
+    });
+  }
 }
 
 function setupFloatingDockVisibility() {
@@ -1455,6 +1462,14 @@ function updateCartUI() {
     mobileCta.hidden = summary.count === 0;
   }
 
+  // Update floating total placed near roulette/menu
+  const floatingTotalPrice = document.getElementById('floatingTotalPrice');
+  const floatingTotalBtn = document.getElementById('floatingTotal');
+  if (floatingTotalPrice && floatingTotalBtn) {
+    floatingTotalPrice.textContent = formatCartTotal(summary).label;
+    floatingTotalBtn.hidden = summary.count === 0;
+  }
+
   saveCartToStorage();
 }
 
@@ -1487,14 +1502,15 @@ function pulseCartButton() {
 }
 
 function flashTotalPrice() {
-  const totalEl = document.getElementById('totalValue');
-  if (!totalEl) return;
-  totalEl.classList.remove('flash-total');
-  void totalEl.offsetWidth;
-  totalEl.classList.add('flash-total');
-  window.setTimeout(() => {
-    totalEl.classList.remove('flash-total');
-  }, 600);
+  const ids = ['totalValue', 'mobileCtaPrice', 'floatingTotalPrice'];
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('flash-total');
+    void el.offsetWidth;
+    el.classList.add('flash-total');
+    window.setTimeout(() => el.classList.remove('flash-total'), 700);
+  });
 }
 
 function addToCart(productId, optionId) {
