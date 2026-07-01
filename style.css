@@ -385,18 +385,20 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
-  border-radius: 10px;
+  height: 46px; /* igual altura que el menú/ruleta */
+  padding: 0 10px; /* más angosto horizontalmente */
+  border-radius: 999px; /* pill para coincidir con ruleta */
   background: linear-gradient(180deg,#0b3a27,#07402a);
   color: #fff;
   font-weight:700;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   box-shadow: 0 8px 18px rgba(0,0,0,0.34);
   border: none;
   cursor: pointer;
   z-index: 1595;
 }
-.floating-total__price { font-weight:800; margin-left:6px; font-size:0.95rem; }
+.floating-total__label { font-size:0.82rem; line-height:46px; }
+.floating-total__price { font-weight:800; margin-left:6px; font-size:0.95rem; line-height:46px; }
 
 /* Roulette modal */
 .roulette-modal {
