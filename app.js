@@ -1458,7 +1458,8 @@ function updateCartUI() {
   const mobileCta = document.getElementById('mobileCta');
   const mobilePrice = document.getElementById('mobileCtaPrice');
   if (mobileCta && mobilePrice) {
-    mobilePrice.textContent = formatCartSubtotal(summary);
+    // Mostrar el total final (incluye envío) en la barra móvil para evitar confusiones
+    mobilePrice.textContent = formatCartTotal(summary).label;
     mobileCta.hidden = summary.count === 0;
   }
 
