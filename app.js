@@ -2141,6 +2141,8 @@ function isStandaloneApp() {
 if (updateAppButton) {
   updateAppButton.addEventListener('click', async () => {
     try {
+      updateAppButton.disabled = true;
+      showToast('Actualizando app...');
       const reg = await navigator.serviceWorker.getRegistration();
       if (!reg) return;
       if (reg.waiting) {
@@ -2148,6 +2150,7 @@ if (updateAppButton) {
       }
     } catch (e) {
       console.debug('Update action error', e);
+      updateAppButton.disabled = false;
     }
   });
 
