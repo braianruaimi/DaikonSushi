@@ -380,8 +380,8 @@ a {
 .floating-total {
   position: fixed;
   left: calc(12px + var(--safe-left));
-  /* bajar un poco para quedar más cerca del menú */
-  bottom: calc(100px + var(--safe-bottom));
+  /* posición: mitad entre ruleta (≈240px) y menú (≈80px) */
+  bottom: calc(160px + var(--safe-bottom));
   display: inline-flex;
   align-items: center;
   gap: 6px;
