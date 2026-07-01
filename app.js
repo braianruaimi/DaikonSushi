@@ -724,6 +724,14 @@ function bindEvents() {
       pulseCartButton();
     });
   }
+  const mobilePriceEl = document.getElementById('mobileCtaPrice');
+  if (mobilePriceEl) {
+    mobilePriceEl.style.cursor = 'pointer';
+    mobilePriceEl.addEventListener('click', () => {
+      openCart();
+      pulseCartButton();
+    });
+  }
 }
 
 function setupFloatingDockVisibility() {

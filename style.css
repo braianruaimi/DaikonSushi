@@ -763,7 +763,7 @@ a {
 
   40% {
     transform: scale(1.08);
-    box-shadow: 0 0 0 1px rgba(255, 0, 60, 0.38), 0 0 22px rgba(255, 0, 60, 0.85), 0 0 42px rgba(255, 0, 60, 0.5);
+    box-shadow: 0 0 0 1px rgba(0,200,120,0.38), 0 0 22px rgba(0,200,120,0.85), 0 0 42px rgba(0,200,120,0.5);
   }
 
   100% {
@@ -2451,9 +2451,9 @@ product-card__selector select {
   animation: flashTotal 600ms ease;
 }
 @keyframes flashTotal {
-  0% { transform: translateY(0) scale(1); box-shadow: 0 0 0 rgba(255,0,60,0); }
-  20% { transform: translateY(-6px) scale(1.04); box-shadow: 0 14px 40px rgba(255,0,60,0.16); }
-  100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 rgba(255,0,60,0); }
+  0% { transform: translateY(0) scale(1); box-shadow: 0 0 0 rgba(0,200,120,0); }
+  20% { transform: translateY(-6px) scale(1.04); box-shadow: 0 14px 40px rgba(0,200,120,0.18); }
+  100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 rgba(0,200,120,0); }
 }
 
 .icon-button {
