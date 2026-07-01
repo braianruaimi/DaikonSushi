@@ -1450,7 +1450,7 @@ function updateCartUI() {
     void cartBtn.offsetWidth;
     cartBtn.classList.add('cart-button--glow');
   }
-  subtotalValue.textContent = formatCartSubtotal(summary);
+  if (subtotalValue) subtotalValue.textContent = formatCartSubtotal(summary);
   deliveryValue.textContent = formatCartDelivery(summary);
   totalValue.textContent = formatCartTotal(summary).label;
 
