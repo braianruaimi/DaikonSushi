@@ -1137,6 +1137,36 @@ main {
   background: var(--primary);
   box-shadow: 0 0 6px rgba(255, 0, 60, 0.7);
   display: block;
+/* Hero featured product cards */
+.hero__featured-products {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.featured-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding: 10px;
+  border-radius: 12px;
+  width: min(360px, 48%);
+  box-shadow: var(--glow-soft);
+  overflow: hidden;
+}
+.featured-card img {
+  width: 100%;
+  height: 200px;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.featured-card h3 { margin: 8px 0 6px; }
+.featured-card p.muted { margin: 0; color: var(--muted); }
+
+@media (max-width: 720px) {
+  .featured-card { width: 100%; }
+  .featured-card img { height: 160px; }
+}
 }
 
 .section-heading__count {
