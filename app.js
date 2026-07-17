@@ -2525,10 +2525,10 @@ function initSideFeaturedCarousel() {
     const lname = src.toLowerCase();
     if (lname.includes('burgermundial')) {
       titleEl.textContent = 'Burger Mundial';
-      descEl.textContent = 'Jugosa burger artesanal con doble carne, queso fundido y nuestra salsa secreta — una explosión de sabor.';
+      descEl.textContent = 'Hotburger Sakura: doble salmón fresco, queso Philadelphia, palta cremosa y salsa teriyaki — jugosa y lista para compartir.';
     } else if (lname.includes('pancho') || lname.includes('panchomundial')) {
       titleEl.textContent = 'Pancho Mundial';
-      descEl.textContent = 'Pancho gourmet con salchicha premium, cebolla caramelizada y toppings crujientes — el clásico perfeccionado.';
+      descEl.textContent = 'Roll caliente rebozado en panko, cortado al medio. Base de queso crema, cremoso de palta y salmón rosado fresco.';
     } else {
       titleEl.textContent = 'Producto destacado';
       descEl.textContent = '';
