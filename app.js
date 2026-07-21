@@ -609,7 +609,12 @@ function setupHeroNotice() {
 
 function bindEvents() {
   if (cartToggle) cartToggle.addEventListener("click", toggleCart);
-  if (heroCartButton) heroCartButton.addEventListener("click", openCart);
+  if (heroCartButton) {
+    heroCartButton.addEventListener("click", () => {
+      openCart();
+      pulseCartButton();
+    });
+  }
   if (cartClose) cartClose.addEventListener("click", closeCart);
   if (backdrop) backdrop.addEventListener("click", closeCart);
   if (cartScrollUp) cartScrollUp.addEventListener("click", () => scrollCartItems(-180));
@@ -734,6 +739,7 @@ function bindEvents() {
   }
   const floatingBtn = document.getElementById('floatingTotal');
   if (floatingBtn) {
+    floatingBtn.style.cursor = 'pointer';
     floatingBtn.addEventListener('click', () => {
       openCart();
       pulseCartButton();
@@ -1457,7 +1463,6 @@ function updateCartUI() {
     mobileCta.hidden = summary.count === 0;
   }
 
-  // Update floating total placed near roulette/menu
   const floatingTotalPrice = document.getElementById('floatingTotalPrice');
   const floatingTotalBtn = document.getElementById('floatingTotal');
   if (floatingTotalPrice && floatingTotalBtn) {
@@ -1542,7 +1547,6 @@ function addToCart(productId, optionId) {
   updateCartUI();
   pulseCartButton();
   flashTotalPrice();
-  if (!SUPPRESS_TOASTS) showToast("Producto agregado al carrito.");
 }
 
 // Oferta emergente: mostrar modal pasados 5s y añadir paquete al carrito
@@ -2539,10 +2543,10 @@ function initSideFeaturedCarousel() {
     if (!src) return;
     const lname = src.toLowerCase();
     if (lname.includes('burgermundial') || lname.includes('promosakura')) {
-      titleEl.textContent = 'Burger Mundial';
+      titleEl.textContent = 'PROMO DEL MES!';
       descEl.textContent = 'Hotburger Sakura: doble salmón fresco, queso Philadelphia, palta cremosa y salsa teriyaki — jugosa y lista para compartir.';
     } else if (lname.includes('pancho') || lname.includes('panchomundial') || lname.includes('promopancho')) {
-      titleEl.textContent = 'Pancho Mundial';
+      titleEl.textContent = 'PROMO DEL MES!';
       descEl.textContent = 'Roll caliente rebozado en panko, cortado al medio. Base de queso crema, cremoso de palta y salmón rosado fresco.';
     } else {
       titleEl.textContent = 'Producto destacado';

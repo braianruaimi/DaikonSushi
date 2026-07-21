@@ -69,6 +69,17 @@
             <path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
           </svg>
         </button>
+        <button
+          class="daikon-chat__toggle"
+          id="chatToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="chatPanel"
+          aria-label="Abrir chat de Daikon"
+        >
+          <span class="daikon-chat__icon" aria-hidden="true"></span>
+          <span class="daikon-chat__label">Daikon</span>
+        </button>
         <button class="cart-button" id="cartToggle" type="button" aria-label="Abrir carrito">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path
@@ -132,7 +143,7 @@
               <span id="sideFeaturedStatus" class="sr-only" aria-live="polite"></span>
             </div>
             <div class="hero__featured-caption">
-              <h3 id="sideFeaturedTitle">Burger Mundial</h3>
+              <h3 id="sideFeaturedTitle">PROMO DEL MES!</h3>
               <p id="sideFeaturedDesc" class="muted">Jugosa burger con queso phila saborizado, palta cremosa, salmon fresco, ciboulette, salsa teriyaki y tapas rebozadas.</p>
             </div>
           </div>
@@ -358,18 +369,6 @@
         </section>
       </div>
 
-      <button
-        class="daikon-chat__toggle"
-        id="chatToggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="chatPanel"
-        aria-label="Abrir chat de Daikon"
-      >
-        <span class="daikon-chat__icon" aria-hidden="true"></span>
-        <span class="daikon-chat__label">Daikon</span>
-      </button>
-
       <section class="daikon-chat__panel" id="chatPanel" aria-hidden="true" hidden>
         <header class="daikon-chat__header">
           <div>
@@ -449,8 +448,8 @@
         <div id="mundialStep1">
           <p class="offer-modal__body">Elegí tu pack:</p>
           <div class="offer-modal__actions">
-            <button id="mundialBurger" class="primary-button">Burger MUNDIAL!</button>
-            <button id="mundialPancho" class="ghost-button">Pancho MUNDIAL!</button>
+            <button id="mundialBurger" class="primary-button">Burger del MES!</button>
+            <button id="mundialPancho" class="ghost-button">Pancho del MES!</button>
           </div>
         </div>
 
@@ -519,19 +518,77 @@
     <section class="stories" id="stories" aria-label="Opiniones de clientes">
       <div class="stories__inner">
         <h3 class="stories__title eyebrow">Lo que dicen</h3>
-        <div class="stories__list" role="list">
-          <article class="story-card" role="listitem">
-            <div class="story-card__avatar">AJ</div>
-            <blockquote class="story-card__quote">¡No cansa nunca! <span class="story-card__meta">— Alejandro</span></blockquote>
-          </article>
-          <article class="story-card" role="listitem">
-            <div class="story-card__avatar">MG</div>
-            <blockquote class="story-card__quote">La hotburger es de otro planeta 🤯 <span class="story-card__meta">— Mariana</span></blockquote>
-          </article>
-          <article class="story-card" role="listitem">
-            <div class="story-card__avatar">LV</div>
-            <blockquote class="story-card__quote">Pedí a las 20:00 y llegó perfecto. <span class="story-card__meta">— Lucas</span></blockquote>
-          </article>
+        <div class="stories__marquee">
+          <div class="stories__track">
+            <div class="stories__list" role="list">
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">AJ</div>
+                <blockquote class="story-card__quote">¡No cansa nunca! <span class="story-card__meta">— Alejandro</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">MG</div>
+                <blockquote class="story-card__quote">La hotburger es de otro planeta 🤯 <span class="story-card__meta">— Mariana</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">LV</div>
+                <blockquote class="story-card__quote">Pedí a las 20:00 y llegó perfecto. <span class="story-card__meta">— Lucas</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">CN</div>
+                <blockquote class="story-card__quote">Los rolls llegaron impecables y bien fríos. <span class="story-card__meta">— Camila</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">FS</div>
+                <blockquote class="story-card__quote">El pancho de salmón es un viaje, lo volvería a pedir hoy mismo. <span class="story-card__meta">— Franco</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">RB</div>
+                <blockquote class="story-card__quote">Muy buen tamaño, buena presentación y sabor distinto a todo. <span class="story-card__meta">— Rocío</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">DT</div>
+                <blockquote class="story-card__quote">La promo del mes rinde un montón y llegó rapidísimo. <span class="story-card__meta">— Diego</span></blockquote>
+              </article>
+              <article class="story-card" role="listitem">
+                <div class="story-card__avatar">SM</div>
+                <blockquote class="story-card__quote">Se nota la calidad del salmón y del empaque. <span class="story-card__meta">— Sofía</span></blockquote>
+              </article>
+            </div>
+            <div class="stories__list" aria-hidden="true">
+              <article class="story-card">
+                <div class="story-card__avatar">AJ</div>
+                <blockquote class="story-card__quote">¡No cansa nunca! <span class="story-card__meta">— Alejandro</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">MG</div>
+                <blockquote class="story-card__quote">La hotburger es de otro planeta 🤯 <span class="story-card__meta">— Mariana</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">LV</div>
+                <blockquote class="story-card__quote">Pedí a las 20:00 y llegó perfecto. <span class="story-card__meta">— Lucas</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">CN</div>
+                <blockquote class="story-card__quote">Los rolls llegaron impecables y bien fríos. <span class="story-card__meta">— Camila</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">FS</div>
+                <blockquote class="story-card__quote">El pancho de salmón es un viaje, lo volvería a pedir hoy mismo. <span class="story-card__meta">— Franco</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">RB</div>
+                <blockquote class="story-card__quote">Muy buen tamaño, buena presentación y sabor distinto a todo. <span class="story-card__meta">— Rocío</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">DT</div>
+                <blockquote class="story-card__quote">La promo del mes rinde un montón y llegó rapidísimo. <span class="story-card__meta">— Diego</span></blockquote>
+              </article>
+              <article class="story-card">
+                <div class="story-card__avatar">SM</div>
+                <blockquote class="story-card__quote">Se nota la calidad del salmón y del empaque. <span class="story-card__meta">— Sofía</span></blockquote>
+              </article>
+            </div>
+          </div>
         </div>
       </div>
     </section>
