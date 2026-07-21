@@ -1444,12 +1444,6 @@ function updateCartUI() {
   const summary = getCartSummary();
 
   cartCount.textContent = String(summary.count);
-  const cartBtn = document.getElementById('cartToggle');
-  if (cartBtn) {
-    cartBtn.classList.remove('cart-button--glow');
-    void cartBtn.offsetWidth;
-    cartBtn.classList.add('cart-button--glow');
-  }
   if (subtotalValue) subtotalValue.textContent = formatCartSubtotal(summary);
   deliveryValue.textContent = formatCartDelivery(summary);
   totalValue.textContent = formatCartTotal(summary).label;
@@ -1485,20 +1479,41 @@ function getProductBadgeVariantClass(badgeText) {
 }
 
 function pulseCartButton() {
-  if (!cartToggle) {
-    return;
+  const floatingTotalBtn = document.getElementById('floatingTotal');
+  const cartCountBadge = document.getElementById('cartCount');
+
+  if (cartToggle) {
+    cartToggle.classList.remove("cart-button--glow");
+    void cartToggle.offsetWidth;
+    cartToggle.classList.add("cart-button--glow");
   }
 
-  cartToggle.classList.remove("cart-button--glow");
-  void cartToggle.offsetWidth;
-  cartToggle.classList.add("cart-button--glow");
+  if (cartCountBadge) {
+    cartCountBadge.classList.remove('cart-button__count--glow');
+    void cartCountBadge.offsetWidth;
+    cartCountBadge.classList.add('cart-button__count--glow');
+  }
+
+  if (floatingTotalBtn && !floatingTotalBtn.hidden) {
+    floatingTotalBtn.classList.remove('floating-total--glow');
+    void floatingTotalBtn.offsetWidth;
+    floatingTotalBtn.classList.add('floating-total--glow');
+  }
 
   if (cartGlowTimeoutId) {
     window.clearTimeout(cartGlowTimeoutId);
   }
 
   cartGlowTimeoutId = window.setTimeout(() => {
-    cartToggle.classList.remove("cart-button--glow");
+    if (cartToggle) {
+      cartToggle.classList.remove("cart-button--glow");
+    }
+    if (cartCountBadge) {
+      cartCountBadge.classList.remove('cart-button__count--glow');
+    }
+    if (floatingTotalBtn) {
+      floatingTotalBtn.classList.remove('floating-total--glow');
+    }
   }, 700);
 }
 
@@ -2503,8 +2518,8 @@ function createPromoCardDinnerTwo() {
 
 function initSideFeaturedCarousel() {
   const images = [
-    "assets/products/burgermundial.jpg",
-    "assets/products/panchomundial.jpg",
+    "assets/products/promosakura.jpg",
+    "assets/products/promopancho.jpg",
   ];
 
   createCarousel({
@@ -2523,10 +2538,10 @@ function initSideFeaturedCarousel() {
   function updateCaptionForSrc(src) {
     if (!src) return;
     const lname = src.toLowerCase();
-    if (lname.includes('burgermundial')) {
+    if (lname.includes('burgermundial') || lname.includes('promosakura')) {
       titleEl.textContent = 'Burger Mundial';
       descEl.textContent = 'Hotburger Sakura: doble salmón fresco, queso Philadelphia, palta cremosa y salsa teriyaki — jugosa y lista para compartir.';
-    } else if (lname.includes('pancho') || lname.includes('panchomundial')) {
+    } else if (lname.includes('pancho') || lname.includes('panchomundial') || lname.includes('promopancho')) {
       titleEl.textContent = 'Pancho Mundial';
       descEl.textContent = 'Roll caliente rebozado en panko, cortado al medio. Base de queso crema, cremoso de palta y salmón rosado fresco.';
     } else {
