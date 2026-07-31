@@ -416,7 +416,9 @@ const productCount = document.querySelector("#productCount");
 const checkoutButton = document.querySelector("#checkoutButton");
 const checkoutForm = document.querySelector("#checkoutForm");
 const customerName = document.querySelector("#customerName");
-const customerAddress = document.querySelector("#customerAddress");
+const customerMainAddress = document.querySelector("#customerMainAddress");
+const customerAddressLine1 = document.querySelector("#customerAddressLine1");
+const customerAddressLine2 = document.querySelector("#customerAddressLine2");
 const customerLocality = document.querySelector("#customerLocality");
 const chatToggle = document.querySelector("#chatToggle");
 const chatClose = document.querySelector("#chatClose");
@@ -656,7 +658,8 @@ function bindEvents() {
 
   if (customerName) customerName.addEventListener("input", () => validateRequiredField(customerName));
   if (customerLocality) customerLocality.addEventListener("change", () => validateRequiredField(customerLocality));
-  if (customerAddress) customerAddress.addEventListener("input", () => validateRequiredField(customerAddress));
+  if (customerMainAddress) customerMainAddress.addEventListener("input", () => validateRequiredField(customerMainAddress));
+  if (customerAddressLine1) customerAddressLine1.addEventListener("input", () => validateRequiredField(customerAddressLine1));
 
   if (checkoutButton) checkoutButton.addEventListener("click", openWhatsApp);
 
@@ -1720,7 +1723,10 @@ function saveCartToStorage() {
 
 function generateWhatsAppMessage(scheduledTime = null) {
   const customer = customerName.value.trim();
-  const address = customerAddress.value.trim();
+  const mainAddress = customerMainAddress.value.trim();
+  const addressLine1 = customerAddressLine1.value.trim();
+  const addressLine2 = customerAddressLine2 ? customerAddressLine2.value.trim() : "";
+  const address = [mainAddress, addressLine1, addressLine2].filter(Boolean).join(" - ");
   const locality = (customerLocality && customerLocality.value) ? customerLocality.value.trim() : '';
   const paymentMethod = new FormData(checkoutForm).get("paymentMethod") || "Efectivo";
   const summary = getCartSummary();
@@ -1783,7 +1789,7 @@ function openWhatsApp() {
 
   const isNameValid = validateRequiredField(customerName);
   const isLocalityValid = validateRequiredField(customerLocality);
-  const isAddressValid = validateRequiredField(customerAddress);
+  const isAddressValid = validateRequiredField(customerMainAddress);
 
   if (!isNameValid || !isLocalityValid || !isAddressValid) {
     showToast("Completá nombre, localidad y dirección para enviar el pedido.");
@@ -1792,19 +1798,19 @@ function openWhatsApp() {
     } else if (!isLocalityValid) {
       customerLocality.focus();
     } else {
-      customerAddress.focus();
+      customerMainAddress.focus();
     }
     return;
   }
 
   // Validar que la dirección esté dentro de las zonas cubiertas
   const localityVal = String((customerLocality && customerLocality.value) || "").toLowerCase();
-  const addressValue = (localityVal + " " + String(customerAddress.value || "")).toLowerCase();
+  const addressValue = (localityVal + " " + String(customerMainAddress.value || "") + " " + String(customerAddressLine1.value || "") + " " + String((customerAddressLine2 && customerAddressLine2.value) || "")).toLowerCase();
   const allowedZones = ["la plata", "ensenada", "berisso"];
   const inZone = allowedZones.some((z) => addressValue.includes(z));
   if (!inZone) {
     showToast("Solo hacemos envíos a La Plata, Ensenada y Berisso. Revisá tu dirección.");
-    customerAddress.focus();
+    customerMainAddress.focus();
     return;
   }
 

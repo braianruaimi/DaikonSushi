@@ -259,9 +259,11 @@
               <small class="muted">Obligatorio</small>
             </label>
 
-            <label class="checkout-field" for="customerAddress">
+            <label class="checkout-field" for="customerMainAddress">
               <span>Dirección de entrega</span>
-              <input id="customerAddress" name="customerAddress" type="text" placeholder="Calle, número, piso, departamento" autocomplete="street-address" />
+                <input id="customerMainAddress" name="customerMainAddress" type="text" placeholder="Calle principal y número" autocomplete="street-address" />
+                <input id="customerAddressLine1" name="customerAddressLine1" type="text" placeholder="Calle 1" autocomplete="address-line1" />
+                <input id="customerAddressLine2" name="customerAddressLine2" type="text" placeholder="Calle 2" autocomplete="address-line2" />
             </label>
 
             <label class="checkout-field payment-methods" for="paymentMethod">
