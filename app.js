@@ -294,6 +294,28 @@ const products = [
     meta: "Hotburger / ahumado",
   },
   {
+    id: "promo-2-panchos",
+    name: "Promo 2 Panchos Sushi",
+    category: "Promos ocultas",
+    badge: "PROMO",
+    description: "2 Panchos Sushi por precio especial.",
+    price: 30000,
+    image: "assets/sep/panchos.jpg",
+    meta: "2 unidades / promo especial",
+    hiddenInMenu: true,
+  },
+  {
+    id: "promo-2-sakura",
+    name: "Promo 2 Sakura",
+    category: "Promos ocultas",
+    badge: "PROMO",
+    description: "2 Sakura por precio especial.",
+    price: 30000,
+    image: "assets/sep/sakura.jpg",
+    meta: "2 unidades / promo especial",
+    hiddenInMenu: true,
+  },
+  {
     id: "daikon-combo",
     name: "Combo Daikon",
     category: "Combos Daikon",
@@ -495,6 +517,10 @@ const chatSuggestions = document.querySelector("#chatSuggestions");
 const menuSection = document.querySelector("#menu");
 const heroSection = document.querySelector("#inicio");
 const heroNotice = document.querySelector(".hero__notice");
+const miniSepAddButton = document.querySelector("#miniSepAddButton");
+const miniSepOptions = document.querySelector("#miniSepOptions");
+const promoEspecialLink = document.querySelector("#promoEspecialLink");
+const promoEspecialOpciones = document.querySelector("#promoEspecialOpciones");
 
 let chatCloseTimeoutId;
 let cartCloseTimeoutId;
@@ -676,6 +702,47 @@ function bindEvents() {
   if (featuredAdd) {
     featuredAdd.addEventListener("click", () => {
       addToCart("pancho-salmon");
+    });
+  }
+
+  if (promoEspecialLink) {
+    promoEspecialLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.requestAnimationFrame(() => {
+        promoEspecialOpciones?.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (miniSepOptions && miniSepAddButton) {
+          miniSepOptions.removeAttribute("hidden");
+          miniSepAddButton.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+  }
+
+  if (miniSepAddButton && miniSepOptions) {
+    miniSepAddButton.addEventListener("click", () => {
+      const isHidden = miniSepOptions.hasAttribute("hidden");
+      miniSepOptions.toggleAttribute("hidden");
+      miniSepAddButton.setAttribute("aria-expanded", isHidden ? "true" : "false");
+    });
+
+    miniSepOptions.querySelectorAll("[data-promo-product]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const productId = button.getAttribute("data-promo-product");
+        if (!productId) return;
+        addToCart(productId, null);
+        miniSepOptions.setAttribute("hidden", "");
+        miniSepAddButton.setAttribute("aria-expanded", "false");
+        openCart();
+      });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (miniSepOptions.hasAttribute("hidden")) return;
+      if (miniSepOptions.contains(target) || miniSepAddButton.contains(target)) return;
+      miniSepOptions.setAttribute("hidden", "");
+      miniSepAddButton.setAttribute("aria-expanded", "false");
     });
   }
 
@@ -1099,6 +1166,7 @@ function getVisibleCategories() {
     "Todos",
     ...new Set(
       products
+        .filter((product) => !product.hiddenInMenu)
         .map((product) => product.category)
         .filter((category) => category !== EXTRAS_CATEGORY)
     ),
@@ -1153,6 +1221,10 @@ function renderProducts(category = state.activeCategory) {
     matchesPromoQuery(state.query);
 
   const filteredProducts = products.filter((product) => {
+    if (product.hiddenInMenu) {
+      return false;
+    }
+
     const matchesCategory =
       state.activeCategory === "Todos" ||
       product.category === state.activeCategory ||
@@ -2077,10 +2149,11 @@ function registerServiceWorker() {
 window.addEventListener("load", () => {
   initFeaturedCarousel();
   initHotburgerCarousel();
+  initSepCarousel();
   initOfferModal();
   initHeroCtas();
   // Ensure hero placeholders are removed when hero images load
-  ["featuredCarousel", "hotburgerCarousel"].forEach((id) => {
+  ["featuredCarousel", "hotburgerCarousel", "sepCarousel"].forEach((id) => {
     const img = document.getElementById(id);
     if (!img) return;
     const parent = img.closest('.product-card__media, .hero__panel-media, .promo-card__media') || img.parentElement;
@@ -2113,6 +2186,7 @@ function isPromoLunchAvailable() {
 
 function createPromoCard() {
   const card = document.createElement("article");
+  card.id = "promoCenaCard";
   card.className = "promo-card reveal-card";
   card.innerHTML = `
     <div class="promo-card__media promo-card__media--triplet">
@@ -2388,6 +2462,26 @@ function initHotburgerCarousel() {
     nextId: "hotNext",
     statusId: "hotStatus",
     interval: 2000,
+  });
+}
+
+function initSepCarousel() {
+  createCarousel({
+    imgId: "sepCarousel",
+    images: ["assets/sep/panchos.jpg", "assets/sep/sakura.jpg"],
+    prevId: "sepPrev",
+    nextId: "sepNext",
+    statusId: "sepStatus",
+    interval: 2500,
+  });
+
+  createCarousel({
+    imgId: "miniSepCarousel",
+    images: ["assets/sep/panchos.jpg", "assets/sep/sakura.jpg"],
+    prevId: "miniSepPrev",
+    nextId: "miniSepNext",
+    statusId: "miniSepStatus",
+    interval: 2500,
   });
 }
 

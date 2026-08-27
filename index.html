@@ -122,6 +122,32 @@
             </button>
           </div>
 
+          <div class="hero__mini-gallery" aria-label="Imágenes destacadas">
+            <div class="hero__mini-gallery-sale">
+              <span class="hero__mini-gallery-sale-tag">Promo especial</span>
+              <strong>Pedí hoy y descubrí nuestros destacados de la casa</strong>
+            </div>
+            <button class="carousel__control carousel__control--prev" id="miniSepPrev" aria-label="Anterior Sep mini"></button>
+            <img id="miniSepCarousel" class="hero__mini-gallery-item" src="assets/sep/panchos.jpg" alt="Panchos" loading="lazy" width="500" height="300" decoding="async" />
+            <button class="carousel__control carousel__control--next" id="miniSepNext" aria-label="Siguiente Sep mini"></button>
+            <span id="miniSepStatus" class="sr-only" aria-live="polite"></span>
+          </div>
+          <div class="hero__mini-gallery-cta" id="promoEspecialOpciones">
+            <button class="primary-button hero__mini-gallery-button" id="miniSepAddButton" type="button" aria-expanded="false" aria-controls="miniSepOptions">
+              Agregar al carrito
+            </button>
+            <div class="hero__mini-gallery-options" id="miniSepOptions" hidden>
+              <button class="hero__mini-gallery-option" type="button" data-promo-product="promo-2-panchos">
+                <span>2 Panchos Sushi</span>
+                <strong>$30.000</strong>
+              </button>
+              <button class="hero__mini-gallery-option" type="button" data-promo-product="promo-2-sakura">
+                <span>2 Sakura</span>
+                <strong>$30.000</strong>
+              </button>
+            </div>
+          </div>
+
           <dl class="hero__stats" aria-label="Destacados">
             <div>
               <dt>Delivery</dt>
@@ -138,7 +164,25 @@
           </dl>
         </div>
 
-        <aside class="hero__panel">
+        <section class="sep-gallery" id="promoEspecial" aria-label="Selección sep">
+          <div class="sep-gallery__media">
+            <button class="carousel__control carousel__control--prev" id="sepPrev" aria-label="Anterior Sep"></button>
+            <div class="image-placeholder image-placeholder--hero" aria-hidden="true"></div>
+            <img id="sepCarousel" src="assets/sep/panchos.jpg" alt="Panchos" loading="lazy" width="900" height="600" decoding="async" />
+            <div class="sep-gallery__overlay">
+              <span class="sep-gallery__pill">Especial del día</span>
+              <h2>Primavera</h2>
+              <p>Rolls y combos con ese toque irresistible de la casa.</p>
+              <div class="sep-gallery__actions">
+                <a class="primary-button primary-button--small" id="promoEspecialLink" href="#promoEspecialOpciones">Ver promo</a>
+              </div>
+            </div>
+            <button class="carousel__control carousel__control--next" id="sepNext" aria-label="Siguiente Sep"></button>
+            <span id="sepStatus" class="sr-only" aria-live="polite"></span>
+          </div>
+        </section>
+
+        <aside class="hero__panel" id="featuredPromo">
           <div class="hero__panel-media">
             <button class="carousel__control carousel__control--prev" id="featuredPrev" aria-label="Anterior"></button>
             <div class="image-placeholder image-placeholder--hero" aria-hidden="true"></div>
