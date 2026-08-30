@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260830-3";
+const APP_VERSION = "20260830-4";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00

@@ -3381,18 +3381,27 @@ product-card__selector select {
 
 @media (max-width: 420px) {
   .topbar {
-    flex-wrap: wrap;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 8px 4px;
   }
 
   .topbar__identity {
-    width: 100%;
-    gap: 6px;
+    display: contents;
   }
 
   .topbar__actions {
-    width: 100%;
+    grid-column: 4;
+    grid-row: 2;
+    width: auto;
     justify-content: flex-end;
+    gap: 3px;
+  }
+
+  .brand-block {
+    grid-column: 1 / -1;
+    padding-bottom: 2px;
   }
 
   .brand__mono {
@@ -3406,44 +3415,82 @@ product-card__selector select {
   }
 
   .open-orders-button {
-    min-height: 28px;
-    padding: 4px 7px;
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+    gap: 4px;
+    min-height: 24px;
+    padding: 3px 6px;
+  }
+
+  .open-orders-button__dot {
+    width: 6px;
+    height: 6px;
   }
 
   .open-orders-button__label {
-    font-size: 0.41rem;
+    font-size: 0.34rem;
+    letter-spacing: 0.01em;
+  }
+
+  .follow-ig {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    margin-left: 0;
+    gap: 0;
+  }
+
+  .follow-ig__icon {
+    width: 14px;
+    height: 14px;
+    flex-basis: 14px;
   }
 
   .ghost-button {
-    min-height: 34px;
-    padding: 6px 8px;
-    font-size: 0.74rem;
+    min-height: 32px;
+    padding: 0;
   }
 
   .ghost-button--icon {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    padding: 0;
-    flex: 0 0 38px;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    flex: 0 0 32px;
   }
 
   .cart-button {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    flex: 0 0 38px;
+    height: 34px;
+    width: 34px;
+    min-width: 34px;
+    flex-basis: 34px;
+  }
+
+  .topbar__actions .daikon-chat__toggle {
+    min-height: 34px;
+    padding: 4px 6px 4px 4px;
+    gap: 4px;
+  }
+
+  .daikon-chat__icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .daikon-chat__label {
+    font-size: 0.44rem;
+    letter-spacing: 0.03em;
   }
 
   .cart-button svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
   }
 
   .cart-button__count {
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
     top: -2px;
     right: -2px;
     font-size: 0.6rem;
