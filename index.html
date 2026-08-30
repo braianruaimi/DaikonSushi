@@ -60,6 +60,9 @@
           </svg>
           <span class="follow-ig__label">SEGUINOS!</span>
         </a>
+        <button class="event-contact-button" id="eventContactButton" type="button">
+          Contactanos para tu evento
+        </button>
       </div>
 
       <nav class="topbar__actions" aria-label="Acciones principales">
@@ -138,13 +141,16 @@
             <div class="hero__panel-media">
               <button class="carousel__control carousel__control--prev" id="sideFeaturedPrev" aria-label="Anterior"></button>
               <div class="image-placeholder image-placeholder--hero" aria-hidden="true"></div>
-              <img id="sideFeaturedCarousel" src="assets/products/promosakura.jpg" alt="Producto destacado" loading="lazy" width="360" height="240" decoding="async" />
+              <img id="sideFeaturedCarousel" src="assets/primavera/2sakuras.jpg" alt="Producto destacado" loading="lazy" width="360" height="240" decoding="async" data-open-promo-primavera="true" />
               <button class="carousel__control carousel__control--next" id="sideFeaturedNext" aria-label="Siguiente"></button>
               <span id="sideFeaturedStatus" class="sr-only" aria-live="polite"></span>
             </div>
             <div class="hero__featured-caption">
               <h3 id="sideFeaturedTitle">PROMO DEL MES!</h3>
-              <p id="sideFeaturedDesc" class="muted">Jugosa burger con queso phila saborizado, palta cremosa, salmon fresco, ciboulette, salsa teriyaki y tapas rebozadas.</p>
+              <p id="sideFeaturedDesc" class="muted">2 Sakuras x $30.000. También disponible: 2 Panchos Sushi x $30.000.</p>
+              <button class="primary-button hero__featured-cta" id="sideFeaturedCta" type="button" data-open-promo-primavera="true">
+                Quiero la promo
+              </button>
             </div>
           </div>
 
@@ -179,6 +185,9 @@
           </p>
           <div class="hero__panel-footer">
             <span>$18.000</span>
+            <button class="primary-button primary-button--small" id="featuredAdd" type="button">
+              Sumar al carrito
+            </button>
           </div>
           <div class="hero__panel-hotburgers">
             <p class="hero__panel-label">Hotburgers</p>
@@ -191,6 +200,9 @@
             </div>
             <div class="hero__panel-footer">
               <span>$18.000</span>
+              <button class="primary-button primary-button--small" id="hotburgerAdd" type="button">
+                Sumar al carrito
+              </button>
             </div>
           </div>
         </aside>
@@ -346,6 +358,45 @@
       </div>
     </div>
 
+    <div id="eventModal" class="offer-modal event-modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+      <div class="offer-modal__card event-modal__card">
+        <button class="offer-modal__close icon-button" id="eventClose" aria-label="Cerrar formulario de eventos">×</button>
+        <div id="eventFormView">
+          <h2 class="offer-modal__title">Bienvenidos a Daikon Sushi</h2>
+          <p class="offer-modal__body">Contanos qué tipo de experiencia querés y te respondemos a la brevedad.</p>
+          <form id="eventForm" class="event-modal__form">
+            <label class="checkout-field" for="eventName">
+              <span>Nombre y Apellido</span>
+              <input id="eventName" name="eventName" type="text" placeholder="Tu nombre completo" autocomplete="name" />
+            </label>
+            <label class="checkout-field" for="eventPhone">
+              <span>Número de teléfono</span>
+              <input id="eventPhone" name="eventPhone" type="tel" placeholder="Tu número" autocomplete="tel" inputmode="tel" />
+            </label>
+            <label class="checkout-field" for="eventType">
+              <span>Tipo de evento</span>
+              <input id="eventType" name="eventType" type="text" placeholder="Cumpleaños, empresa, reunión..." />
+            </label>
+            <label class="checkout-field" for="eventGuests">
+              <span>Cantidad de personas</span>
+              <input id="eventGuests" name="eventGuests" type="number" min="1" step="1" placeholder="Ej: 30" inputmode="numeric" />
+            </label>
+            <label class="checkout-field" for="eventDetails">
+              <span>Contanos qué tipo de experiencia querés</span>
+              <textarea id="eventDetails" name="eventDetails" rows="4" placeholder="Fecha, estilo del evento, horario, idea general..."></textarea>
+            </label>
+            <button class="primary-button primary-button--wide" id="eventSubmit" type="submit">
+              Enviar
+            </button>
+          </form>
+        </div>
+        <div id="eventSuccess" class="event-modal__success" hidden>
+          <h2 class="offer-modal__title">GRACIAS !!</h2>
+          <p class="offer-modal__body">A la brevedad recibirá su respuesta.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- ✏️ EDITAR: consultas frecuentes predeterminadas. -->
     <div class="daikon-chat" id="daikonChat">
       <div class="floating-menu" id="floatingMenu">
@@ -442,16 +493,16 @@
       </div>
     </div>
 
-    <!-- Modal Promo Mundial -->
+    <!-- Modal Promo Primavera -->
     <div id="mundialModal" class="offer-modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
       <div class="offer-modal__card">
         <button class="offer-modal__close icon-button" id="mundialClose" aria-label="Cerrar">×</button>
-        <h2 class="offer-modal__title">PROMO MUNDIAL</h2>
+        <h2 class="offer-modal__title">PROMO PRIMAVERA</h2>
         <div id="mundialStep1">
-          <p class="offer-modal__body">Elegí tu pack:</p>
+          <p class="offer-modal__body">Elegí tu pack de la Promo del Mes:</p>
           <div class="offer-modal__actions">
-            <button id="mundialBurger" class="primary-button">Burger del MES!</button>
-            <button id="mundialPancho" class="ghost-button">Pancho del MES!</button>
+            <button id="mundialBurger" class="primary-button">2 Sakuras x $30.000</button>
+            <button id="mundialPancho" class="ghost-button">2 Panchos Sushi x $30.000</button>
           </div>
         </div>
 

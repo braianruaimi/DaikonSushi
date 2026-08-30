@@ -28,6 +28,8 @@ const APP_SHELL = [
   "assets/products/promosakura.jpg",
   "assets/products/promopancho.jpg",
   "assets/products/logodaikon.jpg",
+  "assets/primavera/2sakuras.jpg",
+  "assets/primavera/2panchos.jpg",
   "assets/icons/icon-192.png",
   "assets/icons/icon-512.png"
 ];

@@ -126,16 +126,16 @@ const promoDinnerTwo = {
   cta: "Sumar al carrito",
 };
 
-// Promo MUNDIAL (precio fijo para el pack)
+// Promo PRIMAVERA (precio fijo para el pack)
 const promoMundialBurger = {
   id: "promo-mundial-burger",
   category: "Promo",
   badge: "PROMO",
-  title: "Promo MUNDIAL — 2 Sakuras",
-  name: "Promo MUNDIAL — 2 Sakuras",
+  title: "PROMO PRIMAVERA — 2 Sakuras",
+  name: "PROMO PRIMAVERA — 2 Sakuras",
   description: "2 Hotburger Sakura por $30.000",
   price: 30000,
-  image: "assets/products/Sakura.jpg",
+  image: "assets/primavera/2sakuras.jpg",
   cta: "Sumar promo",
 };
 
@@ -143,11 +143,11 @@ const promoMundialPancho = {
   id: "promo-mundial-pancho",
   category: "Promo",
   badge: "PROMO",
-  title: "Promo MUNDIAL — 2 Pancho",
-  name: "Promo MUNDIAL — 2 Pancho",
+  title: "PROMO PRIMAVERA — 2 Pancho",
+  name: "PROMO PRIMAVERA — 2 Pancho",
   description: "2 Pancho a elección por $30.000",
   price: 30000,
-  image: "assets/products/pancho sushi salmon.jpg",
+  image: "assets/primavera/2panchos.jpg",
   cta: "Sumar promo",
 };
 
@@ -428,6 +428,15 @@ const floatingMenu = document.querySelector("#floatingMenu");
 const floatingMenuToggle = document.querySelector("#floatingMenuToggle");
 const floatingMenuPanel = document.querySelector("#floatingMenuPanel");
 const floatingCategoryChips = document.querySelector("#floatingCategoryChips");
+const eventContactButton = document.querySelector("#eventContactButton");
+const eventModal = document.querySelector("#eventModal");
+const eventForm = document.querySelector("#eventForm");
+const eventClose = document.querySelector("#eventClose");
+const eventName = document.querySelector("#eventName");
+const eventPhone = document.querySelector("#eventPhone");
+const eventType = document.querySelector("#eventType");
+const eventGuests = document.querySelector("#eventGuests");
+const eventDetails = document.querySelector("#eventDetails");
 const daikonChat = document.querySelector("#daikonChat");
 const openOrdersButton = document.querySelector("#openOrdersButton");
 const installAppButton = document.querySelector("#installAppButton");
@@ -621,12 +630,6 @@ function bindEvents() {
   if (backdrop) backdrop.addEventListener("click", closeCart);
   if (cartScrollUp) cartScrollUp.addEventListener("click", () => scrollCartItems(-180));
   if (cartScrollDown) cartScrollDown.addEventListener("click", () => scrollCartItems(180));
-
-  if (featuredAdd) {
-    featuredAdd.addEventListener("click", () => {
-      addToCart("pancho-salmon");
-    });
-  }
 
   if (installAppButton) {
     installAppButton.addEventListener("click", handleInstallAppClick);
@@ -1829,11 +1832,90 @@ function openWhatsApp() {
   openExternalUrl(buildWhatsAppLink(message));
 }
 
+function generateEventWhatsAppMessage() {
+  const contactName = eventName.value.trim();
+  const phone = eventPhone.value.trim();
+  const type = eventType.value.trim();
+  const guests = eventGuests.value.trim();
+  const details = eventDetails.value.trim();
+
+  return [
+    "Hola Daikon, quiero consultar por un evento.",
+    "----------------------------------------",
+    `Nombre y apellido: ${contactName}`,
+    `Número de teléfono: ${phone}`,
+    `Tipo de evento: ${type}`,
+    `Cantidad de personas: ${guests}`,
+    `Experiencia que quiere: ${details}`,
+  ].join("\n");
+}
+
 function validateRequiredField(field) {
   const isValid = Boolean(field.value.trim());
   field.classList.toggle("is-invalid", !isValid);
   field.setAttribute("aria-invalid", String(!isValid));
   return isValid;
+}
+
+function initEventContactModal() {
+  const backdropEl = document.getElementById('backdrop');
+  const eventFormView = document.getElementById('eventFormView');
+  const eventSuccess = document.getElementById('eventSuccess');
+  if (!eventContactButton || !eventModal || !eventForm || !eventClose || !eventFormView || !eventSuccess) {
+    return;
+  }
+
+  const fields = [eventName, eventPhone, eventType, eventGuests, eventDetails].filter(Boolean);
+
+  function openEventModal() {
+    eventModal.hidden = false;
+    eventModal.setAttribute('aria-hidden', 'false');
+    eventFormView.hidden = false;
+    eventSuccess.hidden = true;
+    if (backdropEl) {
+      backdropEl.hidden = false;
+      backdropEl.removeAttribute('aria-hidden');
+    }
+  }
+
+  function closeEventModal() {
+    eventModal.hidden = true;
+    eventModal.setAttribute('aria-hidden', 'true');
+    eventFormView.hidden = false;
+    eventSuccess.hidden = true;
+    if (backdropEl) {
+      backdropEl.hidden = true;
+      backdropEl.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  eventContactButton.addEventListener('click', openEventModal);
+  eventClose.addEventListener('click', closeEventModal);
+  backdropEl?.addEventListener('click', closeEventModal);
+
+  fields.forEach((field) => {
+    field.addEventListener('input', () => validateRequiredField(field));
+  });
+
+  eventForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const invalidField = fields.find((field) => !validateRequiredField(field));
+    if (invalidField) {
+      showToast('Completá todos los datos del evento para continuar.');
+      invalidField.focus();
+      return;
+    }
+
+    eventFormView.hidden = true;
+    eventSuccess.hidden = false;
+
+    const message = generateEventWhatsAppMessage();
+    window.setTimeout(() => {
+      openExternalUrl(buildWhatsAppLink(message));
+      closeEventModal();
+    }, 900);
+  });
 }
 
 function loadCart() {
@@ -2110,6 +2192,7 @@ window.addEventListener("load", () => {
   initSideFeaturedCarousel();
   initOfferModal();
   initMundialModal();
+  initEventContactModal();
   initHeroCtas();
   // Ensure hero placeholders are removed when hero images load
   ["featuredCarousel", "hotburgerCarousel"].forEach((id) => {
@@ -2394,14 +2477,14 @@ function migrateLegacyCartItem(item) {
 }
 
 function getCartItemDetails(item) {
-  // Special handling for Promo MUNDIAL items
+  // Special handling for Promo PRIMAVERA items
   if (item.id === 'promo-mundial-burger') {
     const promo = products.find((p) => p.id === 'promo-mundial-burger');
     if (!promo) return null;
     return {
       product: promo,
       option: null,
-      name: promo.name || 'Promo MUNDIAL — 2 Sakuras',
+      name: promo.name || 'PROMO PRIMAVERA — 2 Sakuras',
       meta: promo.description || 'Promo — 2x Hotburger Sakura',
       price: promo.price,
     };
@@ -2412,7 +2495,7 @@ function getCartItemDetails(item) {
     if (!promo) return null;
     // optionId holds the chosen pancho product id
     const chosen = products.find((p) => p.id === item.optionId);
-    const name = chosen ? `Promo MUNDIAL — 2x ${chosen.name}` : promo.name;
+    const name = chosen ? `PROMO PRIMAVERA — 2x ${chosen.name}` : promo.name;
     const meta = chosen ? (chosen.meta || chosen.category) : promo.description;
     return {
       product: promo,
@@ -2528,8 +2611,8 @@ function createPromoCardDinnerTwo() {
 
 function initSideFeaturedCarousel() {
   const images = [
-    "assets/products/promosakura.jpg",
-    "assets/products/promopancho.jpg",
+    "assets/primavera/2sakuras.jpg",
+    "assets/primavera/2panchos.jpg",
   ];
 
   createCarousel({
@@ -2548,12 +2631,12 @@ function initSideFeaturedCarousel() {
   function updateCaptionForSrc(src) {
     if (!src) return;
     const lname = src.toLowerCase();
-    if (lname.includes('burgermundial') || lname.includes('promosakura')) {
+    if (lname.includes('burgermundial') || lname.includes('promosakura') || lname.includes('2sakura')) {
       titleEl.textContent = 'PROMO DEL MES!';
-      descEl.textContent = 'Hotburger Sakura: doble salmón fresco, queso Philadelphia, palta cremosa y salsa teriyaki — jugosa y lista para compartir.';
-    } else if (lname.includes('pancho') || lname.includes('panchomundial') || lname.includes('promopancho')) {
+      descEl.textContent = '2 Sakuras x $30.000';
+    } else if (lname.includes('pancho') || lname.includes('panchomundial') || lname.includes('promopancho') || lname.includes('2panchos')) {
       titleEl.textContent = 'PROMO DEL MES!';
-      descEl.textContent = 'Roll caliente rebozado en panko, cortado al medio. Base de queso crema, cremoso de palta y salmón rosado fresco.';
+      descEl.textContent = '2 Panchos Sushi x $30.000';
     } else {
       titleEl.textContent = 'Producto destacado';
       descEl.textContent = '';
@@ -2563,7 +2646,7 @@ function initSideFeaturedCarousel() {
   imgEl && imgEl.addEventListener('load', () => updateCaptionForSrc(imgEl.currentSrc || imgEl.src));
 }
 
-// Modal Promo Mundial: flujo Burger / Pancho -> agregar 2 unidades al carrito
+// Modal Promo Primavera: flujo Burger / Pancho -> agregar 2 unidades al carrito
 function initMundialModal() {
   const modal = document.getElementById('mundialModal');
   const backdropEl = document.getElementById('backdrop');
@@ -2615,7 +2698,7 @@ function initMundialModal() {
       SUPPRESS_TOASTS = false;
     }
 
-    showToast('Promo MUNDIAL agregada al carrito.');
+    showToast('PROMO PRIMAVERA agregada al carrito.');
     closeModal();
     openCart();
   }
@@ -2624,11 +2707,12 @@ function initMundialModal() {
   btnClose?.addEventListener('click', closeModal);
   backdropEl?.addEventListener('click', closeModal);
 
-  // When clicking the featured side image, open modal
-  const sideImg = document.getElementById('sideFeaturedCarousel');
-  sideImg?.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal();
+  // When clicking the featured promo image or CTA, open the same modal
+  document.querySelectorAll('[data-open-promo-primavera="true"]').forEach((trigger) => {
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      openModal();
+    });
   });
 
   btnBurger?.addEventListener('click', () => {
