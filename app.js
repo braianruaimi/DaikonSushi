@@ -2281,9 +2281,7 @@ function setupInstallApp() {
     // When app is installed, if there's a waiting SW, show update button
     if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
       navigator.serviceWorker.getRegistration().then((reg) => {
-        if (reg && reg.waiting && updateAppButton) {
-          updateAppButton.hidden = false;
-        }
+        syncUpdateButtonVisibility(reg);
       }).catch(() => {});
     }
   });
@@ -2298,8 +2296,9 @@ function syncUpdateButtonVisibility(registration = null) {
     return;
   }
 
-  updateAppButton.hidden = !isStandaloneApp();
-  updateAppButton.classList.toggle('has-update', Boolean(registration && registration.waiting));
+  const hasUpdate = Boolean(registration && registration.waiting);
+  updateAppButton.hidden = !isStandaloneApp() || !hasUpdate;
+  updateAppButton.classList.toggle('has-update', hasUpdate);
 }
 
 function waitForInstallingWorker(registration) {
@@ -2338,6 +2337,7 @@ if (updateAppButton) {
         syncUpdateButtonVisibility(reg);
         if (!hasPendingUpdate && !reg.waiting) {
           showToast('La app ya está actualizada.');
+          syncUpdateButtonVisibility(null);
           return;
         }
       }

@@ -38,10 +38,15 @@
     <!-- ✏️ EDITAR: header, marca y accesos rapidos. -->
     <header class="topbar">
       <div class="topbar__identity">
-        <a class="brand" href="#inicio" aria-label="Daikon Sushi Delivery inicio">
-          <span class="brand__mono">DAIKON</span>
-          <span class="brand__kanji">SUSHI DELIVERY</span>
-        </a>
+        <div class="brand-block">
+          <a class="brand" href="#inicio" aria-label="Daikon Sushi Delivery inicio">
+            <span class="brand__mono">DAIKON</span>
+            <span class="brand__kanji">SUSHI DELIVERY</span>
+          </a>
+          <button class="event-contact-button" id="eventContactButton" type="button">
+            Contactanos para tu evento
+          </button>
+        </div>
 
         <button
           class="open-orders-button"
@@ -60,9 +65,6 @@
           </svg>
           <span class="follow-ig__label">SEGUINOS!</span>
         </a>
-        <button class="event-contact-button" id="eventContactButton" type="button">
-          Contactanos para tu evento
-        </button>
       </div>
 
       <nav class="topbar__actions" aria-label="Acciones principales">
