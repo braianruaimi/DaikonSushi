@@ -804,17 +804,17 @@ a {
   align-items: center;
   justify-content: center;
   align-self: flex-start;
-  min-height: 44px;
-  padding: 11px 18px;
+  min-height: 38px;
+  padding: 9px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 120, 150, 0.28);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 34%),
     linear-gradient(180deg, #2a0a13 0%, #12070b 30%, #8f0d2e 62%, #ff003c 100%);
   color: #fff;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.32);
   box-shadow:
@@ -835,7 +835,7 @@ a {
 @media (max-width: 640px) {
   .follow-ig__label { display:none; }
   .follow-ig { margin-left:8px; }
-  .event-contact-button { padding: 10px 12px; font-size: 0.7rem; }
+  .event-contact-button { min-height: 34px; padding: 8px 11px; font-size: 0.64rem; }
 }
 
 .cart-button {
