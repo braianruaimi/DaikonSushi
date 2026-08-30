@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260830";
+const APP_VERSION = "20260830-2";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -2165,6 +2165,10 @@ function registerServiceWorker() {
     navigator.serviceWorker.register(`service-worker.js?v=${APP_VERSION}`, { updateViaCache: 'none' }).then((registration) => {
       syncUpdateButtonVisibility(registration);
 
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+
       if (isStandaloneApp()) {
         registration.update().catch(() => {});
       }
@@ -2174,6 +2178,9 @@ function registerServiceWorker() {
         if (!installing) return;
         installing.addEventListener('statechange', () => {
           if (installing.state === 'installed') {
+            if (registration.waiting) {
+              registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            }
             syncUpdateButtonVisibility(registration);
           }
         });
@@ -2336,6 +2343,8 @@ if (updateAppButton) {
         const hasPendingUpdate = await waitForInstallingWorker(reg);
         syncUpdateButtonVisibility(reg);
         if (!hasPendingUpdate && !reg.waiting) {
+          updateAppButton.hidden = true;
+          updateAppButton.classList.remove('has-update');
           showToast('La app ya está actualizada.');
           syncUpdateButtonVisibility(null);
           return;

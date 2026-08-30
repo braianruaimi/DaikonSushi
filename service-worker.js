@@ -1,4 +1,4 @@
-const CACHE_NAME = "daikon-sushi-" + "20260830";
+const CACHE_NAME = "daikon-sushi-" + "20260830-2";
 const APP_SHELL = [
   "./",
   "index.html",
@@ -47,7 +47,7 @@ self.addEventListener("install", (event) => {
       })
     )
   );
-  // Wait for explicit user action to skip waiting so the app can prompt updates
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
