@@ -2162,9 +2162,10 @@ function registerServiceWorker() {
 
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("service-worker.js").then((registration) => {
-      // If there's already a waiting worker, show update prompt when app is installed
-      if (registration.waiting) {
-        if (isStandaloneApp() && updateAppButton) updateAppButton.hidden = false;
+      syncUpdateButtonVisibility(registration);
+
+      if (isStandaloneApp()) {
+        registration.update().catch(() => {});
       }
 
       registration.addEventListener('updatefound', () => {
@@ -2172,10 +2173,7 @@ function registerServiceWorker() {
         if (!installing) return;
         installing.addEventListener('statechange', () => {
           if (installing.state === 'installed') {
-            // New update installed and waiting
-            if (registration.waiting && isStandaloneApp() && updateAppButton) {
-              updateAppButton.hidden = false;
-            }
+            syncUpdateButtonVisibility(registration);
           }
         });
       });
@@ -2294,6 +2292,36 @@ function isStandaloneApp() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
 }
 
+function syncUpdateButtonVisibility(registration = null) {
+  if (!updateAppButton) {
+    return;
+  }
+
+  updateAppButton.hidden = !isStandaloneApp();
+  updateAppButton.classList.toggle('has-update', Boolean(registration && registration.waiting));
+}
+
+function waitForInstallingWorker(registration) {
+  const installing = registration && registration.installing;
+  if (!installing) {
+    return Promise.resolve(false);
+  }
+
+  return new Promise((resolve) => {
+    const handleStateChange = () => {
+      if (installing.state === 'installed') {
+        resolve(Boolean(registration.waiting));
+      }
+      if (installing.state === 'redundant') {
+        resolve(false);
+      }
+    };
+
+    installing.addEventListener('statechange', handleStateChange);
+    handleStateChange();
+  });
+}
+
 // Handle update button action: send skipWaiting to waiting SW and reload on controllerchange
 if (updateAppButton) {
   updateAppButton.addEventListener('click', async () => {
@@ -2302,11 +2330,24 @@ if (updateAppButton) {
       showToast('Actualizando app...');
       const reg = await navigator.serviceWorker.getRegistration();
       if (!reg) return;
+      syncUpdateButtonVisibility(reg);
+      if (!reg.waiting) {
+        await reg.update();
+        const hasPendingUpdate = await waitForInstallingWorker(reg);
+        syncUpdateButtonVisibility(reg);
+        if (!hasPendingUpdate && !reg.waiting) {
+          showToast('La app ya está actualizada.');
+          return;
+        }
+      }
+
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
       }
     } catch (e) {
       console.debug('Update action error', e);
+      showToast('No se pudo buscar la actualización.');
+    } finally {
       updateAppButton.disabled = false;
     }
   });
