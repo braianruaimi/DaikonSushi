@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260831-1";
+const APP_VERSION = "20260831-2";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -1181,6 +1181,10 @@ function renderProducts(category = state.activeCategory) {
     (state.activeCategory === "Todos" || state.activeCategory === promoDinnerTwo.category) &&
     matchesPromoQuery(state.query);
 
+  const showFullMenuRibbon =
+    state.activeCategory === "Todos" &&
+    !state.query;
+
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       state.activeCategory === "Todos" ||
@@ -1216,8 +1220,11 @@ function renderProducts(category = state.activeCategory) {
     productGrid.appendChild(createPromoCard());
   }
 
-  if (showPromoDinnerTwo) {
+  if (showFullMenuRibbon) {
     productGrid.appendChild(createPromoDinnerTwoRibbon());
+  }
+
+  if (showPromoDinnerTwo) {
     productGrid.appendChild(createPromoCardDinnerTwo());
   }
 
