@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260830-4";
+const APP_VERSION = "20260830-5";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -155,6 +155,7 @@ const promoMundialPancho = {
 // Promo items will be inserted into the products catalog after the list is defined below
 
 const EXTRAS_CATEGORY = "Extras";
+const PARTY_CATEGORY = "Rinde para 10 personas";
 
 // ✏️ EDITAR: catalogo completo del menu. El cliente puede cambiar textos, precios e imagenes locales.
 const products = [
@@ -365,10 +366,46 @@ const products = [
     image: "assets/products/palillos extras.jpg",
     meta: "Extra / palillos",
   },
+  {
+    id: "party-sushicake",
+    name: "Sushicake",
+    category: PARTY_CATEGORY,
+    badge: "Para compartir",
+    description: "Presentación ideal para compartir entre 10 personas.",
+    price: null,
+    image: "assets/rinde para 10/sushicake.jpg",
+    fallbackImage: "assets/products/combo daikon.jpg",
+    meta: "Rinde para 10 personas",
+  },
+  {
+    id: "party-shicake",
+    name: "Shicake",
+    category: PARTY_CATEGORY,
+    badge: "Especial",
+    description: "Opción especial pensada para mesas grandes y eventos.",
+    price: null,
+    image: "assets/rinde para 10/shicake.jpg",
+    fallbackImage: "assets/products/deluxe.jpg",
+    meta: "Rinde para 10 personas",
+  },
+  {
+    id: "party-sushicake-mixta",
+    name: "Sushicake Mixta",
+    category: PARTY_CATEGORY,
+    badge: "Mixta",
+    description: "Versión mixta para compartir con variedad de piezas.",
+    price: null,
+    image: "assets/rinde para 10/sushicake mixta.jpg",
+    fallbackImage: "assets/products/todo salmon 4 piezas regalo.jpg",
+    meta: "Rinde para 10 personas",
+  },
 ];
 
-// Append promo MUNDIAL items into the products catalog so they are discoverable
-products.push(promoMundialBurger, promoMundialPancho);
+const partyProducts = products.splice(-3);
+
+// Append promo items into the products catalog so they are discoverable,
+// then keep the party section as the final block in the menu.
+products.push(promoMundialBurger, promoMundialPancho, ...partyProducts);
 
 const state = {
   activeCategory: "Todos",
@@ -1183,7 +1220,14 @@ function renderProducts(category = state.activeCategory) {
     productGrid.appendChild(createPromoCardDinnerTwo());
   }
 
+  let sectionDividerInserted = false;
+
   filteredProducts.forEach((product, index) => {
+    if (!sectionDividerInserted && state.activeCategory === "Todos" && product.category === PARTY_CATEGORY) {
+      productGrid.appendChild(createProductSectionDivider(PARTY_CATEGORY));
+      sectionDividerInserted = true;
+    }
+
     const fragment = productCardTemplate.content.cloneNode(true);
     const card = fragment.querySelector(".product-card");
     const image = fragment.querySelector("img");
@@ -1219,7 +1263,15 @@ function renderProducts(category = state.activeCategory) {
       markLoaded();
     } else {
       imgEl.addEventListener('load', markLoaded, { once: true });
-      imgEl.addEventListener('error', () => { media.classList.add('is-loaded'); }, { once: true });
+      imgEl.addEventListener('error', () => {
+        if (product.fallbackImage && imgEl.dataset.fallbackApplied !== 'true') {
+          imgEl.dataset.fallbackApplied = 'true';
+          imgEl.src = product.fallbackImage;
+          return;
+        }
+
+        media.classList.add('is-loaded');
+      }, { once: true });
     }
     badge.classList.remove("product-card__badge--hot", "product-card__badge--ghost");
     // Priorizar propiedades que pueden contener etiquetas: badge, tag o flavor
@@ -2789,4 +2841,11 @@ function initMundialModal() {
     if (!prod) return;
     addPromoItems(prod);
   });
+}
+
+function createProductSectionDivider(title) {
+  const divider = document.createElement("div");
+  divider.className = "product-section-divider";
+  divider.innerHTML = `<span class="product-section-divider__eyebrow">Nueva sección</span><h3>${title}</h3>`;
+  return divider;
 }

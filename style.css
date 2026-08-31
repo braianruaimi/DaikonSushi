@@ -1510,6 +1510,30 @@ main {
   gap: 14px;
 }
 
+.product-section-divider {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 0, 60, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(12, 12, 16, 0.94), rgba(8, 8, 10, 0.98));
+  box-shadow: var(--glow-soft);
+}
+
+.product-section-divider__eyebrow {
+  color: var(--primary);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.product-section-divider h3 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+}
+
 /* ✏️ EDITAR: card especial de promo almuerzo. */
 .promo-card {
   grid-column: span 3;
