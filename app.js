@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260830-9";
+const APP_VERSION = "20260831-1";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -126,24 +126,6 @@ const promoDinnerTwo = {
   image: "assets/products/promo-cena-dos.jpg",
   cta: "Sumar al carrito",
 };
-
-const promoDinnerTwoItems = [
-  {
-    name: "HotBurger Sakura",
-    image: "assets/products/Sakura.jpg",
-    meta: "$18.000 · salmón fresco",
-  },
-  {
-    name: "Combo Daikon 32p",
-    image: "assets/products/combo daikon.jpg",
-    meta: "$36.000 · 32 piezas",
-  },
-  {
-    name: "Ebi Crocante",
-    image: "assets/products/eby crocante.jpg",
-    meta: "$15.000 · 5 unidades",
-  },
-];
 
 // Promo PRIMAVERA (precio fijo para el pack)
 const promoMundialBurger = {
@@ -2735,14 +2717,16 @@ function createPromoDinnerTwoRibbon() {
   const ribbon = document.createElement("section");
   ribbon.className = "promo-ribbon promo-ribbon--dinner-two reveal-card";
 
-  const repeatedItems = promoDinnerTwoItems
+  const ribbonProducts = products.filter((product) => product.category !== EXTRAS_CATEGORY);
+
+  const repeatedItems = ribbonProducts
     .map(
       (item) => `
         <article class="promo-ribbon__item">
           <img src="${item.image}" alt="${item.name}" loading="lazy" decoding="async" />
           <div class="promo-ribbon__copy">
             <span class="promo-ribbon__name">${item.name}</span>
-            <span class="promo-ribbon__meta">${item.meta}</span>
+            <span class="promo-ribbon__meta">${item.category} · ${formatPrice(item.price)}</span>
           </div>
         </article>
       `
@@ -2751,8 +2735,8 @@ function createPromoDinnerTwoRibbon() {
 
   ribbon.innerHTML = `
     <div class="promo-ribbon__header">
-      <span class="promo-ribbon__eyebrow">Antes de la promo</span>
-      <h3>Todo lo que entra en Promo CENA para dos</h3>
+      <span class="promo-ribbon__eyebrow">Toda la carta</span>
+      <h3>Nuestros productos pasando en cinta</h3>
     </div>
     <div class="promo-ribbon__marquee">
       <div class="promo-ribbon__track">
