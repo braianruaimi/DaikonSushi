@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260830-7";
+const APP_VERSION = "20260830-8";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -390,11 +390,11 @@ const products = [
   },
   {
     id: "party-sushicake-mixta",
-    name: "Sushicake Mixta",
+    name: "Sushi Cake Mixta",
     category: PARTY_CATEGORY,
     badge: "Mixta",
-    description: "Versión mixta para compartir con variedad de piezas.",
-    price: null,
+    description: "Capas de arroz, queso crema, palta, langostinos y salmón, coronada con sésamo y ciboulette. INCLUYE: Salsa de soja, palillos, wasabi y jengibre. IMPORTANTE: Encargo mínimo 24 hs anticipación.",
+    price: 95000,
     image: "assets/rinde para 10/sushicake mixta.jpg",
     fallbackImage: "assets/products/todo salmon 4 piezas regalo.jpg",
     meta: "Rinde para 10 personas",
