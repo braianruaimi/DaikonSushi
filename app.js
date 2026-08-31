@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260831-3";
+const APP_VERSION = "20260831-4";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -2723,6 +2723,7 @@ function createPromoDinnerTwoRibbon() {
   ribbon.className = "promo-ribbon promo-ribbon--dinner-two reveal-card";
 
   const ribbonProducts = products.filter((product) => product.category !== EXTRAS_CATEGORY);
+  const ribbonStepCount = Math.max(ribbonProducts.length, 1);
 
   const repeatedItems = ribbonProducts
     .map(
@@ -2741,10 +2742,10 @@ function createPromoDinnerTwoRibbon() {
   ribbon.innerHTML = `
     <div class="promo-ribbon__header">
       <span class="promo-ribbon__eyebrow">Toda la carta</span>
-      <h3>Nuestros productos pasando en cinta</h3>
+      <h3>Nuestros productos</h3>
     </div>
     <div class="promo-ribbon__marquee">
-      <div class="promo-ribbon__track">
+      <div class="promo-ribbon__track" style="--promo-ribbon-steps: ${ribbonStepCount}; --promo-ribbon-duration: ${ribbonStepCount * 2}s;">
         <div class="promo-ribbon__list">${repeatedItems}</div>
         <div class="promo-ribbon__list" aria-hidden="true">${repeatedItems}</div>
       </div>

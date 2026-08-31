@@ -1586,7 +1586,10 @@ main {
   gap: 12px;
   width: max-content;
   will-change: transform;
-  animation: promo-ribbon-scroll 18s linear infinite;
+  animation-duration: var(--promo-ribbon-duration, 18s);
+  animation-name: promo-ribbon-scroll;
+  animation-timing-function: steps(var(--promo-ribbon-steps, 9));
+  animation-iteration-count: infinite;
 }
 
 .promo-ribbon:hover .promo-ribbon__track {
