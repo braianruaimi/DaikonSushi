@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260831-2";
+const APP_VERSION = "20260831-3";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 // Horario de toma de pedidos: desde las 14:00 hasta las 00:00
@@ -2680,9 +2680,7 @@ function flyToCartFrom(imgEl) {
 }
 
 function isPromoDinnerTwoAvailable() {
-  const currentHour = new Date().getHours();
-  // Mostrar la promo de cena para dos en horario nocturno (18:00 - 23:00)
-  return currentHour >= 18 && currentHour <= 23;
+  return true;
 }
 
 function createPromoCardDinnerTwo() {
