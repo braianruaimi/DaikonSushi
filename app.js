@@ -116,13 +116,25 @@ const promoLunch = {
   cta: "Sumar al carrito",
 };
 
-// Promo CENA para dos
+// Promo 32 piezas + Pancho
 const promoDinnerTwo = {
   id: "promo-cena-dos",
-  category: "Promo CENA para dos",
+  category: "Promo 32 piezas + Pancho",
   badge: "PROMO",
-  title: "Promo CENA para dos",
-  description: "HotBurger SAKURA + Combo Daikon 32p + Ebi crocante por $54.999.",
+  title: "Promo 32 piezas + Pancho",
+  description: "Combo Daikon de 32 piezas + Pancho a elección por $49.000.",
+  image: "assets/products/promo-cena-dos.jpg",
+  cta: "Sumar al carrito",
+};
+
+const promoDinnerTwoPack = {
+  id: "promo-cena-dos-pack",
+  category: "Promo",
+  badge: "PROMO",
+  title: "Promo 32 piezas + Pancho",
+  name: "Promo 32 piezas + Pancho",
+  description: "Combo Daikon de 32 piezas + Pancho a elección por $49.000",
+  price: 49000,
   image: "assets/products/promo-cena-dos.jpg",
   cta: "Sumar al carrito",
 };
@@ -2052,11 +2064,6 @@ function formatCartSubtotal(summary) {
   if (isPromoCenaApplied()) {
     return formatCurrency(49999);
   }
-
-  if (isPromoCenaDosApplied()) {
-    // Mostrar subtotal ya con el total promocional de la oferta para dos
-    return formatCurrency(58999);
-  }
   if (summary.hasQuotedItems && summary.subtotal > 0) {
     return `${formatCurrency(summary.subtotal)} + items a consultar`;
   }
@@ -2070,13 +2077,8 @@ function formatCartSubtotal(summary) {
 
 function formatCartDelivery(summary) {
   // Si la promo CENA está aplicada, el envío igualmente se aplica
-  // Para la promo CENA normal el envío se aplica; para la promo para dos lo ocultamos
   if (isPromoCenaApplied()) {
     return formatCurrency(DELIVERY_FEE);
-  }
-
-  if (isPromoCenaDosApplied()) {
-    return formatCurrency(0);
   }
   if (summary.hasQuotedItems) {
     return "A confirmar";
@@ -2102,12 +2104,6 @@ function formatCartTotal(summary) {
     return { label: formatCurrency(totalWithDelivery), message: formatCurrency(totalWithDelivery) };
   }
 
-  if (isPromoCenaDosApplied()) {
-    // Para la promo para dos, el subtotal ya representa el total promocional $58.999
-    const promoTotal = 58999;
-    return { label: formatCurrency(promoTotal), message: formatCurrency(promoTotal) };
-  }
-
   const total = summary.subtotal ? summary.subtotal + DELIVERY_FEE : 0;
   return {
     label: formatCurrency(total),
@@ -2119,17 +2115,6 @@ function isPromoCenaApplied() {
   try {
     const hasHot = getQuantity('hotburger-sakura', null) >= 1;
     const hasCombo = getQuantity('daikon-combo', '16') >= 1;
-    const hasEbi = getQuantity('entrada-ebi-crocante', null) >= 1;
-    return hasHot && hasCombo && hasEbi;
-  } catch (e) {
-    return false;
-  }
-}
-
-function isPromoCenaDosApplied() {
-  try {
-    const hasHot = getQuantity('hotburger-sakura', null) >= 1;
-    const hasCombo = getQuantity('daikon-combo', '32') >= 1;
     const hasEbi = getQuantity('entrada-ebi-crocante', null) >= 1;
     return hasHot && hasCombo && hasEbi;
   } catch (e) {
@@ -2258,6 +2243,7 @@ window.addEventListener("load", () => {
   initSideFeaturedCarousel();
   initOfferModal();
   initMundialModal();
+  initPromoDinnerTwoModal();
   initEventContactModal();
   initHeroCtas();
   // Ensure hero placeholders are removed when hero images load
@@ -2617,6 +2603,22 @@ function getCartItemDetails(item) {
     };
   }
 
+  if (item.id === 'promo-cena-dos-pack') {
+    const chosen = products.find((p) => p.id === item.optionId);
+    const name = chosen ? `${promoDinnerTwoPack.name} · ${chosen.name}` : promoDinnerTwoPack.name;
+    const meta = chosen
+      ? `32 piezas / combo Daikon + ${chosen.name}`
+      : promoDinnerTwoPack.description;
+
+    return {
+      product: promoDinnerTwoPack,
+      option: chosen || null,
+      name,
+      meta,
+      price: promoDinnerTwoPack.price,
+    };
+  }
+
   const product = products.find((entry) => entry.id === item.id);
   if (!product) {
     return null;
@@ -2688,9 +2690,9 @@ function createPromoCardDinnerTwo() {
   card.className = "promo-card reveal-card";
   card.innerHTML = `
     <div class="promo-card__media promo-card__media--triplet">
-      <img src="assets/products/Sakura.jpg" alt="HotBurger Sakura" loading="lazy" />
-      <img src="assets/products/combo daikon.jpg" alt="Combo Daikon 32p" loading="lazy" />
-      <img src="assets/products/eby crocante.jpg" alt="Ebi Crocante" loading="lazy" />
+      <img src="assets/products/combo daikon.jpg" alt="Combo Daikon 32 piezas" loading="lazy" />
+      <img src="assets/products/pancho sushi salmon.jpg" alt="Pancho Sushi de Salmón" loading="lazy" />
+      <img src="assets/products/pancho pollo.jpg" alt="Pancho a elección" loading="lazy" />
       <span class="promo-card__badge">${promoDinnerTwo.badge}</span>
     </div>
     <div class="promo-card__body">
@@ -2702,20 +2704,63 @@ function createPromoCardDinnerTwo() {
   `;
 
   card.querySelector("button").addEventListener("click", () => {
-    // Agregar los tres productos de la promo al carrito y abrir el drawer
-    SUPPRESS_TOASTS = true;
-    try {
-      addToCart('hotburger-sakura', null);
-      addToCart('daikon-combo', '32');
-      addToCart('entrada-ebi-crocante', null);
-    } finally {
-      SUPPRESS_TOASTS = false;
-    }
-    showToast('Promo CENA para dos agregada al carrito.');
-    openCart();
+    document.getElementById('promoDinnerTwoModalOpen')?.click();
   });
 
   return card;
+}
+
+function initPromoDinnerTwoModal() {
+  const modal = document.getElementById('promoDinnerTwoModal');
+  const backdropEl = document.getElementById('backdrop');
+  const trigger = document.getElementById('promoDinnerTwoModalOpen');
+  const btnClose = document.getElementById('promoDinnerTwoClose');
+  const btnBack = document.getElementById('promoDinnerTwoBack');
+  const panchoOptions = document.getElementById('promoDinnerTwoPanchoOptions');
+  if (!modal || !trigger) return;
+
+  function openModal() {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    if (backdropEl) {
+      backdropEl.hidden = false;
+      backdropEl.removeAttribute('aria-hidden');
+    }
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    if (backdropEl) {
+      backdropEl.hidden = true;
+      backdropEl.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function addPromo(productId) {
+    SUPPRESS_TOASTS = true;
+    try {
+      addToCart('promo-cena-dos-pack', productId);
+    } finally {
+      SUPPRESS_TOASTS = false;
+    }
+
+    showToast('Promo 32 piezas + Pancho agregada al carrito.');
+    closeModal();
+    openCart();
+  }
+
+  trigger.addEventListener('click', openModal);
+  btnClose?.addEventListener('click', closeModal);
+  btnBack?.addEventListener('click', closeModal);
+  backdropEl?.addEventListener('click', closeModal);
+
+  panchoOptions?.addEventListener('click', (e) => {
+    const btn = e.target.closest && e.target.closest('.pancho-option');
+    const productId = btn?.dataset.prod;
+    if (!productId) return;
+    addPromo(productId);
+  });
 }
 
 function createPromoDinnerTwoRibbon() {

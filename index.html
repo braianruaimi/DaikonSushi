@@ -523,6 +523,25 @@
       </div>
     </div>
 
+    <button id="promoDinnerTwoModalOpen" type="button" hidden aria-hidden="true"></button>
+
+    <div id="promoDinnerTwoModal" class="offer-modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+      <div class="offer-modal__card">
+        <button class="offer-modal__close icon-button" id="promoDinnerTwoClose" aria-label="Cerrar">×</button>
+        <h2 class="offer-modal__title">Promo 32 piezas + Pancho</h2>
+        <p class="offer-modal__body">Elegí el sabor del pancho para sumar la promo de $49.000 al carrito.</p>
+        <div class="offer-modal__actions" id="promoDinnerTwoPanchoOptions">
+          <button class="ghost-button pancho-option" data-prod="pancho-pollo-teriyaki">Pollo Teriyaki</button>
+          <button class="ghost-button pancho-option" data-prod="pancho-kanikama">Sushi de Kanikama</button>
+          <button class="ghost-button pancho-option" data-prod="pancho-salmon">Sushi de Salmón</button>
+          <button class="ghost-button pancho-option" data-prod="pancho-langostinos">Sushi de Langostinos</button>
+        </div>
+        <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+          <button id="promoDinnerTwoBack" class="ghost-button">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
     <template id="productCardTemplate">
       <article class="product-card reveal-card">
         <div class="product-card__media">
