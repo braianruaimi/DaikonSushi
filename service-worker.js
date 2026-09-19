@@ -1,4 +1,4 @@
-const CACHE_NAME = "daikon-sushi-" + "20260831-5";
+const CACHE_NAME = "daikon-sushi-" + "20260919-2";
 const APP_SHELL = [
   "./",
   "index.html",
@@ -6,6 +6,9 @@ const APP_SHELL = [
   "style.css",
   "app.js",
   "manifest.json",
+  "assets/almuerzo/promo almuerzo.jpg",
+  "assets/almuerzo/abrimos al mediodia.jpg",
+  "assets/almuerzo/almuerzo abierto.jpg",
   "assets/icons/favicon.svg",
   "assets/products/premiun.jpg",
   "assets/products/deluxe.jpg",
