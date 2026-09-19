@@ -59,7 +59,23 @@ p, .product-card__description, .product-card__meta, .product-addons { font-size:
   h2 { font-size: 1.125rem; }
   h3, .product-card h3 { font-size: 1rem; }
   .product-card__description { font-size: 0.95rem; line-height: 1.45; }
-  .product-card { padding: 12px; }
+  .lunch-modal__gallery {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .lunch-modal__figure {
+    gap: 6px;
+    padding: 10px;
+  }
+  .lunch-modal__figure figcaption {
+    font-size: 0.76rem;
+  }
+  .lunch-modal__cta {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+  }
   .product-card__price { font-size: 0.95rem; }
   .product-addons { font-size: 0.95rem; }
 }
@@ -593,6 +609,11 @@ a {
   font-weight: 700;
 }
 
+.lunch-modal .offer-modal__body {
+  margin: 0 0 6px;
+  max-width: 44ch;
+}
+
 .lunch-modal__card {
   width: min(720px, calc(100% - 24px));
   max-height: calc(100dvh - 32px);
@@ -611,6 +632,10 @@ a {
   margin: 0;
   display: grid;
   gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .lunch-modal__image-button {
@@ -636,11 +661,13 @@ a {
 
 .lunch-modal__cta {
   width: 100%;
+  min-height: 40px;
 }
 
 .lunch-modal__figure figcaption {
   font-size: 0.82rem;
   letter-spacing: 0.03em;
+  line-height: 1.4;
   color: rgba(255, 255, 255, 0.82);
 }
 
@@ -3258,16 +3285,18 @@ product-card__selector select {
 
   .noise {
     opacity: 0.06;
+    mix-blend-mode: normal;
+  }
+
   .lunch-modal__card {
     width: min(100% - 16px, 420px);
     max-height: calc(100dvh - 20px);
     padding: 14px;
   }
+
   .lunch-modal__figure img {
-    max-height: 180px;
+    max-height: 150px;
     object-fit: cover;
-  }
-    mix-blend-mode: normal;
   }
 
   .daikon-chat {

@@ -8,13 +8,18 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260919-2";
+const APP_VERSION = "20260919-3";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
-// Horario de toma de pedidos: desde las 10:00 hasta las 00:00
-const ORDER_OPEN_HOUR = 10;
-const ORDER_CLOSE_HOUR = 0;
-const ORDER_CLOSE_MINUTE = 0;
+const ORDER_WINDOW_LABEL = "11:00 a 14:00 y 19:00 a 23:30";
+const ORDER_WINDOWS = [
+  { startHour: 11, startMinute: 0, endHour: 14, endMinute: 0 },
+  { startHour: 19, startMinute: 0, endHour: 23, endMinute: 30 },
+];
+const LUNCH_PROMO_START_HOUR = 10;
+const LUNCH_PROMO_START_MINUTE = 0;
+const LUNCH_PROMO_END_HOUR = 14;
+const LUNCH_PROMO_END_MINUTE = 0;
 // Control para suprimir toasts cuando añadimos varios ítems programáticamente
 let SUPPRESS_TOASTS = false;
 
@@ -71,7 +76,7 @@ const chatFaqs = [
   {
     label: "Horarios",
     keywords: ["horario", "hora", "abren", "abierto", "cierran", "cerrado"],
-    answer: "Estamos tomando pedidos de 18:00 a 00:30. Si querés, también podés hacer tu pedido ahora y coordinar la entrega por WhatsApp.",
+    answer: "Tomamos pedidos para envíos de 11:00 a 14:00 y de 19:00 a 23:30. Si entrás antes de las 11:00, podés dejarlo programado para esa franja.",
   },
   {
     label: "Delivery",
@@ -86,7 +91,7 @@ const chatFaqs = [
   {
     label: "Promo",
     keywords: ["promo", "almuerzo", "mediodia", "mediodía", "oferta", "2x1"],
-    answer: "Tenemos Promo CENA y promos rotativas. Para confirmar disponibilidad y precio del día, abrí la promo o escribinos por WhatsApp.",
+    answer: "La Promo Almuerzo está disponible en el botón Almuerzo y se muestra de 10:00 a 14:00. La Promo del Mes también la podés abrir desde ese bloque o desde la portada.",
   },
   {
     label: "Incluye",
@@ -929,12 +934,135 @@ function setupOpenOrdersButton() {
   openOrdersIntervalId = window.setInterval(updateOpenOrdersVisibility, 60_000);
 }
 
+function toMinutes(hour, minute = 0) {
+  return hour * 60 + minute;
+}
+
+function formatMinutesAsTime(totalMinutes) {
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+  const hours = Math.floor(normalized / 60);
+  const minutes = normalized % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function parseTimeStringToMinutes(value) {
+  const [hours, minutes] = String(value).split(":").map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) {
+    return null;
+  }
+  return toMinutes(hours, minutes);
+}
+
+function getCurrentMinutes(now = new Date()) {
+  return toMinutes(now.getHours(), now.getMinutes());
+}
+
+function getOrderWindowsInMinutes() {
+  return ORDER_WINDOWS.map((window) => ({
+    start: toMinutes(window.startHour, window.startMinute),
+    end: toMinutes(window.endHour, window.endMinute),
+  }));
+}
+
+function getNextOrderOpeningMinutes(now = new Date()) {
+  const currentMinutes = getCurrentMinutes(now);
+  const windows = getOrderWindowsInMinutes();
+
+  for (const window of windows) {
+    if (currentMinutes < window.start) {
+      return window.start;
+    }
+  }
+
+  return windows[0].start;
+}
+
+function roundUpToNextHalfHour(totalMinutes) {
+  const remainder = totalMinutes % 30;
+  return remainder === 0 ? totalMinutes : totalMinutes + (30 - remainder);
+}
+
+function isScheduleTimeSelectable(optionMinutes, now = new Date()) {
+  const currentMinutes = getCurrentMinutes(now);
+  const windows = getOrderWindowsInMinutes();
+  const isAfterLastWindow = currentMinutes > windows[windows.length - 1].end;
+  const minSelectableMinutes = isOrderWindowOpen(now)
+    ? roundUpToNextHalfHour(currentMinutes)
+    : getNextOrderOpeningMinutes(now);
+
+  return windows.some((window) => {
+    const optionInWindow = optionMinutes >= window.start && optionMinutes <= window.end;
+    if (!optionInWindow) {
+      return false;
+    }
+
+    if (isAfterLastWindow) {
+      return true;
+    }
+
+    return optionMinutes >= minSelectableMinutes;
+  });
+}
+
+function updateScheduleField(now = new Date()) {
+  const scheduleSelect = document.getElementById('scheduleTime');
+  const scheduledNote = document.getElementById('scheduledNote');
+  const scheduledTimeDisplay = document.getElementById('scheduledTimeDisplay');
+  const checkoutBtn = document.getElementById('checkoutButton');
+  const labelSpan = checkoutBtn ? checkoutBtn.querySelector('span') : null;
+  if (!scheduleSelect) {
+    return;
+  }
+
+  const isOpen = isOrderWindowOpen(now);
+  const options = Array.from(scheduleSelect.options);
+  let firstVisibleValue = "";
+
+  options.forEach((option) => {
+    if (!option.value) {
+      option.hidden = !isOpen;
+      option.disabled = !isOpen;
+      return;
+    }
+
+    const optionMinutes = parseTimeStringToMinutes(option.value);
+    const visible = optionMinutes !== null && isScheduleTimeSelectable(optionMinutes, now);
+    option.hidden = !visible;
+    option.disabled = !visible;
+
+    if (!firstVisibleValue && visible) {
+      firstVisibleValue = option.value;
+    }
+  });
+
+  const currentValue = scheduleSelect.value;
+  const hasSelectedVisibleOption = options.some((option) => option.value === currentValue && !option.hidden && !option.disabled);
+
+  if (isOpen) {
+    if (!hasSelectedVisibleOption || currentValue === firstVisibleValue) {
+      scheduleSelect.value = "";
+    }
+    if (scheduledNote) scheduledNote.hidden = true;
+    if (labelSpan) labelSpan.textContent = "ENVIAR PEDIDO";
+    return;
+  }
+
+  const nextValue = hasSelectedVisibleOption && currentValue ? currentValue : firstVisibleValue;
+  scheduleSelect.value = nextValue || "";
+
+  if (scheduledNote && scheduledTimeDisplay && nextValue) {
+    scheduledTimeDisplay.textContent = nextValue;
+    scheduledNote.hidden = false;
+  }
+  if (labelSpan) {
+    labelSpan.textContent = nextValue ? `Programado — ${nextValue}` : "Programar pedido para la apertura";
+  }
+}
+
 function isOrderWindowOpen(now = new Date()) {
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
-  const openMinutes = ORDER_OPEN_HOUR * 60;
-  const closeMinutes = ORDER_CLOSE_HOUR * 60 + ORDER_CLOSE_MINUTE;
 
-  return currentMinutes >= openMinutes || currentMinutes < closeMinutes;
+  return getOrderWindowsInMinutes().some((window) => currentMinutes >= window.start && currentMinutes <= window.end);
 }
 
 function updateOpenOrdersVisibility() {
@@ -942,7 +1070,9 @@ function updateOpenOrdersVisibility() {
     return;
   }
 
-  const isOpen = isOrderWindowOpen();
+  const now = new Date();
+  const isOpen = isOrderWindowOpen(now);
+  const nextOpeningLabel = formatMinutesAsTime(getNextOrderOpeningMinutes(now));
   const label = openOrdersButton.querySelector(".open-orders-button__label");
 
   openOrdersButton.hidden = false;
@@ -950,47 +1080,37 @@ function updateOpenOrdersVisibility() {
   openOrdersButton.classList.toggle("is-closed", !isOpen);
   openOrdersButton.setAttribute(
     "aria-label",
-    isOpen ? "Pedidos abiertos de 10:00 a 00:00" : "Pedidos cerrados hasta las 10:00"
+    isOpen
+      ? `Pedidos abiertos de ${ORDER_WINDOW_LABEL}`
+      : `Envío inmediato cerrado. Podés programar pedidos para las ${nextOpeningLabel}`
   );
 
   if (label) {
-    label.textContent = isOpen ? "Abierto ahora" : "Cerrado ahora";
+    label.textContent = isOpen ? "Abierto ahora" : "Programable";
   }
   // Actualizar estado del botón de checkout según el horario
   if (checkoutButton) {
     const labelSpan = checkoutButton.querySelector("span");
+    const scheduleWrapper = document.getElementById('scheduleWrapper');
+    if (scheduleWrapper) scheduleWrapper.hidden = false;
+
     if (!isOpen) {
       if (labelSpan) labelSpan.textContent = "Programar pedido para la apertura";
       checkoutButton.removeAttribute("disabled");
       checkoutButton.classList.add('is-schedule');
-      const scheduleWrapper = document.getElementById('scheduleWrapper');
-      const scheduleSelect = document.getElementById('scheduleTime');
-      if (scheduleWrapper) scheduleWrapper.hidden = false;
-      if (scheduleSelect) scheduleSelect.value = `19:00`;
-      const scheduledNote = document.getElementById('scheduledNote');
-      const scheduledTimeDisplay = document.getElementById('scheduledTimeDisplay');
-      if (scheduledNote && scheduledTimeDisplay) {
-        scheduledTimeDisplay.textContent = scheduleSelect ? scheduleSelect.value : `19:00`;
-        scheduledNote.hidden = false;
-      }
     } else {
       if (labelSpan) labelSpan.textContent = "ENVIAR PEDIDO";
       checkoutButton.removeAttribute("disabled");
       checkoutButton.classList.remove('is-schedule');
-      const scheduleWrapper = document.getElementById('scheduleWrapper');
-      const scheduleSelect = document.getElementById('scheduleTime');
-      // Mostrar el selector incluso si el local está abierto (permite programar aunque esté abierto)
-      if (scheduleWrapper) scheduleWrapper.hidden = false;
-      if (scheduleSelect) scheduleSelect.value = ``; // valor vacío = enviar ahora (ASAP)
-      const scheduledNote = document.getElementById('scheduledNote');
-      if (scheduledNote) scheduledNote.hidden = true;
     }
   }
+
+  updateScheduleField(now);
 }
 
 function handleOpenOrdersClick() {
   if (!isOrderWindowOpen()) {
-    showToast("Los pedidos se habilitan a las 10:00 y cierran a las 00:00.");
+    showToast(`El envío inmediato está cerrado. Igual podés hacer el pedido ahora y programarlo para las ${formatMinutesAsTime(getNextOrderOpeningMinutes())}.`);
     return;
   }
 
@@ -1977,8 +2097,14 @@ function openWhatsApp() {
 
   // Determinar si el usuario quiere programar usando el selector (valor vacío = enviar ahora)
   const scheduleSelect = document.getElementById('scheduleTime');
+  const currentlyOpen = isOrderWindowOpen();
   const isScheduling = scheduleSelect && scheduleSelect.value && scheduleSelect.value !== "";
   let scheduledTime = null;
+  if (!currentlyOpen && !isScheduling) {
+    showToast("Elegí un horario disponible para programar tu pedido.");
+    scheduleSelect?.focus();
+    return;
+  }
   if (isScheduling) {
     scheduledTime = scheduleSelect.value;
     showToast(`Pedido programado. Se enviará por WhatsApp a ${scheduledTime}.`);
@@ -2360,8 +2486,11 @@ function matchesPromoQuery(query) {
 }
 
 function isPromoLunchAvailable() {
-  const currentHour = new Date().getHours();
-  return currentHour >= 11 && currentHour <= 16;
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const startMinutes = LUNCH_PROMO_START_HOUR * 60 + LUNCH_PROMO_START_MINUTE;
+  const endMinutes = LUNCH_PROMO_END_HOUR * 60 + LUNCH_PROMO_END_MINUTE;
+  return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
 }
 
 function addLunchPromoToCart() {

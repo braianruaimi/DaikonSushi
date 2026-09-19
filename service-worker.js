@@ -1,10 +1,11 @@
-const CACHE_NAME = "daikon-sushi-" + "20260919-2";
+const SW_VERSION = "20260919-3";
+const CACHE_NAME = "daikon-sushi-" + SW_VERSION;
 const APP_SHELL = [
   "./",
   "index.html",
   "favicon.ico",
-  "style.css",
-  "app.js",
+  `style.css?v=${SW_VERSION}`,
+  `app.js?v=${SW_VERSION}`,
   "manifest.json",
   "assets/almuerzo/promo almuerzo.jpg",
   "assets/almuerzo/abrimos al mediodia.jpg",
@@ -83,6 +84,8 @@ self.addEventListener("fetch", (event) => {
   const isNavigationRequest = event.request.mode === "navigate";
   const isSameOrigin = requestUrl.origin === self.location.origin;
   const isAppShellAsset = isSameOrigin && APP_SHELL_PATHS.has(requestUrl.pathname);
+  const isCoreStaticRequest =
+    isSameOrigin && ["style", "script", "manifest", "font"].includes(event.request.destination);
 
   if (isNavigationRequest) {
     event.respondWith(
@@ -98,6 +101,19 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (isAppShellAsset) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  if (isCoreStaticRequest) {
     event.respondWith(
       fetch(event.request)
         .then((networkResponse) => {
