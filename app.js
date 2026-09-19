@@ -8,11 +8,11 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260831-5";
+const APP_VERSION = "20260919-1";
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
-// Horario de toma de pedidos: desde las 14:00 hasta las 00:00
-const ORDER_OPEN_HOUR = 14;
+// Horario de toma de pedidos: desde las 10:00 hasta las 00:00
+const ORDER_OPEN_HOUR = 10;
 const ORDER_CLOSE_HOUR = 0;
 const ORDER_CLOSE_MINUTE = 0;
 // Control para suprimir toasts cuando añadimos varios ítems programáticamente
@@ -108,11 +108,13 @@ const chatFaqs = [
 // ✏️ EDITAR: contenido destacado de la promo especial del menu.
 const promoLunch = {
   id: "promo-cena",
-  category: "Promo CENA Daikon",
+  category: "Promo Almuerzo",
   badge: "PROMO",
-  title: "Promo CENA Daikon",
-  description: "HotBurger SAKURA + Combo Daikon + Eby crocante por $49.999.",
-  image: "assets/products/promo-cena.jpg",
+  title: "Promo Almuerzo",
+  name: "Promo Almuerzo 12 piezas",
+  description: "12 piezas por $15.000.",
+  price: 15000,
+  image: "assets/almuerzo/promo almuerzo.jpg",
   cta: "Sumar al carrito",
 };
 
@@ -478,6 +480,7 @@ const floatingMenu = document.querySelector("#floatingMenu");
 const floatingMenuToggle = document.querySelector("#floatingMenuToggle");
 const floatingMenuPanel = document.querySelector("#floatingMenuPanel");
 const floatingCategoryChips = document.querySelector("#floatingCategoryChips");
+const floatingLunchButton = document.querySelector("#floatingLunchButton");
 const eventContactButton = document.querySelector("#eventContactButton");
 const eventModal = document.querySelector("#eventModal");
 const eventForm = document.querySelector("#eventForm");
@@ -523,6 +526,83 @@ function bootstrap() {
   bindEvents();
   initRoulette();
   registerServiceWorker();
+}
+
+function initLunchModal() {
+  const modal = document.getElementById('lunchModal');
+  const closeButton = document.getElementById('lunchModalClose');
+  const backdropEl = document.getElementById('backdrop');
+  const promoFigure = document.getElementById('lunchPromoFigure');
+  const promoToggle = document.getElementById('lunchPromoToggle');
+  const promoAddButton = document.getElementById('lunchPromoAdd');
+  const lunchMenuLink = document.getElementById('lunchMenuLink');
+  const lunchPromoMonthLink = document.getElementById('lunchPromoMonthLink');
+  if (!floatingLunchButton || !modal) {
+    return;
+  }
+
+  function setPromoExpanded(expanded) {
+    if (!promoFigure || !promoToggle || !promoAddButton) {
+      return;
+    }
+
+    promoFigure.classList.toggle('is-expanded', expanded);
+    promoToggle.setAttribute('aria-expanded', String(expanded));
+  }
+
+  function openModal() {
+    closeChat({ immediate: true });
+    closeFloatingMenu({ immediate: true });
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    setPromoExpanded(false);
+    if (backdropEl) {
+      backdropEl.hidden = false;
+      backdropEl.removeAttribute('aria-hidden');
+    }
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    setPromoExpanded(false);
+    if (backdropEl) {
+      backdropEl.hidden = true;
+      backdropEl.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  floatingLunchButton.addEventListener('click', openModal);
+  closeButton?.addEventListener('click', closeModal);
+  promoToggle?.addEventListener('click', () => {
+    const shouldExpand = !promoFigure?.classList.contains('is-expanded');
+    setPromoExpanded(shouldExpand);
+  });
+  promoAddButton?.addEventListener('click', () => {
+    addLunchPromoToCart();
+    closeModal();
+  });
+  lunchMenuLink?.addEventListener('click', () => {
+    closeModal();
+  });
+  lunchPromoMonthLink?.addEventListener('click', () => {
+    closeModal();
+  });
+  backdropEl?.addEventListener('click', (event) => {
+    if (modal.hidden) {
+      return;
+    }
+
+    if (event.target === backdropEl) {
+      closeModal();
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal.hidden) {
+      closeModal();
+    }
+  });
 }
 
 // Roulette / promo spinner
@@ -865,7 +945,7 @@ function updateOpenOrdersVisibility() {
   openOrdersButton.classList.toggle("is-closed", !isOpen);
   openOrdersButton.setAttribute(
     "aria-label",
-    isOpen ? "Pedidos abiertos de 14:00 a 00:00" : "Pedidos cerrados hasta las 14:00"
+    isOpen ? "Pedidos abiertos de 10:00 a 00:00" : "Pedidos cerrados hasta las 10:00"
   );
 
   if (label) {
@@ -905,7 +985,7 @@ function updateOpenOrdersVisibility() {
 
 function handleOpenOrdersClick() {
   if (!isOrderWindowOpen()) {
-    showToast("Los pedidos se habilitan a las 14:00 y cierran a las 00:00.");
+    showToast("Los pedidos se habilitan a las 10:00 y cierran a las 00:00.");
     return;
   }
 
@@ -2242,6 +2322,7 @@ window.addEventListener("load", () => {
   initHotburgerCarousel();
   initSideFeaturedCarousel();
   initOfferModal();
+  initLunchModal();
   initMundialModal();
   initPromoDinnerTwoModal();
   initEventContactModal();
@@ -2278,6 +2359,12 @@ function isPromoLunchAvailable() {
   return currentHour >= 11 && currentHour <= 16;
 }
 
+function addLunchPromoToCart() {
+  addToCart('promo-cena', null);
+  showToast('Promo almuerzo agregada al carrito.');
+  openCart();
+}
+
 function createPromoCard() {
   const card = document.createElement("article");
   card.className = "promo-card reveal-card";
@@ -2297,17 +2384,7 @@ function createPromoCard() {
   `;
 
   card.querySelector("button").addEventListener("click", () => {
-    // Agregar los tres productos de la promo al carrito y abrir el drawer
-    SUPPRESS_TOASTS = true;
-    try {
-      addToCart('hotburger-sakura', null);
-      addToCart('daikon-combo', '16');
-      addToCart('entrada-ebi-crocante', null);
-    } finally {
-      SUPPRESS_TOASTS = false;
-    }
-    showToast('Promo agregada al carrito.');
-    openCart();
+    addLunchPromoToCart();
   });
 
   return card;
@@ -2574,6 +2651,16 @@ function migrateLegacyCartItem(item) {
 }
 
 function getCartItemDetails(item) {
+  if (item.id === 'promo-cena') {
+    return {
+      product: promoLunch,
+      option: null,
+      name: promoLunch.name || promoLunch.title,
+      meta: promoLunch.description,
+      price: promoLunch.price,
+    };
+  }
+
   // Special handling for Promo PRIMAVERA items
   if (item.id === 'promo-mundial-burger') {
     const promo = products.find((p) => p.id === 'promo-mundial-burger');

@@ -23,7 +23,7 @@
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-    <link rel="stylesheet" href="style.css?v=20260831-5" />
+    <link rel="stylesheet" href="style.css?v=20260919-1" />
     <title>Daikon Sushi Delivery</title>
   </head>
   <body>
@@ -139,7 +139,7 @@
           </div>
 
           <!-- Carrusel destacado (al lado de los panchos/burger) -->
-          <div class="hero__featured-carousel" aria-label="Carrusel destacado">
+          <div class="hero__featured-carousel" id="promoDelMes" aria-label="Carrusel destacado">
             <div class="hero__panel-media">
               <button class="carousel__control carousel__control--prev" id="sideFeaturedPrev" aria-label="Anterior"></button>
               <div class="image-placeholder image-placeholder--hero" aria-hidden="true"></div>
@@ -167,7 +167,7 @@
             </div>
             <div>
               <dt>Open</dt>
-                <dd>14:00 a 00:00</dd>
+                <dd>10:00 a 00:00</dd>
             </div>
           </dl>
         </div>
@@ -298,6 +298,13 @@
               <span>Programar pedido</span>
               <select id="scheduleTime" name="scheduleTime">
                 <option value="" selected>Enviar ahora (ASAP)</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="12:00">12:00</option>
+                <option value="12:30">12:30</option>
+                <option value="13:00">13:00</option>
+                <option value="13:30">13:30</option>
+                <option value="14:00">14:00</option>
                 <option value="19:00">19:00</option>
                 <option value="19:30">19:30</option>
                 <option value="20:00">20:00</option>
@@ -401,6 +408,15 @@
 
     <!-- ✏️ EDITAR: consultas frecuentes predeterminadas. -->
     <div class="daikon-chat" id="daikonChat">
+      <button
+        class="floating-lunch-button"
+        id="floatingLunchButton"
+        type="button"
+        aria-label="Ver promos de almuerzo"
+      >
+        <span class="floating-lunch-button__label">Almuerzo</span>
+      </button>
+
       <div class="floating-menu" id="floatingMenu">
         <button
           class="floating-menu__toggle"
@@ -542,6 +558,40 @@
       </div>
     </div>
 
+    <div id="lunchModal" class="offer-modal lunch-modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+      <div class="offer-modal__card lunch-modal__card">
+        <button class="offer-modal__close icon-button" id="lunchModalClose" aria-label="Cerrar almuerzo">×</button>
+        <p class="eyebrow">Turno mediodía</p>
+        <h2 class="offer-modal__title">Almuerzo</h2>
+        <p class="offer-modal__body">Promos y avisos disponibles para el mediodía.</p>
+        <div class="lunch-modal__gallery">
+          <figure class="lunch-modal__figure lunch-modal__figure--promo" id="lunchPromoFigure">
+            <button class="lunch-modal__image-button" id="lunchPromoToggle" type="button" aria-expanded="false" aria-label="Ampliar promo almuerzo">
+              <img src="assets/almuerzo/promo almuerzo.jpg" alt="Promo almuerzo" loading="lazy" decoding="async" />
+            </button>
+            <figcaption>Promo almuerzo 12 piezas por $15.000</figcaption>
+            <button class="primary-button lunch-modal__cta" id="lunchPromoAdd" type="button">
+              Agregar al carrito
+            </button>
+          </figure>
+          <figure class="lunch-modal__figure">
+            <img src="assets/almuerzo/abrimos al mediodia.jpg" alt="Abrimos al mediodía" loading="lazy" decoding="async" />
+            <figcaption>Envíos de lunes a viernes de 11 a 14 hs. Agregá cualquiera de nuestras promos a tu almuerzo.</figcaption>
+            <a class="primary-button lunch-modal__cta" id="lunchMenuLink" href="#menu">
+              Ver menú
+            </a>
+          </figure>
+          <figure class="lunch-modal__figure">
+            <img src="assets/almuerzo/almuerzo abierto.jpg" alt="Almuerzo abierto" loading="lazy" decoding="async" />
+            <figcaption>Probá nuestra promo del mes.</figcaption>
+            <a class="primary-button lunch-modal__cta" id="lunchPromoMonthLink" href="#promoDelMes">
+              Ver promo
+            </a>
+          </figure>
+        </div>
+      </div>
+    </div>
+
     <template id="productCardTemplate">
       <article class="product-card reveal-card">
         <div class="product-card__media">
@@ -667,7 +717,7 @@
       </div>
     </section>
 
-    <script src="app.js?v=20260831-5" defer></script>
+    <script src="app.js?v=20260919-1" defer></script>
     <div id="mobileCta" class="mobile-cta" hidden>
       <div class="mobile-cta__info">
         <div class="mobile-cta__label">Total</div>
