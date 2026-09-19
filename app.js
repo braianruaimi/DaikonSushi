@@ -588,6 +588,11 @@ function initLunchModal() {
   lunchPromoMonthLink?.addEventListener('click', () => {
     closeModal();
   });
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
   backdropEl?.addEventListener('click', (event) => {
     if (modal.hidden) {
       return;

@@ -99,11 +99,15 @@ p, .product-card__description, .product-card__meta, .product-addons { font-size:
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px 0;
+  overflow-y: auto;
+  background: rgba(3, 6, 9, 0.42);
   z-index: 1400;
   pointer-events: none;
 }
 .offer-modal[aria-hidden="false"] { pointer-events: auto; }
 .offer-modal__card {
+  position: relative;
   width: min(560px, calc(100% - 32px));
   background: linear-gradient(180deg, #0f1113, #121217);
   color: #fff;
@@ -200,6 +204,7 @@ a {
   .daikon-chat,
   .install-app-button {
     transition: opacity 220ms ease, transform 220ms ease;
+    background: rgba(2, 4, 8, 0.72);
   }
 }
 
@@ -590,6 +595,8 @@ a {
 
 .lunch-modal__card {
   width: min(720px, calc(100% - 24px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
   text-align: left;
 }
 
@@ -2773,7 +2780,11 @@ product-card__selector select {
 }
 
 @media (max-width: 480px) {
-  .stories__track {
+  .offer-modal {
+    align-items: flex-start;
+    padding: 12px 0;
+  }
+  .offer-modal__card { padding:16px; border-radius:10px; width: min(100% - 16px, 560px); }
     animation-duration: 34s;
   }
   .story-card { min-width: 84vw; max-width: 84vw; flex-basis: 84vw; padding: 14px; }
@@ -3247,6 +3258,15 @@ product-card__selector select {
 
   .noise {
     opacity: 0.06;
+  .lunch-modal__card {
+    width: min(100% - 16px, 420px);
+    max-height: calc(100dvh - 20px);
+    padding: 14px;
+  }
+  .lunch-modal__figure img {
+    max-height: 180px;
+    object-fit: cover;
+  }
     mix-blend-mode: normal;
   }
 
