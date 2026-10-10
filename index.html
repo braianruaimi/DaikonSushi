@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="halloween">
   <head>
     <!-- ✏️ EDITAR: metas SEO, PWA e identidad del sitio. -->
     <meta charset="UTF-8" />
@@ -8,7 +8,7 @@
       name="description"
       content="Daikon Sushi Delivery. Sushi fresco, rolls intensos y delivery veloz con una estetica cyberpunk japonesa."
     />
-    <meta name="theme-color" content="#171a1f" />
+    <meta name="theme-color" content="#120914" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -23,7 +23,7 @@
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-    <link rel="stylesheet" href="style.css?v=20260919-3" />
+    <link rel="stylesheet" href="style.css?v=20261010-halloween-1" />
     <title>Daikon Sushi Delivery</title>
   </head>
   <body>
@@ -109,7 +109,7 @@
         <div class="hero__overlay"></div>
         <div class="hero__content">
           <p class="eyebrow">SABORES QUE TE ENAMORAN</p>
-          <h1>Una experiencia que no se olvida, se pide, se espera y se disfruta.</h1>
+          <h1>Una experiencia que no se olvida, se pide, se espera y se disfruta. MAS de 12 años llevando calidad a tu mesa.</h1>
           <p class="hero__text">
             Sushi premium con envíos en La Plata, Ensenada y Berisso. Cada pieza, una obra.
           </p>
@@ -143,16 +143,21 @@
             <div class="hero__panel-media">
               <button class="carousel__control carousel__control--prev" id="sideFeaturedPrev" aria-label="Anterior"></button>
               <div class="image-placeholder image-placeholder--hero" aria-hidden="true"></div>
-              <img id="sideFeaturedCarousel" src="assets/primavera/2sakuras.jpg" alt="Producto destacado" loading="lazy" width="360" height="240" decoding="async" data-open-promo-primavera="true" />
+              <img id="sideFeaturedCarousel" src="assets/halloween/pan.jpg" alt="Promo Halloween de Panchos Sushi" loading="lazy" width="360" height="240" decoding="async" data-open-promo-primavera="true" />
               <button class="carousel__control carousel__control--next" id="sideFeaturedNext" aria-label="Siguiente"></button>
               <span id="sideFeaturedStatus" class="sr-only" aria-live="polite"></span>
             </div>
             <div class="hero__featured-caption">
-              <h3 id="sideFeaturedTitle">PROMO DEL MES!</h3>
-              <p id="sideFeaturedDesc" class="muted">2 Sakuras x $30.000. También disponible: 2 Panchos Sushi x $30.000.</p>
-              <button class="primary-button hero__featured-cta" id="sideFeaturedCta" type="button" data-open-promo-primavera="true">
-                Quiero la promo
-              </button>
+              <h3 id="sideFeaturedTitle">PROMO HALLOWEEN</h3>
+              <p id="sideFeaturedDesc" class="muted">2 Panchos Sushi x $30.000. También disponible: 2 Sakuras x $30.000.</p>
+              <div class="hero__featured-actions">
+                <button class="primary-button hero__featured-cta" id="sideFeaturedCta" type="button" data-open-promo-primavera="true">
+                  Quiero la promo
+                </button>
+                <button class="secondary-button hero__featured-cta hero__featured-cta--direct" id="sideFeaturedHalloweenSingle" type="button">
+                  QUIERO LA PROMO HALLOWEEN!
+                </button>
+              </div>
             </div>
           </div>
 
@@ -511,16 +516,17 @@
       </div>
     </div>
 
-    <!-- Modal Promo Primavera -->
+    <!-- Modal Promo Halloween -->
     <div id="mundialModal" class="offer-modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
       <div class="offer-modal__card">
         <button class="offer-modal__close icon-button" id="mundialClose" aria-label="Cerrar">×</button>
-        <h2 class="offer-modal__title">PROMO PRIMAVERA</h2>
+        <h2 class="offer-modal__title">PROMO HALLOWEEN</h2>
         <div id="mundialStep1">
           <p class="offer-modal__body">Elegí tu pack de la Promo del Mes:</p>
           <div class="offer-modal__actions">
-            <button id="mundialBurger" class="primary-button">2 Sakuras x $30.000</button>
-            <button id="mundialPancho" class="ghost-button">2 Panchos Sushi x $30.000</button>
+            <button id="mundialPancho" class="primary-button">2 Panchos Sushi x $30.000</button>
+            <button id="mundialBurger" class="ghost-button">2 Sakuras x $30.000</button>
+            <button id="mundialSinglePancho" class="secondary-button">1 Pancho Halloween $18.000</button>
           </div>
         </div>
 

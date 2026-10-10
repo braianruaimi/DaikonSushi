@@ -8,7 +8,12 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20260919-3";
+const APP_VERSION = "20261010-halloween-2";
+const ACTIVE_THEME = document.documentElement.dataset.theme || "default";
+const THEME_COLORS = {
+  default: "#171a1f",
+  halloween: "#120914",
+};
 const CHAT_TRANSITION_MS = 240;
 const CART_TRANSITION_MS = 320;
 const ORDER_WINDOW_LABEL = "11:00 a 14:00 y 19:00 a 23:30";
@@ -45,6 +50,16 @@ function initSplash() {
 
 // Ejecutar inmediatamente (app.js se carga con `defer`)
 initSplash();
+
+function syncThemeChrome() {
+  const themeColor = THEME_COLORS[ACTIVE_THEME] || THEME_COLORS.default;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) {
+    themeMeta.setAttribute("content", themeColor);
+  }
+}
+
+syncThemeChrome();
 
 // Global error capture: guarda el último error en localStorage para poder inspeccionarlo
 function saveGlobalError(info) {
@@ -146,16 +161,16 @@ const promoDinnerTwoPack = {
   cta: "Sumar al carrito",
 };
 
-// Promo PRIMAVERA (precio fijo para el pack)
+// Promo HALLOWEEN (precio fijo para el pack)
 const promoMundialBurger = {
   id: "promo-mundial-burger",
   category: "Promo",
   badge: "PROMO",
-  title: "PROMO PRIMAVERA — 2 Sakuras",
-  name: "PROMO PRIMAVERA — 2 Sakuras",
+  title: "PROMO HALLOWEEN — 2 Sakuras",
+  name: "PROMO HALLOWEEN — 2 Sakuras",
   description: "2 Hotburger Sakura por $30.000",
   price: 30000,
-  image: "assets/primavera/2sakuras.jpg",
+  image: "assets/halloween/banner.jpg",
   cta: "Sumar promo",
 };
 
@@ -163,12 +178,24 @@ const promoMundialPancho = {
   id: "promo-mundial-pancho",
   category: "Promo",
   badge: "PROMO",
-  title: "PROMO PRIMAVERA — 2 Pancho",
-  name: "PROMO PRIMAVERA — 2 Pancho",
+  title: "PROMO HALLOWEEN — 2 Panchos",
+  name: "PROMO HALLOWEEN — 2 Panchos",
   description: "2 Pancho a elección por $30.000",
   price: 30000,
-  image: "assets/primavera/2panchos.jpg",
+  image: "assets/halloween/pan.jpg",
   cta: "Sumar promo",
+};
+
+const promoHalloweenSingle = {
+  id: "promo-halloween-single",
+  category: "Promo Halloween",
+  badge: "HALLOWEEN",
+  title: "Pancho Halloween",
+  name: "Pancho Halloween",
+  description: "Edición limitada con pollo crispy, palta, queso y toppings especiales.",
+  price: 18000,
+  image: "assets/halloween/pan.jpg",
+  cta: "Sumar al carrito",
 };
 
 // Promo items will be inserted into the products catalog after the list is defined below
@@ -1879,6 +1906,13 @@ function initOfferModal() {
 function initHeroCtas() {
   const featuredBtn = document.getElementById('featuredAdd');
   const hotBtn = document.getElementById('hotburgerAdd');
+  const halloweenSingleBtn = document.getElementById('sideFeaturedHalloweenSingle');
+
+  function addHalloweenSingleToCart() {
+    addToCart('promo-halloween-single', null);
+    showToast('Pancho Halloween agregado al carrito.');
+    openCart();
+  }
 
   function findProductByImgId(imgId) {
     const img = document.getElementById(imgId);
@@ -1934,6 +1968,8 @@ function initHeroCtas() {
       addToCart(prod.id, option ? option.id : null);
     });
   }
+
+  halloweenSingleBtn?.addEventListener('click', addHalloweenSingleToCart);
 }
 
 function removeFromCart(productId, optionId) {
@@ -2795,14 +2831,24 @@ function getCartItemDetails(item) {
     };
   }
 
-  // Special handling for Promo PRIMAVERA items
+  if (item.id === 'promo-halloween-single') {
+    return {
+      product: promoHalloweenSingle,
+      option: null,
+      name: promoHalloweenSingle.name || promoHalloweenSingle.title,
+      meta: promoHalloweenSingle.description,
+      price: promoHalloweenSingle.price,
+    };
+  }
+
+  // Special handling for Promo HALLOWEEN items
   if (item.id === 'promo-mundial-burger') {
     const promo = products.find((p) => p.id === 'promo-mundial-burger');
     if (!promo) return null;
     return {
       product: promo,
       option: null,
-      name: promo.name || 'PROMO PRIMAVERA — 2 Sakuras',
+      name: promo.name || 'PROMO HALLOWEEN — 2 Sakuras',
       meta: promo.description || 'Promo — 2x Hotburger Sakura',
       price: promo.price,
     };
@@ -2813,7 +2859,7 @@ function getCartItemDetails(item) {
     if (!promo) return null;
     // optionId holds the chosen pancho product id
     const chosen = products.find((p) => p.id === item.optionId);
-    const name = chosen ? `PROMO PRIMAVERA — 2x ${chosen.name}` : promo.name;
+    const name = chosen ? `PROMO HALLOWEEN — 2x ${chosen.name}` : promo.name;
     const meta = chosen ? (chosen.meta || chosen.category) : promo.description;
     return {
       product: promo,
@@ -3023,6 +3069,8 @@ function createPromoDinnerTwoRibbon() {
 
 function initSideFeaturedCarousel() {
   const images = [
+    "assets/halloween/pan.jpg",
+    "assets/halloween/banner.jpg",
     "assets/primavera/2sakuras.jpg",
     "assets/primavera/2panchos.jpg",
   ];
@@ -3039,26 +3087,43 @@ function initSideFeaturedCarousel() {
   const imgEl = document.getElementById('sideFeaturedCarousel');
   const titleEl = document.getElementById('sideFeaturedTitle');
   const descEl = document.getElementById('sideFeaturedDesc');
+  const mediaEl = imgEl?.closest('.hero__panel-media');
 
   function updateCaptionForSrc(src) {
     if (!src) return;
     const lname = src.toLowerCase();
-    if (lname.includes('burgermundial') || lname.includes('promosakura') || lname.includes('2sakura')) {
-      titleEl.textContent = 'PROMO DEL MES!';
-      descEl.textContent = '2 Sakuras x $30.000';
-    } else if (lname.includes('pancho') || lname.includes('panchomundial') || lname.includes('promopancho') || lname.includes('2panchos')) {
-      titleEl.textContent = 'PROMO DEL MES!';
+    const isHalloweenFlyer = lname.includes('assets/halloween/');
+    const isPanFlyer = lname.includes('pan.jpg');
+    imgEl?.classList.toggle('is-flyer', isHalloweenFlyer);
+    imgEl?.classList.toggle('is-pan-flyer', isPanFlyer);
+    mediaEl?.classList.toggle('hero__panel-media--flyer', isHalloweenFlyer);
+    if (lname.includes('pan')) {
+      titleEl.textContent = 'PROMO HALLOWEEN';
       descEl.textContent = '2 Panchos Sushi x $30.000';
+    } else if (lname.includes('banner')) {
+      titleEl.textContent = 'EDICION HALLOWEEN';
+      descEl.textContent = 'Campaña especial del mes con estética Halloween y promo destacada de Panchos.';
+    } else if (lname.includes('burgermundial') || lname.includes('promosakura') || lname.includes('2sakura')) {
+      titleEl.textContent = 'PROMO HALLOWEEN';
+      descEl.textContent = '2 Sakuras x $30.000';
     } else {
       titleEl.textContent = 'Producto destacado';
       descEl.textContent = '';
     }
   }
 
+  updateCaptionForSrc(imgEl?.currentSrc || imgEl?.src || '');
   imgEl && imgEl.addEventListener('load', () => updateCaptionForSrc(imgEl.currentSrc || imgEl.src));
+  if (imgEl) {
+    const syncFeaturedFlyer = () => updateCaptionForSrc(imgEl.currentSrc || imgEl.src || '');
+    new MutationObserver(syncFeaturedFlyer).observe(imgEl, {
+      attributes: true,
+      attributeFilter: ['src'],
+    });
+  }
 }
 
-// Modal Promo Primavera: flujo Burger / Pancho -> agregar 2 unidades al carrito
+// Modal Promo Halloween: flujo Burger / Pancho -> agregar 2 unidades al carrito
 function initMundialModal() {
   const modal = document.getElementById('mundialModal');
   const backdropEl = document.getElementById('backdrop');
@@ -3069,6 +3134,7 @@ function initMundialModal() {
   const btnClose = document.getElementById('mundialClose');
   const btnBurger = document.getElementById('mundialBurger');
   const btnPancho = document.getElementById('mundialPancho');
+  const btnSinglePancho = document.getElementById('mundialSinglePancho');
   const btnBack = document.getElementById('mundialBack');
   const panchoOptions = document.getElementById('panchoOptions');
 
@@ -3110,7 +3176,7 @@ function initMundialModal() {
       SUPPRESS_TOASTS = false;
     }
 
-    showToast('PROMO PRIMAVERA agregada al carrito.');
+    showToast('PROMO HALLOWEEN agregada al carrito.');
     closeModal();
     openCart();
   }
@@ -3127,15 +3193,22 @@ function initMundialModal() {
     });
   });
 
+  btnPancho?.addEventListener('click', () => {
+    // show pancho options
+    step1.hidden = true;
+    step2.hidden = false;
+  });
+
   btnBurger?.addEventListener('click', () => {
     // Burger MUNDIAL -> 2x Hotburger Sakura
     addPromoItems('hotburger-sakura');
   });
 
-  btnPancho?.addEventListener('click', () => {
-    // show pancho options
-    step1.hidden = true;
-    step2.hidden = false;
+  btnSinglePancho?.addEventListener('click', () => {
+    addToCart('promo-halloween-single', null);
+    showToast('Pancho Halloween agregado al carrito.');
+    closeModal();
+    openCart();
   });
 
   btnBack?.addEventListener('click', () => {
