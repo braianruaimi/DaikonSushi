@@ -144,7 +144,7 @@ const promoDinnerTwo = {
   category: "Promo 32 piezas + Pancho",
   badge: "PROMO",
   title: "Promo 32 piezas + Pancho",
-  description: "Combo Daikon de 32 piezas + Pancho a elección por $49.000.",
+  description: "Combo Daikon de 32 piezas + Pancho a elección por $18.000.",
   image: "assets/products/promo-cena-dos.jpg",
   cta: "Sumar al carrito",
 };
@@ -155,8 +155,8 @@ const promoDinnerTwoPack = {
   badge: "PROMO",
   title: "Promo 32 piezas + Pancho",
   name: "Promo 32 piezas + Pancho",
-  description: "Combo Daikon de 32 piezas + Pancho a elección por $49.000",
-  price: 49000,
+  description: "Combo Daikon de 32 piezas + Pancho a elección por $18.000",
+  price: 18000,
   image: "assets/products/promo-cena-dos.jpg",
   cta: "Sumar al carrito",
 };
@@ -168,8 +168,8 @@ const promoMundialBurger = {
   badge: "PROMO",
   title: "PROMO HALLOWEEN — 2 Sakuras",
   name: "PROMO HALLOWEEN — 2 Sakuras",
-  description: "2 Hotburger Sakura por $30.000",
-  price: 30000,
+  description: "2 Hotburger Sakura por $36.000",
+  price: 36000,
   image: "assets/halloween/banner.jpg",
   cta: "Sumar promo",
 };
@@ -180,8 +180,8 @@ const promoMundialPancho = {
   badge: "PROMO",
   title: "PROMO HALLOWEEN — 2 Panchos",
   name: "PROMO HALLOWEEN — 2 Panchos",
-  description: "2 Pancho a elección por $30.000",
-  price: 30000,
+  description: "2 Pancho a elección por $36.000",
+  price: 36000,
   image: "assets/halloween/pan.jpg",
   cta: "Sumar promo",
 };
@@ -234,7 +234,7 @@ const products = [
     category: "Destacados",
     badge: "Agridulce",
     description: "Roll caliente rebozado en panko. Base de queso crema con hondashi, kanikama y salsa agridulce.",
-    price: 15000,
+    price: 18000,
     image: "assets/products/kanikama.png",
     meta: "Roll caliente / hondashi",
     featured: true,
@@ -245,7 +245,7 @@ const products = [
     category: "Destacados",
     badge: "Pancho Sushi",
     description: "Roll caliente rebozado en panko. Base de queso crema saborizado, pollo salteado en salsa teriyaki, cremoso de palta y ciboulette.",
-    price: 15000,
+    price: 18000,
     image: "assets/products/pancho pollo.jpg",
     meta: "Roll caliente / panko",
     featured: true,
@@ -1888,7 +1888,7 @@ function initOfferModal() {
     // Añadir oferta para dos: 2 Burgers SAKURA + 2 Panchos a elección
     SUPPRESS_TOASTS = true;
     try {
-      // Insert packaged promos (cada uno representa 2 unidades por $30.000)
+      // Insert packaged promos with their current prices.
       addToCart('promo-mundial-burger', null);
       addToCart('promo-mundial-pancho', null);
     } finally {
@@ -3099,13 +3099,13 @@ function initSideFeaturedCarousel() {
     mediaEl?.classList.toggle('hero__panel-media--flyer', isHalloweenFlyer);
     if (lname.includes('pan')) {
       titleEl.textContent = 'PROMO HALLOWEEN';
-      descEl.textContent = '2 Panchos Sushi x $30.000';
+      descEl.textContent = '2 Panchos Sushi x $36.000';
     } else if (lname.includes('banner')) {
       titleEl.textContent = 'EDICION HALLOWEEN';
       descEl.textContent = 'Campaña especial del mes con estética Halloween y promo destacada de Panchos.';
     } else if (lname.includes('burgermundial') || lname.includes('promosakura') || lname.includes('2sakura')) {
       titleEl.textContent = 'PROMO HALLOWEEN';
-      descEl.textContent = '2 Sakuras x $30.000';
+      descEl.textContent = '2 Sakuras x $36.000';
     } else {
       titleEl.textContent = 'Producto destacado';
       descEl.textContent = '';
