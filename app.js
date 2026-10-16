@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20261016-promo-32-pancho-1";
+const APP_VERSION = "20261016-promo-32-pancho-2";
 const ACTIVE_THEME = document.documentElement.dataset.theme || "default";
 const THEME_COLORS = {
   default: "#171a1f",
