@@ -1,4 +1,4 @@
-const SW_VERSION = "20261010-halloween-2";
+const SW_VERSION = "20261016-promo-32-pancho-1";
 const CACHE_NAME = "daikon-sushi-" + SW_VERSION;
 const APP_SHELL = [
   "./",

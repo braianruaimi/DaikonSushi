@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
-      content="Daikon Sushi Delivery. Sushi fresco, rolls intensos y delivery veloz con una estetica cyberpunk japonesa."
+      content="Daikon Sushi Delivery. Sushi fresco, rolls intensos y delivery veloz con una estética cyberpunk japonesa."
     />
     <meta name="theme-color" content="#120914" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -23,7 +23,7 @@
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-    <link rel="stylesheet" href="style.css?v=20261010-halloween-1" />
+    <link rel="stylesheet" href="style.css?v=20261016-promo-32-pancho-1" />
     <title>Daikon Sushi Delivery</title>
   </head>
   <body>
@@ -339,7 +339,7 @@
 
           <!-- Subtotal hidden: se usa el Total con envío como referencia -->
           <div class="cart-summary__row">
-            <span>Envio</span>
+            <span>Envío</span>
             <strong id="deliveryValue">$4.000</strong>
           </div>
           <div class="cart-summary__row cart-summary__row--total">
@@ -365,9 +365,21 @@
         <h2 class="offer-modal__title">COMIDA para DOS</h2>
         <p class="offer-modal__body">2 Burgers SAKURA + 2 Panchos a elección</p>
         <p class="offer-modal__price">a solo <strong>$72.000</strong></p>
-        <div class="offer-modal__actions">
+        <div class="offer-modal__actions" id="offerMainActions">
           <button id="offerCta" class="primary-button">SUMAR al carrito</button>
           <button id="offerLater" class="ghost-button">Ahora no</button>
+        </div>
+        <div id="offerPanchoStep" hidden>
+          <p class="offer-modal__body">Elegí el Pancho:</p>
+          <div class="offer-modal__actions" id="offerPanchoOptions">
+            <button class="ghost-button pancho-option" data-prod="pancho-pollo-teriyaki">Pollo Teriyaki</button>
+            <button class="ghost-button pancho-option" data-prod="pancho-kanikama">Sushi de Kanikama</button>
+            <button class="ghost-button pancho-option" data-prod="pancho-salmon">Sushi de Salmón</button>
+            <button class="ghost-button pancho-option" data-prod="pancho-langostinos">Sushi de Langostinos</button>
+          </div>
+          <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+            <button id="offerPanchoBack" class="ghost-button">Volver</button>
+          </div>
         </div>
       </div>
     </div>
@@ -551,7 +563,7 @@
       <div class="offer-modal__card">
         <button class="offer-modal__close icon-button" id="promoDinnerTwoClose" aria-label="Cerrar">×</button>
         <h2 class="offer-modal__title">Promo 32 piezas + Pancho</h2>
-        <p class="offer-modal__body">Elegí el sabor del pancho para sumar la promo de $18.000 al carrito.</p>
+        <p class="offer-modal__body">32 piezas por $32.000 + Pancho a elección por $18.000. Total: $50.000. Elegí el sabor del pancho para agregar la promo al carrito.</p>
         <div class="offer-modal__actions" id="promoDinnerTwoPanchoOptions">
           <button class="ghost-button pancho-option" data-prod="pancho-pollo-teriyaki">Pollo Teriyaki</button>
           <button class="ghost-button pancho-option" data-prod="pancho-kanikama">Sushi de Kanikama</button>
@@ -723,7 +735,7 @@
       </div>
     </section>
 
-    <script src="app.js?v=20260919-3" defer></script>
+    <script src="app.js?v=20261016-promo-32-pancho-1" defer></script>
     <div id="mobileCta" class="mobile-cta" hidden>
       <div class="mobile-cta__info">
         <div class="mobile-cta__label">Total</div>

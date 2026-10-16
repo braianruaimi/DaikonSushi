@@ -8,7 +8,7 @@ const WA_NUMBER = "2213039649";
 
 // ✏️ EDITAR: cambiar simbolo de moneda si el negocio lo necesita.
 const CURRENCY = "$";
-const APP_VERSION = "20261010-halloween-2";
+const APP_VERSION = "20261016-promo-32-pancho-1";
 const ACTIVE_THEME = document.documentElement.dataset.theme || "default";
 const THEME_COLORS = {
   default: "#171a1f",
@@ -144,7 +144,7 @@ const promoDinnerTwo = {
   category: "Promo 32 piezas + Pancho",
   badge: "PROMO",
   title: "Promo 32 piezas + Pancho",
-  description: "Combo Daikon de 32 piezas + Pancho a elección por $18.000.",
+  description: "32 piezas por $32.000 + Pancho a elección por $18.000. Total: $50.000.",
   image: "assets/products/promo-cena-dos.jpg",
   cta: "Sumar al carrito",
 };
@@ -155,8 +155,8 @@ const promoDinnerTwoPack = {
   badge: "PROMO",
   title: "Promo 32 piezas + Pancho",
   name: "Promo 32 piezas + Pancho",
-  description: "Combo Daikon de 32 piezas + Pancho a elección por $18.000",
-  price: 18000,
+  description: "32 piezas por $32.000 + Pancho a elección por $18.000. Total: $50.000.",
+  price: 50000,
   image: "assets/products/promo-cena-dos.jpg",
   cta: "Sumar al carrito",
 };
@@ -180,7 +180,7 @@ const promoMundialPancho = {
   badge: "PROMO",
   title: "PROMO HALLOWEEN — 2 Panchos",
   name: "PROMO HALLOWEEN — 2 Panchos",
-  description: "2 Pancho a elección por $36.000",
+  description: "2 Panchos a elección por $36.000",
   price: 36000,
   image: "assets/halloween/pan.jpg",
   cta: "Sumar promo",
@@ -348,7 +348,7 @@ const products = [
     image: "assets/products/Roll caliente.jpg",
     meta: "Elegí la opción",
     comboOptions: [
-      { id: "salmon", label: "8 piezas (Salmon)", price: 15000, meta: "8 piezas / salmón" },
+      { id: "salmon", label: "8 piezas (Salmón)", price: 15000, meta: "8 piezas / salmón" },
       { id: "kanikama", label: "8 piezas (Kanikama)", price: 13000, meta: "8 piezas / kanikama" },
     ],
   },
@@ -1455,7 +1455,7 @@ function renderProducts(category = state.activeCategory) {
   if (!filteredProducts.length && !showPromoCard) {
     const emptyState = document.createElement("div");
     emptyState.className = "empty-state";
-    emptyState.textContent = "No encontramos productos para esa busqueda. Probá otra categoria o término.";
+    emptyState.textContent = "No encontramos productos para esa búsqueda. Probá otra categoría o término.";
     productGrid.appendChild(emptyState);
     return;
   }
@@ -1875,22 +1875,42 @@ function initOfferModal() {
     if (cta) cta.focus();
   };
 
+  const mainActions = document.getElementById('offerMainActions');
+  const panchoStep = document.getElementById('offerPanchoStep');
+
+  const showMainStep = () => {
+    if (mainActions) mainActions.hidden = false;
+    if (panchoStep) panchoStep.hidden = true;
+  };
+
   const hideModal = () => {
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
     if (backdrop) { backdrop.hidden = true; backdrop.setAttribute('aria-hidden', 'true'); }
+    showMainStep();
   };
 
   document.getElementById('offerClose')?.addEventListener('click', hideModal);
   document.getElementById('offerLater')?.addEventListener('click', hideModal);
 
+  // Primero se elige el pancho; recién ahí se agrega la oferta al carrito
   document.getElementById('offerCta')?.addEventListener('click', () => {
-    // Añadir oferta para dos: 2 Burgers SAKURA + 2 Panchos a elección
+    if (mainActions) mainActions.hidden = true;
+    if (panchoStep) panchoStep.hidden = false;
+  });
+
+  document.getElementById('offerPanchoBack')?.addEventListener('click', showMainStep);
+
+  document.getElementById('offerPanchoOptions')?.addEventListener('click', (e) => {
+    const btn = e.target.closest && e.target.closest('.pancho-option');
+    const panchoId = btn?.dataset.prod;
+    if (!panchoId) return;
+
+    // Oferta para dos: 2 Burgers SAKURA + 2 Panchos a elección
     SUPPRESS_TOASTS = true;
     try {
-      // Insert packaged promos with their current prices.
       addToCart('promo-mundial-burger', null);
-      addToCart('promo-mundial-pancho', null);
+      addToCart('promo-mundial-pancho', panchoId);
     } finally {
       SUPPRESS_TOASTS = false;
     }
@@ -2100,7 +2120,7 @@ function generateWhatsAppMessage(scheduledTime = null) {
 
 function openWhatsApp() {
   if (!state.cart.length) {
-    showToast("Tu carrito esta vacio.");
+    showToast("Tu carrito está vacío.");
     return;
   }
 
@@ -2307,10 +2327,6 @@ function getCartSummary() {
 }
 
 function formatCartSubtotal(summary) {
-  // Si la promo CENA está activa en el carrito, mostramos el subtotal promocional
-  if (isPromoCenaApplied()) {
-    return formatCurrency(49999);
-  }
   if (summary.hasQuotedItems && summary.subtotal > 0) {
     return `${formatCurrency(summary.subtotal)} + items a consultar`;
   }
@@ -2323,10 +2339,6 @@ function formatCartSubtotal(summary) {
 }
 
 function formatCartDelivery(summary) {
-  // Si la promo CENA está aplicada, el envío igualmente se aplica
-  if (isPromoCenaApplied()) {
-    return formatCurrency(DELIVERY_FEE);
-  }
   if (summary.hasQuotedItems) {
     return "A confirmar";
   }
@@ -2344,29 +2356,11 @@ function formatCartTotal(summary) {
     };
   }
 
-  // Si alguna promo de cena está aplicada, forzamos el total promocional
-  if (isPromoCenaApplied()) {
-    const promoTotal = 49999;
-    const totalWithDelivery = promoTotal + DELIVERY_FEE;
-    return { label: formatCurrency(totalWithDelivery), message: formatCurrency(totalWithDelivery) };
-  }
-
   const total = summary.subtotal ? summary.subtotal + DELIVERY_FEE : 0;
   return {
     label: formatCurrency(total),
     message: formatCurrency(total),
   };
-}
-
-function isPromoCenaApplied() {
-  try {
-    const hasHot = getQuantity('hotburger-sakura', null) >= 1;
-    const hasCombo = getQuantity('daikon-combo', '16') >= 1;
-    const hasEbi = getQuantity('entrada-ebi-crocante', null) >= 1;
-    return hasHot && hasCombo && hasEbi;
-  } catch (e) {
-    return false;
-  }
 }
 
 function persistCart() {
@@ -2480,7 +2474,7 @@ function registerServiceWorker() {
 
     }).catch((err) => {
       console.error('Service worker registration failed:', err);
-      showToast("PWA no pudo registrarse en este entorno. Revisa la consola remota para detalles.");
+      showToast("PWA no pudo registrarse en este entorno. Revisá la consola remota para detalles.");
     });
   });
 
@@ -3101,7 +3095,7 @@ function initSideFeaturedCarousel() {
       titleEl.textContent = 'PROMO HALLOWEEN';
       descEl.textContent = '2 Panchos Sushi x $36.000';
     } else if (lname.includes('banner')) {
-      titleEl.textContent = 'EDICION HALLOWEEN';
+      titleEl.textContent = 'EDICIÓN HALLOWEEN';
       descEl.textContent = 'Campaña especial del mes con estética Halloween y promo destacada de Panchos.';
     } else if (lname.includes('burgermundial') || lname.includes('promosakura') || lname.includes('2sakura')) {
       titleEl.textContent = 'PROMO HALLOWEEN';
