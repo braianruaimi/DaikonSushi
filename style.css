@@ -58,57 +58,6 @@
   --roulette-inner-text: #ffe6e6;
 }
 
-html[data-theme="halloween"] {
-  --bg: #120914;
-  --bg-elevated: #1b1020;
-  --panel: rgba(24, 12, 26, 0.82);
-  --panel-strong: rgba(18, 8, 22, 0.94);
-  --primary: #ff7a18;
-  --primary-dark: #c94d00;
-  --text: #fff2df;
-  --muted: #d8bca5;
-  --line: rgba(255, 176, 96, 0.18);
-  --glow: 0 10px 26px rgba(255, 98, 0, 0.18);
-  --glow-soft: 0 14px 36px rgba(255, 98, 0, 0.14);
-  --body-accent-top: rgba(255, 157, 0, 0.08);
-  --body-accent-bottom: rgba(112, 45, 155, 0.2);
-  --body-gradient: linear-gradient(180deg, #100411 0%, #1a0915 36%, #261022 68%, #11050f 100%);
-  --surface-gradient: linear-gradient(180deg, #1d0d19, #140814);
-  --surface-backdrop: rgba(10, 2, 12, 0.58);
-  --hero-shell: radial-gradient(circle at top left, rgba(255, 122, 24, 0.32), transparent 34%), radial-gradient(circle at bottom right, rgba(118, 40, 153, 0.22), transparent 28%), linear-gradient(180deg, rgba(22, 7, 25, 0.5), rgba(10, 5, 14, 0.88));
-  --hero-overlay: linear-gradient(90deg, rgba(16, 6, 18, 0.82) 0%, rgba(40, 13, 21, 0.42) 55%, rgba(7, 3, 10, 0.88) 100%), linear-gradient(180deg, rgba(255, 122, 24, 0.08) 0%, rgba(12, 4, 16, 0.78) 100%);
-  --notice-border: rgba(255, 153, 51, 0.28);
-  --notice-shell: radial-gradient(circle at top left, rgba(255, 122, 24, 0.2), transparent 42%), linear-gradient(180deg, rgba(23, 8, 20, 0.94), rgba(16, 6, 16, 0.88));
-  --notice-ring: rgba(255, 155, 73, 0.12);
-  --notice-glow: rgba(255, 122, 24, 0.18);
-  --primary-button-gradient: radial-gradient(circle at 30% 25%, rgba(255, 250, 235, 0.26), transparent 24%), linear-gradient(180deg, #ffa03b 0%, #ff7a18 48%, #c94d00 100%);
-  --primary-button-ring: rgba(255, 171, 92, 0.36);
-  --primary-button-glow: rgba(255, 122, 24, 0.3);
-  --primary-button-shadow: rgba(140, 52, 0, 0.34);
-  --feature-cta-gradient: linear-gradient(180deg, #2b1208 0%, #12070a 18%, #a74300 18%, #ff7a18 100%);
-  --feature-cta-ring: rgba(255, 167, 91, 0.34);
-  --feature-cta-glow: rgba(255, 122, 24, 0.24);
-  --section-shell: radial-gradient(circle at top left, rgba(255, 122, 24, 0.18), transparent 40%), linear-gradient(180deg, rgba(28, 10, 24, 0.96), rgba(13, 5, 15, 0.98));
-  --promo-shell: radial-gradient(circle at top left, rgba(255, 122, 24, 0.16), transparent 36%), linear-gradient(180deg, rgba(31, 11, 28, 0.96), rgba(14, 6, 17, 0.98));
-  --product-shell: radial-gradient(circle at top left, rgba(255, 122, 24, 0.18), transparent 34%), radial-gradient(circle at bottom right, rgba(118, 40, 153, 0.16), transparent 30%), linear-gradient(135deg, rgba(31, 13, 28, 0.98), rgba(12, 5, 14, 0.98));
-  --event-button-gradient: linear-gradient(135deg, rgba(255, 247, 224, 0.18), transparent 34%), linear-gradient(180deg, #351406 0%, #220a08 28%, #d15c00 58%, #ff8a1f 100%);
-  --event-button-border: rgba(255, 179, 99, 0.34);
-  --update-button-gradient: linear-gradient(180deg, #6e2f82, #411454);
-  --floating-total-gradient: linear-gradient(180deg, #4b1f56, #2b1238);
-  --lunch-button-border: rgba(255, 172, 74, 0.38);
-  --lunch-button-shell: radial-gradient(circle at top left, rgba(255, 186, 96, 0.18), transparent 50%), linear-gradient(180deg, rgba(74, 34, 9, 0.96), rgba(35, 15, 10, 0.98));
-  --lunch-button-text: #ffdba8;
-  --lunch-button-hover-text: #fff0d8;
-  --roulette-button-shell: radial-gradient(circle at top left, rgba(255, 149, 59, 0.28), transparent 52%), linear-gradient(180deg, #351003, #14050b 58%, #1a0713 100%);
-  --roulette-button-text: #ff9c3d;
-  --roulette-hover-text: #ffd0a0;
-  --roulette-card-shell: radial-gradient(circle at top, rgba(255, 122, 24, 0.16), transparent 38%), linear-gradient(180deg, #1f0a10, #100410 56%, #1c0915);
-  --roulette-wheel-shell: conic-gradient(#3e0f45 0deg 45deg, #130712 45deg 90deg, #ff7a18 90deg 135deg, #24030e 135deg 180deg, #5c146a 180deg 225deg, #0c040c 225deg 270deg, #ffae42 270deg 315deg, #1b0618 315deg 360deg);
-  --roulette-needle: #ff9c3d;
-  --roulette-inner-shell: radial-gradient(circle at 30% 30%, rgba(255, 177, 104, 0.34), transparent 34%), linear-gradient(180deg, #481903, #13060b 70%, #1d0712);
-  --roulette-inner-text: #fff0de;
-}
-
 /* Tipografía: escala y leading consistente */
 :root {
   --type-scale-xs: 0.8125rem; /* 13px */
@@ -1562,6 +1511,8 @@ main {
   background: var(--primary);
   box-shadow: 0 0 6px rgba(255, 0, 60, 0.7);
   display: block;
+}
+
 /* Hero featured product cards */
 .hero__featured-products {
   display: flex;
@@ -1629,38 +1580,51 @@ main {
 .hero__featured-caption h3 { margin: 0 0 6px; }
 .hero__featured-carousel .hero__panel-media {
   position: relative;
-  flex: 0 0 360px;
+  flex: 0 0 280px;
+  max-width: 280px;
+  background: #fff;
 }
-
-.hero__featured-carousel .hero__panel-media.hero__panel-media--flyer {
-  flex-basis: 300px;
-  aspect-ratio: unset;
-  height: fit-content;
-  min-height: 0;
-  align-self: flex-start;
-  overflow: visible;
-}
-
-#sideFeaturedCarousel.is-flyer {
-  width: 100%;
-  height: auto;
+#sideFeaturedCarousel {
   object-fit: contain;
-  object-position: center;
-  background: rgba(14, 6, 18, 0.92);
-  padding: 0;
+  cursor: zoom-in;
+  padding: 6px;
+  transition: transform 220ms ease;
 }
+#sideFeaturedCarousel:hover,
+#sideFeaturedCarousel:focus-visible { transform: scale(1.04); filter: none; }
+#sideFeaturedCarousel:active { transform: scale(0.96); }
 
-#sideFeaturedCarousel.is-pan-flyer {
-  width: 88%;
-  margin: 0 auto;
+.promo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  visibility: hidden;
+  cursor: zoom-out;
+  transition: opacity 260ms ease, background 260ms ease, visibility 0s linear 260ms;
 }
+.promo-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.88);
+  transition: opacity 260ms ease, background 260ms ease;
+}
+.promo-lightbox img {
+  max-width: min(94vw, 760px);
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 14px;
+  background: #fff;
+  transform: scale(0.6);
+  transition: transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.promo-lightbox.is-open img { transform: scale(1); }
 
-#sideFeaturedCarousel.is-flyer:hover,
-#sideFeaturedCarousel.is-flyer:focus-visible,
-.hero__featured-media:hover #sideFeaturedCarousel.is-flyer,
-.hero__featured-media:focus-within #sideFeaturedCarousel.is-flyer {
-  transform: scale(1.02);
-}
 .hero__featured-caption {
   position: relative;
   z-index: 2;
@@ -1695,12 +1659,9 @@ main {
 
 @media (max-width: 720px) {
   .hero__featured-media { width: 48%; height: 160px; }
+  .hero__featured-carousel .hero__panel-media { flex: 0 0 48%; max-width: 48%; }
   .hero__featured-caption { width: 48%; }
   .hero__featured-carousel { gap: 8px; }
-  .hero__featured-carousel .hero__panel-media.hero__panel-media--flyer {
-    flex-basis: min(220px, 48vw);
-  }
-}
 }
 
 .section-heading__count {
@@ -2907,6 +2868,7 @@ product-card__selector select {
     padding: 12px 0;
   }
   .offer-modal__card { padding:16px; border-radius:10px; width: min(100% - 16px, 560px); }
+  .promo-ribbon__track {
     animation-duration: 34s;
   }
   .story-card { min-width: 84vw; max-width: 84vw; flex-basis: 84vw; padding: 14px; }
@@ -4011,16 +3973,6 @@ html, body {
   .hero__content { order: 1; }
   .hero__panel { order: 2; width: 100%; }
   .hero__panel-media img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
-  .hero__featured-carousel .hero__panel-media.hero__panel-media--flyer {
-    flex-basis: min(260px, 52vw);
-    aspect-ratio: unset;
-    height: fit-content;
-  }
-  #sideFeaturedCarousel.is-flyer {
-    height: auto;
-    object-fit: contain;
-    border-radius: 14px;
-  }
   .hero__panel-hotburgers { margin-top: 12px; }
   .hero__panel-media--hot img, #hotburgerCarousel, #featuredCarousel { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px; }
@@ -4031,7 +3983,6 @@ html, body {
 @media (max-width: 480px) {
   .product-grid { grid-template-columns: 1fr; }
   .hero__panel-media img { height: 100%; }
-  #sideFeaturedCarousel.is-flyer { height: auto; }
   .hero__panel-media--hot img, #hotburgerCarousel, #featuredCarousel { height: 100%; }
   .topbar { padding: calc(8px + var(--safe-top)) 12px; border-radius: 0; }
   .install-app-button { min-height: 40px; padding: 8px; }
